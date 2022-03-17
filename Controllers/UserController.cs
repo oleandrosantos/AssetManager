@@ -1,6 +1,7 @@
 using AssetManager.Data;
 using AssetManager.Model;
 using AssetManager.Service;
+using AssetManager.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManager.Controllers;
@@ -8,16 +9,17 @@ namespace AssetManager.Controllers;
 [Route("[controller]")]
 public class UserController: ControllerBase
 {
-    private UserService _service;
+    private IUserService _userService;
+
+    public UserController(IUserService userService)
+    {
+        _userService = userService;
+    }
 
     [HttpPost("Create")]
-    public IActionResult CadatrarUsuario(UserModel usuario)
+    public IActionResult CadatrarUsuario(CreateUserViewModel dadosUsuario)
     {
-        if (!TryValidateModel(usuario))
-        {
-            return BadRequest();
-        }
-        var resultado = _service.Create(usuario);
+        var resultado = _userService.Create(dadosUsuario);
         return Accepted(resultado);
     }
     
