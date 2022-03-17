@@ -1,6 +1,7 @@
 using AssetManager;
 using AssetManager.Data;
 using AssetManager.Profile;
+using AssetManager.Repository;
 using AssetManager.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<UserRepository>();
+
 var connectionString = "server=localhost;user=root;password=12345678;database=AssetDB";
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 28));
 
