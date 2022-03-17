@@ -20,7 +20,27 @@ public class UserController: ControllerBase
     public IActionResult CadatrarUsuario(CreateUserViewModel dadosUsuario)
     {
         var resultado = _userService.Create(dadosUsuario);
-        return Accepted(resultado);
+        return Ok(resultado);
+    }
+
+    [HttpPost("Login")]
+    public IActionResult LoginUsuario(string email, string password)
+    {
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+        {
+            return BadRequest("Email ou senha não informados");
+        }
+        var resultadoLogin = _userService.Login(email, password);
+        
+        if (resultadoLogin.logado == true)
+        {
+            return Ok(resultadoLogin.mensagem);
+        }
+        else
+        {
+            return BadRequest(resultadoLogin.mensagem);
+        }
+        
     }
     
 }
