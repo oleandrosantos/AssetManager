@@ -19,8 +19,15 @@ public class UserController: ControllerBase
     [HttpPost("Create")]
     public IActionResult CadatrarUsuario(CreateUserViewModel dadosUsuario)
     {
+       
         var resultado = _userService.Create(dadosUsuario);
+        if (resultado == null)
+        {
+            return BadRequest("este email encontra-se cadastrado em nosos banco!");
+        }
+        
         return Ok(resultado);
+   
     }
 
     [HttpPost("Login")]
