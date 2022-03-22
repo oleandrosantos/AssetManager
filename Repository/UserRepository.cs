@@ -33,7 +33,7 @@ public class UserRepository
         }
     }
 
-    public UserModel BuscarUsuarioPorEmail(string email)
+    public UserModel? BuscarUsuarioPorEmail(string email)
     {
         UserModel usuario = _context.usuario.FirstOrDefault(k => k.email == email);
         return usuario;
