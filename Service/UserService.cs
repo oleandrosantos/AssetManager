@@ -1,36 +1,98 @@
-using AssetManager.Data;
 using AssetManager.Model;
-using AssetManager.Profile;
 using AssetManager.ViewModel;
-using AutoMapper;
+using System.Text;
 using System.Security.Cryptography;
+using AssetManager.Repository;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace AssetManager.Service;
 
 public class UserService :IUserService
 {
-    private DataContext _context;
-    private IMapper _mapper;
+    private UserRepository _userRepository;
     private IUserService _userServiceImplementation;
 
-    public UserService(DataContext context, IMapper mapper)
+    public UserService(UserRepository repository)
     {
-        _context = context;
-        _mapper = mapper;
+        _userRepository = repository;
     }
 
-    public string Create(CreateUserViewModel dadosUsuario)
+    public LoginResult Login(string email, string password)
     {
-        UserModel novoUsuario = _mapper.Map<UserModel>(dadosUsuario);
-        novoUsuario.idUsuario = Guid.NewGuid().ToString("N");
-        novoUsuario.token = novoUsuario.idUsuario;
-        _context.usuario.Add(novoUsuario);
-        _context.SaveChanges();
-        return $"usuario {novoUsuario.name} cadastrado com sucesso";
+        var usuario = _userRepository.BuscarUsuarioPorEmail(email);
+        if (usuario == null)
+        {
+            return new LoginResult(false, "Email não identificado em nossa base.");
+        }
+        if (verificandoSenha(Convert.FromBase64String(usuario.password), password))
+        {
+            return new LoginResult(true, $"Bem vindo! {usuario.name}, seu toke é {usuario.token}");
+        }
+        else
+        {
+            return new LoginResult(false, "Usuario ou senha incorretos");
+        }
+    }
+
+    public string? Create(CreateUserViewModel dadosUsuario)
+    {
+        var dados = _userRepository.BuscarUsuarioPorEmail(dadosUsuario.email);
+
+        if (dados != null)
+        {
+            return null;
+        }
+        dadosUsuario.password = criandoHashDaSenha(dadosUsuario.password);
+        string resultado = _userRepository.Create(dadosUsuario);
+        
+        return resultado;
     }
 
     private string criandoHashDaSenha(string senha)
     {
+        const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA1;
+        const int IterCount = 1000;
+        const int SubkeyLength = 256 / 8;
+        const int SaltSize = 128 / 8;
+
+        byte[] salt = new byte[SaltSize];
+        using (var rng = RandomNumberGenerator.Create())  
+        {
+           rng.GetBytes(salt);
+        }
+        byte[] subkey = KeyDerivation.Pbkdf2(
+                password: senha,
+                salt: salt,
+                prf: HashType,
+                iterationCount: IterCount,
+                numBytesRequested: SubkeyLength);
         
+        var outputBytes = new byte[1+SaltSize+SubkeyLength];
+        outputBytes[0] = 0x00;
+        Buffer.BlockCopy(salt,0,outputBytes,1,SaltSize);
+        Buffer.BlockCopy(subkey,0,outputBytes,1+SaltSize,SubkeyLength);
+        
+        return Convert.ToBase64String(outputBytes);
+    }
+
+    private bool verificandoSenha(byte[] hashPassword,string password)
+    {
+        const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA1;
+        const int IterCount = 1000;
+        const int SubkeyLength = 256 / 8;
+        const int SaltSize = 128 / 8;
+
+        if (hashPassword.Length != 1 + SaltSize + SubkeyLength)
+            return false;
+
+        byte[] salt = new byte[SaltSize];
+        Buffer.BlockCopy(hashPassword, 1, salt, 0,salt.Length);
+
+        byte[] expectedSubkey = new byte[SubkeyLength];
+        Buffer.BlockCopy(hashPassword,1+salt.Length, expectedSubkey, 0, expectedSubkey.Length);
+
+        byte[] actualSubkey = KeyDerivation.Pbkdf2(password, salt, HashType, IterCount, SubkeyLength);
+
+        return CryptographicOperations.FixedTimeEquals(actualSubkey, expectedSubkey);
     }
 }

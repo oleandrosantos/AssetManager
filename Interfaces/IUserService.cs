@@ -6,4 +6,5 @@ namespace AssetManager;
 public interface IUserService
 {
     public string Create(CreateUserViewModel newUser);
+    public LoginResult Login(string email, string password);
 }
