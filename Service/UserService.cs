@@ -20,9 +20,12 @@ public class UserService :IUserService
     public LoginResult Login(string email, string password)
     {
         var usuario = _userRepository.BuscarUsuarioPorEmail(email);
-        if (verificandoSenha(Encoding.ASCII.GetBytes(usuario.password), password))
+        if (usuario == null)
         {
-            
+            return new LoginResult(false, "Email não identificado em nossa base.");
+        }
+        if (verificandoSenha(Convert.FromBase64String(usuario.password), password))
+        {
             return new LoginResult(true, $"Bem vindo! {usuario.name}, seu toke é {usuario.token}");
         }
         else
@@ -31,8 +34,14 @@ public class UserService :IUserService
         }
     }
 
-    public string Create(CreateUserViewModel dadosUsuario)
+    public string? Create(CreateUserViewModel dadosUsuario)
     {
+        var dados = _userRepository.BuscarUsuarioPorEmail(dadosUsuario.email);
+
+        if (dados != null)
+        {
+            return null;
+        }
         dadosUsuario.password = criandoHashDaSenha(dadosUsuario.password);
         string resultado = _userRepository.Create(dadosUsuario);
         
@@ -41,29 +50,37 @@ public class UserService :IUserService
 
     private string criandoHashDaSenha(string senha)
     {
-        byte[] salt = new byte[128 / 8];
-        using (var rngCsp = new RNGCryptoServiceProvider())
-        {
-            rngCsp.GetNonZeroBytes(salt);
-        }
+        const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA1;
+        const int IterCount = 1000;
+        const int SubkeyLength = 256 / 8;
+        const int SaltSize = 128 / 8;
 
-        string hashedPassword = Convert.ToBase64String(
-            KeyDerivation.Pbkdf2(
+        byte[] salt = new byte[SaltSize];
+        using (var rng = RandomNumberGenerator.Create())  
+        {
+           rng.GetBytes(salt);
+        }
+        byte[] subkey = KeyDerivation.Pbkdf2(
                 password: senha,
                 salt: salt,
-                prf: KeyDerivationPrf.HMACSHA256,
-                iterationCount: 1000,
-                numBytesRequested: 256/8));
+                prf: HashType,
+                iterationCount: IterCount,
+                numBytesRequested: SubkeyLength);
         
-        return hashedPassword;
+        var outputBytes = new byte[1+SaltSize+SubkeyLength];
+        outputBytes[0] = 0x00;
+        Buffer.BlockCopy(salt,0,outputBytes,1,SaltSize);
+        Buffer.BlockCopy(subkey,0,outputBytes,1+SaltSize,SubkeyLength);
+        
+        return Convert.ToBase64String(outputBytes);
     }
 
     private bool verificandoSenha(byte[] hashPassword,string password)
     {
-        const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA256;
+        const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA1;
         const int IterCount = 1000;
         const int SubkeyLength = 256 / 8;
-        const int SaltSize = 256 / 8;
+        const int SaltSize = 128 / 8;
 
         if (hashPassword.Length != 1 + SaltSize + SubkeyLength)
             return false;
