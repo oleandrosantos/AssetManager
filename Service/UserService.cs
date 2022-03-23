@@ -11,6 +11,10 @@ public class UserService :IUserService
 {
     private UserRepository _userRepository;
     private IUserService _userServiceImplementation;
+    private const KeyDerivationPrf _HashType = KeyDerivationPrf.HMACSHA1;
+    private const int _IterCount = 1000;
+    private const int _SubkeyLength = 256 / 8;
+    private const int _SaltSize = 128 / 8;
 
     public UserService(UserRepository repository)
     {
@@ -50,12 +54,8 @@ public class UserService :IUserService
 
     private string criandoHashDaSenha(string senha)
     {
-        const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA1;
-        const int IterCount = 1000;
-        const int SubkeyLength = 256 / 8;
-        const int SaltSize = 128 / 8;
 
-        byte[] salt = new byte[SaltSize];
+        byte[] salt = new byte[_SaltSize];
         using (var rng = RandomNumberGenerator.Create())  
         {
            rng.GetBytes(salt);
@@ -63,35 +63,30 @@ public class UserService :IUserService
         byte[] subkey = KeyDerivation.Pbkdf2(
                 password: senha,
                 salt: salt,
-                prf: HashType,
-                iterationCount: IterCount,
-                numBytesRequested: SubkeyLength);
+                prf: _HashType,
+                iterationCount: _IterCount,
+                numBytesRequested: _SubkeyLength);
         
-        var outputBytes = new byte[1+SaltSize+SubkeyLength];
+        var outputBytes = new byte[1+_SaltSize+_SubkeyLength];
         outputBytes[0] = 0x00;
-        Buffer.BlockCopy(salt,0,outputBytes,1,SaltSize);
-        Buffer.BlockCopy(subkey,0,outputBytes,1+SaltSize,SubkeyLength);
+        Buffer.BlockCopy(salt,0,outputBytes,1,_SaltSize);
+        Buffer.BlockCopy(subkey,0,outputBytes,1+_SaltSize,_SubkeyLength);
         
         return Convert.ToBase64String(outputBytes);
     }
 
     private bool verificandoSenha(byte[] hashPassword,string password)
     {
-        const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA1;
-        const int IterCount = 1000;
-        const int SubkeyLength = 256 / 8;
-        const int SaltSize = 128 / 8;
-
-        if (hashPassword.Length != 1 + SaltSize + SubkeyLength)
+        if (hashPassword.Length != 1 + _SaltSize + _SubkeyLength)
             return false;
 
-        byte[] salt = new byte[SaltSize];
+        byte[] salt = new byte[_SaltSize];
         Buffer.BlockCopy(hashPassword, 1, salt, 0,salt.Length);
 
-        byte[] expectedSubkey = new byte[SubkeyLength];
+        byte[] expectedSubkey = new byte[_SubkeyLength];
         Buffer.BlockCopy(hashPassword,1+salt.Length, expectedSubkey, 0, expectedSubkey.Length);
 
-        byte[] actualSubkey = KeyDerivation.Pbkdf2(password, salt, HashType, IterCount, SubkeyLength);
+        byte[] actualSubkey = KeyDerivation.Pbkdf2(password, salt, _HashType, _IterCount, _SubkeyLength);
 
         return CryptographicOperations.FixedTimeEquals(actualSubkey, expectedSubkey);
     }
