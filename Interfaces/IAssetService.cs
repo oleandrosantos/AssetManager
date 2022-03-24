@@ -1,6 +1,11 @@
+using AssetManager.Model;
+
 namespace AssetManager;
 
-public class IAssetService
+public interface IAssetService
 {
-    
+    public string Create(AssetModel asset);
+
+    public string Update(AssetModel asset);
+
 }
