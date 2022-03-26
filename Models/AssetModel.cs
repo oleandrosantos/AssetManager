@@ -16,4 +16,5 @@ public class AssetModel
     public DateTime acquisitionDate { get; set; }
     public DateTime exclusionDate { get; set; }
     public string? exclusionInfos { get; set; }
+    public CompanyModel company { get; set; }
 }
