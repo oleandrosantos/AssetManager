@@ -36,6 +36,9 @@ namespace AssetManager.Migrations
                     b.Property<ulong>("assetPriceInCents")
                         .HasColumnType("bigint unsigned");
 
+                    b.Property<int>("companyidCompany")
+                        .HasColumnType("int");
+
                     b.Property<int?>("depreciationTaxInCents")
                         .HasColumnType("int");
 
@@ -47,7 +50,29 @@ namespace AssetManager.Migrations
 
                     b.HasKey("idAsset");
 
+                    b.HasIndex("companyidCompany");
+
                     b.ToTable("tb_asset");
+                });
+
+            modelBuilder.Entity("AssetManager.Model.CompanyModel", b =>
+                {
+                    b.Property<int>("idCompany")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("cnpj")
+                        .IsRequired()
+                        .HasMaxLength(14)
+                        .HasColumnType("varchar(14)");
+
+                    b.Property<string>("companyName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("idCompany");
+
+                    b.ToTable("tb_company");
                 });
 
             modelBuilder.Entity("AssetManager.Model.LocationAssetModel", b =>
@@ -88,6 +113,9 @@ namespace AssetManager.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("varchar(32)");
 
+                    b.Property<int>("companyidCompany")
+                        .HasColumnType("int");
+
                     b.Property<string>("email")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -101,13 +129,30 @@ namespace AssetManager.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("role")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("token")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("idUsuario");
 
+                    b.HasIndex("companyidCompany");
+
                     b.ToTable("tb_usuario");
+                });
+
+            modelBuilder.Entity("AssetManager.Model.AssetModel", b =>
+                {
+                    b.HasOne("AssetManager.Model.CompanyModel", "company")
+                        .WithMany()
+                        .HasForeignKey("companyidCompany")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("company");
                 });
 
             modelBuilder.Entity("AssetManager.Model.LocationAssetModel", b =>
@@ -127,6 +172,17 @@ namespace AssetManager.Migrations
                     b.Navigation("asset");
 
                     b.Navigation("usuario");
+                });
+
+            modelBuilder.Entity("AssetManager.Model.UserModel", b =>
+                {
+                    b.HasOne("AssetManager.Model.CompanyModel", "company")
+                        .WithMany()
+                        .HasForeignKey("companyidCompany")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("company");
                 });
 #pragma warning restore 612, 618
         }
