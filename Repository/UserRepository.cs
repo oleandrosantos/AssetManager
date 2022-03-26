@@ -15,9 +15,9 @@ public class UserRepository
         _mapper = mapper;
         _context = context;
     }
-    public string Create(CreateUserViewModel dadosUsuario)
+    public string Create(UserViewModel dadosUsuario)
     {
-        UserModel novoUsuario = _mapper.Map<UserModel>(dadosUsuario);
+        UserModel novoUsuario = _mapper.Map<UserViewModel, UserModel>(dadosUsuario);
         novoUsuario.idUsuario = Guid.NewGuid().ToString("N");
         novoUsuario.token = novoUsuario.idUsuario;
         try
@@ -29,7 +29,8 @@ public class UserRepository
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return $"Erro {e.Message}";
+            return $"{novoUsuario.company}, {novoUsuario.email}, {novoUsuario.name}" +
+                   $"Erro {e.Message}";
         }
     }
 

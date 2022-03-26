@@ -17,7 +17,7 @@ public class UserController: ControllerBase
     }
 
     [HttpPost("Create")]
-    public IActionResult CadatrarUsuario(CreateUserViewModel dadosUsuario)
+    public IActionResult CadatrarUsuario(UserViewModel dadosUsuario)
     {
        
         var resultado = _userService.Create(dadosUsuario);
@@ -31,17 +31,24 @@ public class UserController: ControllerBase
     }
 
     [HttpPost("Login")]
-    public IActionResult LoginUsuario(string email, string password)
+    public async Task<ActionResult<dynamic>> Authenticate([FromBody]UserViewModel model)
     {
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+        if (string.IsNullOrEmpty(model.email) || string.IsNullOrEmpty(model.password))
         {
-            return BadRequest("Email ou senha não informados");
+            return NotFound(new {message = "Email ou senha não informados"});
         }
-        var resultadoLogin = _userService.Login(email, password);
+        var resultadoLogin = _userService.Login(model.email, model.password);
         
         if (resultadoLogin.logado == true)
         {
-            return Ok(resultadoLogin.mensagem);
+            var usuarioModel = _userService.BuscarPorEmail(model.email);
+            var token = TokenService.GenerateToken(usuarioModel);
+            usuarioModel.password = "";
+            return new
+            {
+                usuarioModel = usuarioModel,
+                token = token,
+            };
         }
         else
         {

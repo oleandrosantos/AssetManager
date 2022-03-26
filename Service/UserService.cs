@@ -38,7 +38,7 @@ public class UserService :IUserService
         }
     }
 
-    public string? Create(CreateUserViewModel dadosUsuario)
+    public string? Create(UserViewModel dadosUsuario)
     {
         var dados = _userRepository.BuscarUsuarioPorEmail(dadosUsuario.email);
 
@@ -75,6 +75,10 @@ public class UserService :IUserService
         return Convert.ToBase64String(outputBytes);
     }
 
+    public UserModel? BuscarPorEmail(string email)
+    {
+        return _userRepository.BuscarUsuarioPorEmail(email);
+    }
     private bool verificandoSenha(byte[] hashPassword,string password)
     {
         if (hashPassword.Length != 1 + _SaltSize + _SubkeyLength)
