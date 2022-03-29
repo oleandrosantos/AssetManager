@@ -5,7 +5,7 @@ namespace AssetManager;
 
 public interface IUserService
 {
-    public string Create(UserViewModel newUser);
+    public string Create(CreateUserViewModel newUser);
     public LoginResult Login(string email, string password);
     public UserModel? BuscarPorEmail(string email);
 }

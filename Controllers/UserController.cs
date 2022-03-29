@@ -2,6 +2,7 @@ using AssetManager.Data;
 using AssetManager.Model;
 using AssetManager.Service;
 using AssetManager.ViewModel;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManager.Controllers;
@@ -17,9 +18,8 @@ public class UserController: ControllerBase
     }
 
     [HttpPost("Create")]
-    public IActionResult CadatrarUsuario(UserViewModel dadosUsuario)
+    public IActionResult CadatrarUsuario(CreateUserViewModel dadosUsuario)
     {
-       
         var resultado = _userService.Create(dadosUsuario);
         if (resultado == null)
         {
@@ -31,11 +31,11 @@ public class UserController: ControllerBase
     }
 
     [HttpPost("Login")]
-    public async Task<ActionResult<dynamic>> Authenticate([FromBody]UserViewModel model)
+    public Task<ActionResult<dynamic>> Authenticate([FromBody]AuthenticationModel model)
     {
         if (string.IsNullOrEmpty(model.email) || string.IsNullOrEmpty(model.password))
         {
-            return NotFound(new {message = "Email ou senha não informados"});
+            return Task.FromResult<ActionResult<dynamic>>(NotFound(new {message = "Email ou senha não informados"}));
         }
         var resultadoLogin = _userService.Login(model.email, model.password);
         
@@ -44,15 +44,15 @@ public class UserController: ControllerBase
             var usuarioModel = _userService.BuscarPorEmail(model.email);
             var token = TokenService.GenerateToken(usuarioModel);
             usuarioModel.password = "";
-            return new
+            return Task.FromResult<ActionResult<dynamic>>(new
             {
                 usuarioModel = usuarioModel,
                 token = token,
-            };
+            });
         }
         else
         {
-            return BadRequest(resultadoLogin.mensagem);
+            return Task.FromResult<ActionResult<dynamic>>(BadRequest(resultadoLogin.mensagem));
         }
         
     }
