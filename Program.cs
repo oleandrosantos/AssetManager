@@ -6,7 +6,6 @@ using AssetManager.Repository;
 using AssetManager.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +28,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IAssetService, AssetService>();
 builder.Services.AddTransient<UserRepository>();
 builder.Services.AddTransient<AssetRepository>();
+builder.Services.AddTransient<CompanyRepository>();
 
 var connectionString = "server=localhost;user=root;password=12345678;database=AssetDB";
 var serverVersion = ServerVersion.AutoDetect(connectionString);
@@ -73,14 +73,13 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseCors(x => x
     .AllowAnyOrigin()
     .AllowAnyMethod()
     .AllowAnyHeader());
-
-app.UseAuthentication();
-app.UseAuthorization();
-
 
 app.UseEndpoints(endpoints =>
 {
@@ -90,8 +89,6 @@ app.UseEndpoints(endpoints =>
 app.MapGet("/", () => "Hello World!");
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapControllers();
 
