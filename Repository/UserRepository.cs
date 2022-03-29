@@ -9,15 +9,18 @@ public class UserRepository
 {
     private DataContext _context;
     private IMapper _mapper;
+    private CompanyRepository _companyRepository;
     
-    public UserRepository(DataContext context, IMapper mapper)
+    public UserRepository(DataContext context, IMapper mapper, CompanyRepository companyRepository)
     {
         _mapper = mapper;
         _context = context;
+        _companyRepository = companyRepository;
     }
-    public string Create(UserViewModel dadosUsuario)
+    public string Create(CreateUserViewModel dadosUsuario)
     {
-        UserModel novoUsuario = _mapper.Map<UserViewModel, UserModel>(dadosUsuario);
+        UserModel novoUsuario = _mapper.Map<CreateUserViewModel, UserModel>(dadosUsuario);
+        novoUsuario.company = _companyRepository.ObterCompanyPorId(dadosUsuario.idCompany);
         novoUsuario.idUsuario = Guid.NewGuid().ToString("N");
         novoUsuario.token = novoUsuario.idUsuario;
         try
