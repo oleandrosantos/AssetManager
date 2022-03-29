@@ -10,11 +10,10 @@ namespace AssetManager.Service;
 public class UserService :IUserService
 {
     private UserRepository _userRepository;
-    private IUserService _userServiceImplementation;
-    private const KeyDerivationPrf _HashType = KeyDerivationPrf.HMACSHA1;
-    private const int _IterCount = 1000;
-    private const int _SubkeyLength = 256 / 8;
-    private const int _SaltSize = 128 / 8;
+    private const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA1;
+    private const int IterCount = 1000;
+    private const int SubkeyLength = 256 / 8;
+    private const int SaltSize = 128 / 8;
 
     public UserService(UserRepository repository)
     {
@@ -38,7 +37,7 @@ public class UserService :IUserService
         }
     }
 
-    public string? Create(UserViewModel dadosUsuario)
+    public string? Create(CreateUserViewModel dadosUsuario)
     {
         var dados = _userRepository.BuscarUsuarioPorEmail(dadosUsuario.email);
 
@@ -54,23 +53,22 @@ public class UserService :IUserService
 
     private string criandoHashDaSenha(string senha)
     {
-
-        byte[] salt = new byte[_SaltSize];
+        byte[] salt = new byte[SaltSize];
         using (var rng = RandomNumberGenerator.Create())  
         {
-           rng.GetBytes(salt);
+            rng.GetBytes(salt);
         }
         byte[] subkey = KeyDerivation.Pbkdf2(
-                password: senha,
-                salt: salt,
-                prf: _HashType,
-                iterationCount: _IterCount,
-                numBytesRequested: _SubkeyLength);
+            password: senha,
+            salt: salt,
+            prf: HashType,
+            iterationCount: IterCount,
+            numBytesRequested: SubkeyLength);
         
-        var outputBytes = new byte[1+_SaltSize+_SubkeyLength];
+        var outputBytes = new byte[1+SaltSize+SubkeyLength];
         outputBytes[0] = 0x00;
-        Buffer.BlockCopy(salt,0,outputBytes,1,_SaltSize);
-        Buffer.BlockCopy(subkey,0,outputBytes,1+_SaltSize,_SubkeyLength);
+        Buffer.BlockCopy(salt,0,outputBytes,1,SaltSize);
+        Buffer.BlockCopy(subkey,0,outputBytes,1+SaltSize,SubkeyLength);
         
         return Convert.ToBase64String(outputBytes);
     }
@@ -81,16 +79,16 @@ public class UserService :IUserService
     }
     private bool verificandoSenha(byte[] hashPassword,string password)
     {
-        if (hashPassword.Length != 1 + _SaltSize + _SubkeyLength)
+        if (hashPassword.Length != 1 + SaltSize + SubkeyLength)
             return false;
 
-        byte[] salt = new byte[_SaltSize];
+        byte[] salt = new byte[SaltSize];
         Buffer.BlockCopy(hashPassword, 1, salt, 0,salt.Length);
 
-        byte[] expectedSubkey = new byte[_SubkeyLength];
+        byte[] expectedSubkey = new byte[SubkeyLength];
         Buffer.BlockCopy(hashPassword,1+salt.Length, expectedSubkey, 0, expectedSubkey.Length);
 
-        byte[] actualSubkey = KeyDerivation.Pbkdf2(password, salt, _HashType, _IterCount, _SubkeyLength);
+        byte[] actualSubkey = KeyDerivation.Pbkdf2(password, salt, HashType, IterCount, SubkeyLength);
 
         return CryptographicOperations.FixedTimeEquals(actualSubkey, expectedSubkey);
     }
