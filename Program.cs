@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
     services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
-   services.AddScoped<IUserService, UserService>();
+    services.AddScoped<IUserService, UserService>();
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
 }
@@ -34,11 +34,11 @@ builder.Services.AddTransient<UserRepository>();
 builder.Services.AddTransient<AssetRepository>();
 builder.Services.AddTransient<CompanyRepository>();
 
-var connectionString = "server=localhost;user=root;password=root;database=AssetDB";
+var connectionString = builder.Configuration["AppSettings:ConnectionString"];
 var serverVersion = ServerVersion.AutoDetect(connectionString);
 
 
-var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("AppSettings").GetSection("Secret").Value);
+var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Secret"]);
 
 var config = new ConfigurationBuilder()
     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
