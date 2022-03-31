@@ -1,30 +1,37 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using AssetManager.Model;
+using AssetManager.Helpers;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using AssetManager.Interfaces;
 
 namespace AssetManager.Service;
 
-public class TokenService
+public class TokenService: ITokenService
 {
-    private static IConfiguration _configuration;
 
-    public TokenService(IConfiguration cofiguration)
+    private readonly AppSettings _appSettings;
+    public TokenService(IOptions<AppSettings> appSettings)
     {
-        _configuration = cofiguration;
+        _appSettings = appSettings.Value;
     }
-    public static string GenerateToken(UserModel user)
+    public string GenerateToken(UserModel user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = _configuration.GetSection("DataConfigure").GetSection("keyJwt");
+        var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.Name, user.name),
+                new Claim(ClaimTypes.Email, user.email),
                 new Claim(ClaimTypes.Role, user.role),
             }),
             Expires = DateTime.UtcNow.AddHours(24),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
