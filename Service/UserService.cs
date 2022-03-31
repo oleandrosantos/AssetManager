@@ -1,16 +1,19 @@
 using AssetManager.Model;
 using AssetManager.ViewModel;
-using System.Text;
 using System.Security.Cryptography;
 using AssetManager.Repository;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using AssetManager.Interfaces;
 
 namespace AssetManager.Service;
 
 public class UserService :IUserService
 {
     private UserRepository _userRepository;
-    private IUserService _userServiceImplementation;
+    private const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA1;
+    private const int IterCount = 1000;
+    private const int SubkeyLength = 256 / 8;
+    private const int SaltSize = 128 / 8;
 
     public UserService(UserRepository repository)
     {
@@ -50,22 +53,17 @@ public class UserService :IUserService
 
     private string criandoHashDaSenha(string senha)
     {
-        const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA1;
-        const int IterCount = 1000;
-        const int SubkeyLength = 256 / 8;
-        const int SaltSize = 128 / 8;
-
         byte[] salt = new byte[SaltSize];
         using (var rng = RandomNumberGenerator.Create())  
         {
-           rng.GetBytes(salt);
+            rng.GetBytes(salt);
         }
         byte[] subkey = KeyDerivation.Pbkdf2(
-                password: senha,
-                salt: salt,
-                prf: HashType,
-                iterationCount: IterCount,
-                numBytesRequested: SubkeyLength);
+            password: senha,
+            salt: salt,
+            prf: HashType,
+            iterationCount: IterCount,
+            numBytesRequested: SubkeyLength);
         
         var outputBytes = new byte[1+SaltSize+SubkeyLength];
         outputBytes[0] = 0x00;
@@ -75,13 +73,12 @@ public class UserService :IUserService
         return Convert.ToBase64String(outputBytes);
     }
 
+    public UserModel? BuscarPorEmail(string email)
+    {
+        return _userRepository.BuscarUsuarioPorEmail(email);
+    }
     private bool verificandoSenha(byte[] hashPassword,string password)
     {
-        const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA1;
-        const int IterCount = 1000;
-        const int SubkeyLength = 256 / 8;
-        const int SaltSize = 128 / 8;
-
         if (hashPassword.Length != 1 + SaltSize + SubkeyLength)
             return false;
 

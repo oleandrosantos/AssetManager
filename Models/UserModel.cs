@@ -17,4 +17,6 @@ public class UserModel
     [Required(ErrorMessage = "Senha nao informada")]
     public string password { get; set; }
     public string token { get; set; }
+    public string role { get; set; }
+    public CompanyModel company { get; set; }
 }

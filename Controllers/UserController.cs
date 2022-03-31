@@ -1,25 +1,28 @@
-using AssetManager.Data;
-using AssetManager.Model;
-using AssetManager.Service;
+using AssetManager.Interfaces;
 using AssetManager.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManager.Controllers;
+
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class UserController: ControllerBase
 {
     private IUserService _userService;
+    private ITokenService _tokenService;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, ITokenService tokenService)
     {
         _userService = userService;
+        _tokenService=tokenService;
     }
 
     [HttpPost("Create")]
+    [AllowAnonymous]
     public IActionResult CadatrarUsuario(CreateUserViewModel dadosUsuario)
     {
-       
+        dadosUsuario.email = dadosUsuario.email.ToLower().Trim();
         var resultado = _userService.Create(dadosUsuario);
         if (resultado == null)
         {
@@ -31,21 +34,30 @@ public class UserController: ControllerBase
     }
 
     [HttpPost("Login")]
-    public IActionResult LoginUsuario(string email, string password)
+    [AllowAnonymous]
+    public Task<ActionResult<dynamic>> Authenticate([FromBody]AuthenticationModel model)
     {
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+        model.email = model.email.ToLower().Trim();
+        if (string.IsNullOrEmpty(model.email) || string.IsNullOrEmpty(model.password))
         {
-            return BadRequest("Email ou senha não informados");
+            return Task.FromResult<ActionResult<dynamic>>(NotFound(new {message = "Email ou senha não informados"}));
         }
-        var resultadoLogin = _userService.Login(email, password);
+        var resultadoLogin = _userService.Login(model.email, model.password);
         
         if (resultadoLogin.logado == true)
         {
-            return Ok(resultadoLogin.mensagem);
+            var usuarioModel = _userService.BuscarPorEmail(model.email);
+            var token = _tokenService.GenerateToken(usuarioModel);
+
+            usuarioModel.password = "";
+            return Task.FromResult<ActionResult<dynamic>>(new
+            {
+                token = token,
+            });
         }
         else
         {
-            return BadRequest(resultadoLogin.mensagem);
+            return Task.FromResult<ActionResult<dynamic>>(BadRequest(resultadoLogin.mensagem));
         }
         
     }

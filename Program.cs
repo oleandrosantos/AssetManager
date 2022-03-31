@@ -1,15 +1,26 @@
-using AssetManager;
+using System.Text;
 using AssetManager.Data;
+using AssetManager.Helpers;
+using AssetManager.Interfaces;
 using AssetManager.Profile;
 using AssetManager.Repository;
 using AssetManager.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+{
+    var services = builder.Services;
+    services.AddControllers();
+    services.AddCors();
 
-// Add services to the container.
+    services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
+    services.AddScoped<IUserService, UserService>();
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen();
+}
 builder.Services.AddAutoMapper(typeof(UserProfile));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -17,10 +28,40 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IAssetService, AssetService>();
+builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddTransient<UserRepository>();
+builder.Services.AddTransient<AssetRepository>();
+builder.Services.AddTransient<CompanyRepository>();
 
-var connectionString = "server=localhost;user=root;password=12345678;database=AssetDB";
-var serverVersion = new MySqlServerVersion(new Version(8, 0, 28));
+var connectionString = builder.Configuration["AppSettings:ConnectionString"];
+var serverVersion = ServerVersion.AutoDetect(connectionString);
+
+
+var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Secret"]);
+
+var config = new ConfigurationBuilder()
+    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+    .AddJsonFile("appsettings.json").Build();
+
+
+builder.Services.AddAuthentication(x =>
+    {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(x =>
+    {
+        x.RequireHttpsMetadata = false;
+        x.SaveToken = true;
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
 builder.Services.AddDbContext<DataContext>(
     dbContextOptions => dbContextOptions
@@ -29,6 +70,7 @@ builder.Services.AddDbContext<DataContext>(
         .EnableSensitiveDataLogging()
         .EnableDetailedErrors()
     );
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -38,11 +80,26 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseCors(x => x
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
+
 app.MapGet("/", () => "Hello World!");
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 
