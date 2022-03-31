@@ -1,13 +1,8 @@
-#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AssetManager.Data;
 using AssetManager.Model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AssetManager.Controllers
 {
@@ -24,6 +19,7 @@ namespace AssetManager.Controllers
 
         // GET: api/Company
         [HttpGet]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<IEnumerable<CompanyModel>>> Getcompany()
         {
             return await _context.company.ToListAsync();
@@ -31,6 +27,7 @@ namespace AssetManager.Controllers
 
         // GET: api/Company/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "Administrador,Funcionario")]
         public async Task<ActionResult<CompanyModel>> GetCompanyModel(int id)
         {
             var companyModel = await _context.company.FindAsync(id);

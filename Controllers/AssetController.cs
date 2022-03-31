@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManager.Controllers;
 
+[Route("api/[controller]")]
 [ApiController]
-[Route("[controller]")]
 public class AssetController : ControllerBase
 {
     private IAssetService _assetService;
@@ -14,7 +14,7 @@ public class AssetController : ControllerBase
         _assetService = assetService;
     }
 
-    [HttpPost("/Create")]
+    [HttpPost("Create")]
     public IActionResult Create(AssetModel asset)
     {
         var restultado = _assetService.Create(asset);
@@ -26,7 +26,7 @@ public class AssetController : ControllerBase
         return BadRequest("Erro, não foi possivel criar o Asset");
     }
     
-    [HttpPatch("/Update")]
+    [HttpPatch("Update")]
     public IActionResult Update(AssetModel asset)
     {    var restultado = _assetService.Update(asset);
         if (restultado != null)

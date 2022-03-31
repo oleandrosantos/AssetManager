@@ -1,10 +1,12 @@
 using AssetManager.Interfaces;
 using AssetManager.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManager.Controllers;
+
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class UserController: ControllerBase
 {
     private IUserService _userService;
@@ -17,8 +19,10 @@ public class UserController: ControllerBase
     }
 
     [HttpPost("Create")]
+    [AllowAnonymous]
     public IActionResult CadatrarUsuario(CreateUserViewModel dadosUsuario)
     {
+        dadosUsuario.email = dadosUsuario.email.ToLower().Trim();
         var resultado = _userService.Create(dadosUsuario);
         if (resultado == null)
         {
@@ -30,8 +34,10 @@ public class UserController: ControllerBase
     }
 
     [HttpPost("Login")]
+    [AllowAnonymous]
     public Task<ActionResult<dynamic>> Authenticate([FromBody]AuthenticationModel model)
     {
+        model.email = model.email.ToLower().Trim();
         if (string.IsNullOrEmpty(model.email) || string.IsNullOrEmpty(model.password))
         {
             return Task.FromResult<ActionResult<dynamic>>(NotFound(new {message = "Email ou senha não informados"}));
