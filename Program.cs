@@ -1,6 +1,7 @@
 using System.Text;
-using AssetManager;
 using AssetManager.Data;
+using AssetManager.Helpers;
+using AssetManager.Interfaces;
 using AssetManager.Profile;
 using AssetManager.Repository;
 using AssetManager.Service;
@@ -13,8 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
     var services = builder.Services;
     services.AddControllers();
     services.AddCors();
-    
-    services.AddScoped<IUserService, UserService>();
+
+    services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+
+   services.AddScoped<IUserService, UserService>();
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
 }
@@ -26,14 +29,21 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IAssetService, AssetService>();
+builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddTransient<UserRepository>();
 builder.Services.AddTransient<AssetRepository>();
 builder.Services.AddTransient<CompanyRepository>();
 
-var connectionString = "server=localhost;user=root;password=12345678;database=AssetDB";
+var connectionString = "server=localhost;user=root;password=root;database=AssetDB";
 var serverVersion = ServerVersion.AutoDetect(connectionString);
 
-var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("DataConfigure").GetSection("keyJwt").Value);
+
+var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("AppSettings").GetSection("Secret").Value);
+
+var config = new ConfigurationBuilder()
+    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+    .AddJsonFile("appsettings.json").Build();
+
 
 builder.Services.AddAuthentication(x =>
     {
@@ -60,6 +70,7 @@ builder.Services.AddDbContext<DataContext>(
         .EnableSensitiveDataLogging()
         .EnableDetailedErrors()
     );
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

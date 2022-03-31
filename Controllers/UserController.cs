@@ -1,8 +1,5 @@
-using AssetManager.Data;
-using AssetManager.Model;
-using AssetManager.Service;
+using AssetManager.Interfaces;
 using AssetManager.ViewModel;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManager.Controllers;
@@ -11,10 +8,12 @@ namespace AssetManager.Controllers;
 public class UserController: ControllerBase
 {
     private IUserService _userService;
+    private ITokenService _tokenService;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, ITokenService tokenService)
     {
         _userService = userService;
+        _tokenService=tokenService;
     }
 
     [HttpPost("Create")]
@@ -42,11 +41,11 @@ public class UserController: ControllerBase
         if (resultadoLogin.logado == true)
         {
             var usuarioModel = _userService.BuscarPorEmail(model.email);
-            var token = TokenService.GenerateToken(usuarioModel);
+            var token = _tokenService.GenerateToken(usuarioModel);
+
             usuarioModel.password = "";
             return Task.FromResult<ActionResult<dynamic>>(new
             {
-                usuarioModel = usuarioModel,
                 token = token,
             });
         }
