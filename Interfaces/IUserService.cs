@@ -1,7 +1,7 @@
 using AssetManager.Model;
 using AssetManager.ViewModel;
 
-namespace AssetManager;
+namespace AssetManager.Interfaces;
 
 public interface IUserService
 {
