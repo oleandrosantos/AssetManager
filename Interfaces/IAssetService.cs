@@ -1,7 +1,6 @@
 using AssetManager.Model;
 
-namespace AssetManager;
-
+namespace AssetManager.Interfaces;
 public interface IAssetService
 {
     public string Create(AssetModel asset);

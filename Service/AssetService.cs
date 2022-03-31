@@ -1,4 +1,5 @@
 using AssetManager;
+using AssetManager.Interfaces;
 using AssetManager.Model;
 using AssetManager.Repository;
 

@@ -1,3 +1,4 @@
+using AssetManager.Interfaces;
 using AssetManager.Model;
 using Microsoft.AspNetCore.Mvc;
 
