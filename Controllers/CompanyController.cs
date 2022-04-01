@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using AssetManager.Data;
 using AssetManager.Model;
 using Microsoft.AspNetCore.Authorization;
+using AssetManager.Interfaces;
 
 namespace AssetManager.Controllers
 {
@@ -11,13 +12,16 @@ namespace AssetManager.Controllers
     public class CompanyController : ControllerBase
     {
         private readonly DataContext _context;
+        private ICompanyService _companyService;
 
-        public CompanyController(DataContext context)
+        public CompanyController(DataContext context, ICompanyService companyService)
         {
             _context = context;
+            _companyService = companyService;
         }
 
-        // GET: api/Company
+
+
         [HttpGet]
         [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<IEnumerable<CompanyModel>>> Getcompany()
@@ -25,7 +29,7 @@ namespace AssetManager.Controllers
             return await _context.company.ToListAsync();
         }
 
-        // GET: api/Company/5
+
         [HttpGet("{id}")]
         [Authorize(Roles = "Administrador,Funcionario")]
         public async Task<ActionResult<CompanyModel>> GetCompanyModel(int id)
@@ -40,8 +44,6 @@ namespace AssetManager.Controllers
             return companyModel;
         }
 
-        // PUT: api/Company/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCompanyModel(int id, CompanyModel companyModel)
         {
@@ -71,18 +73,17 @@ namespace AssetManager.Controllers
             return NoContent();
         }
 
-        // POST: api/Company
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<CompanyModel>> PostCompanyModel(CompanyModel companyModel)
+        public async Task<ActionResult<CompanyModel>> CreateCompany(CompanyModel companyModel)
         {
-            _context.company.Add(companyModel);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCompanyModel", new { id = companyModel.idCompany }, companyModel);
+            var resultado = _companyService.CreateCompany(companyModel);
+            if(resultado.status)
+                return CreatedAtAction("GetCompanyModel", new { id = companyModel.idCompany }, companyModel);
+        
+            return BadRequest($"{resultado.mensagem}");
         }
 
-        // DELETE: api/Company/5
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCompanyModel(int id)
         {

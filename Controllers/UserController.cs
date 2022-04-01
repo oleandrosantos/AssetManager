@@ -44,7 +44,7 @@ public class UserController: ControllerBase
         }
         var resultadoLogin = _userService.Login(model.email, model.password);
         
-        if (resultadoLogin.logado == true)
+        if (resultadoLogin.status == true)
         {
             var usuarioModel = _userService.BuscarPorEmail(model.email);
             var token = _tokenService.GenerateToken(usuarioModel);
