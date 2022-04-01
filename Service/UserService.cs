@@ -20,20 +20,20 @@ public class UserService :IUserService
         _userRepository = repository;
     }
 
-    public LoginResult Login(string email, string password)
+    public Result Login(string email, string password)
     {
         var usuario = _userRepository.BuscarUsuarioPorEmail(email);
         if (usuario == null)
         {
-            return new LoginResult(false, "Email não identificado em nossa base.");
+            return new Result(false, "Email não identificado em nossa base.");
         }
         if (verificandoSenha(Convert.FromBase64String(usuario.password), password))
         {
-            return new LoginResult(true, $"Bem vindo! {usuario.name}, seu toke é {usuario.token}");
+            return new Result(true, $"Bem vindo! {usuario.name}, seu toke é {usuario.token}");
         }
         else
         {
-            return new LoginResult(false, "Usuario ou senha incorretos");
+            return new Result(false, "Usuario ou senha incorretos");
         }
     }
 
