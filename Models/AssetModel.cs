@@ -14,7 +14,10 @@ public class AssetModel
     public ulong assetPriceInCents { get; set; }
     [Required]
     public DateTime acquisitionDate { get; set; }
-    public DateTime exclusionDate { get; set; }
+    public DateTime? exclusionDate { get; set; }
     public string? exclusionInfos { get; set; }
     public CompanyModel company { get; set; }
+    [MaxLength(64)]
+    public string? status { get; set; }
+    public string? decription { get; set; }
 }
