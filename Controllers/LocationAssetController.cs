@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using AssetManager.Data;
 using AssetManager.Model;
 using AssetManager.ViewModel;
+using AssetManager.Interfaces;
 
 namespace AssetManager
 {
@@ -12,20 +13,22 @@ namespace AssetManager
     public class LocationAssetController : ControllerBase
     {
         private readonly DataContext _context;
+        private ILocationAssetService _locationAssetService;
 
-        public LocationAssetController(DataContext context)
+        public LocationAssetController(DataContext context, ILocationAssetService locationAssetService)
         {
             _context = context;
+            _locationAssetService = locationAssetService;
         }
 
-        // GET: api/LocationAsset
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LocationAssetModel>>> GetlocationAsset()
         {
             return await _context.locationAsset.ToListAsync();
         }
 
-        // GET: api/LocationAsset/5
+
         [HttpGet("{id}")]
         public async Task<ActionResult<LocationAssetModel>> GetLocationAssetModel(string id)
         {
@@ -40,10 +43,9 @@ namespace AssetManager
             return locationAssetModel;
         }
 
-        // PUT: api/LocationAsset/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutLocationAssetModel(string id, CreateLocationAsset locationAssetModel)
+        public async Task<IActionResult> PutLocationAssetModel(string id, LocationAssetModel locationAssetModel)
         {
             if (id != locationAssetModel.idLocationAsset)
             {
@@ -71,30 +73,13 @@ namespace AssetManager
             return NoContent();
         }
 
-        // POST: api/LocationAsset
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPost]
         public async Task<ActionResult<LocationAssetModel>> PostLocationAssetModel(CreateLocationAsset locationAsset)
         {
-            LocationAssetModel locationAssetModel = AutoMapper.Profile<CreateLocationAsset, LocationAssetModel>();
-            _context.locationAsset.Add(locationAssetModel);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (LocationAssetModelExists(locationAssetModel.idLocationAsset))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetLocationAssetModel", new { id = locationAssetModel.idLocationAsset }, locationAssetModel);
+            _locationAssetService.CreateLocationAsset(locationAsset);
+        
+            return Ok("Location Criada Com Sucesso");
         }
 
         // DELETE: api/LocationAsset/5
