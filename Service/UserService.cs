@@ -29,7 +29,7 @@ public class UserService :IUserService
         }
         if (verificandoSenha(Convert.FromBase64String(usuario.password), password))
         {
-            return new Result(true, $"Bem vindo! {usuario.name}, seu toke é {usuario.token}");
+            return new Result(true, "");
         }
         else
         {
