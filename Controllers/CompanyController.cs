@@ -87,16 +87,10 @@ namespace AssetManager.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCompanyModel(int id)
         {
-            var companyModel = await _context.company.FindAsync(id);
-            if (companyModel == null)
-            {
-                return NotFound();
-            }
+            if (_companyService.DeleteCompany(id).IsCompleted)
+                return Accepted("Efetuada a exclusão da company");
 
-            _context.company.Remove(companyModel);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return BadRequest("A Companhia ja esta desativada");
         }
 
         private bool CompanyModelExists(int id)

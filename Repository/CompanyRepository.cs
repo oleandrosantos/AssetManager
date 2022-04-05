@@ -3,6 +3,7 @@ using AssetManager.Interfaces;
 using AssetManager.Model;
 using AssetManager.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.ContentModel;
 
 namespace AssetManager.Repository;
 
@@ -21,35 +22,39 @@ public class CompanyRepository :ICompanyService
            .FirstOrDefault(c => c.idCompany == idCompany);
     }
 
-    public async Result CreateCompany(CompanyModel company)
+    public Result CreateCompany(CompanyModel company)
     {
         if (CompanyExists(company))
             return new Result(false, $"Esta companhia ja esta cadastrada em nosso sistema!");
 
         _context.company.Add(company);
-        await _context.SaveChangesAsync();
+        _context.SaveChangesAsync();
         return new Result(true, $"{company.companyName} cadastrada com sucesso");
     }
 
-    public bool DeleteCompany(int id)
+    public async Task<bool> DeleteCompany(int id)
     {
-        throw new NotImplementedException();
-    }
+        var companyModel = await _context.company.FindAsync(id);
+        if (companyModel == null)
+        {
+            return false;
+        }
 
-    public CompanyModel? ObterCompanyPorId()
-    {
-        throw new NotImplementedException();
-    }
+        _context.company.Remove(companyModel);
+        await _context.SaveChangesAsync();
 
-    public bool UpdateCompany(int id)
+        return true;
+    }
+    
+    public bool UpdateCompany(CompanyModel company)
     {
         throw new NotImplementedException();
     }
     
     private bool CompanyExists(CompanyModel company)
     {
-        var DataCompany = _context.company.Where(c => c.cnpj == company.cnpj && c.companyName.ToLower().Trim() == company.companyName.ToLower().Trim())
-            .FirstOrDefault();
+        CompanyModel DataCompany = _context.company
+            .FirstOrDefault(c => c.cnpj == company.cnpj && c.companyName.ToLower().Trim() == company.companyName.ToLower().Trim());
 
         if (DataCompany != null)
             return false;

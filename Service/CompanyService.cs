@@ -19,17 +19,18 @@ namespace AssetManager.Service
             return _companyRepository.CreateCompany(company);
         }
 
-        public bool DeleteCompany(int id)
+        public async Task<bool>  DeleteCompany(int id)
+        {
+            bool result = await _companyRepository.DeleteCompany(id);
+            return result;
+        }
+
+        public CompanyModel? ObterCompanyPorId(int id)
         {
             throw new NotImplementedException();
         }
 
-        public CompanyModel? ObterCompanyPorId()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool UpdateCompany(int id)
+        public bool UpdateCompany(CompanyModel company)
         {
             throw new NotImplementedException();
         }

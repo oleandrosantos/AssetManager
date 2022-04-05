@@ -6,9 +6,9 @@ namespace AssetManager.Interfaces
 {
     public interface ICompanyService
     {
-        public CompanyModel? ObterCompanyPorId();
+        public CompanyModel? ObterCompanyPorId(int idCompany);
         public Result CreateCompany(CompanyModel company);
-        public bool UpdateCompany(int id);
-        public bool DeleteCompany(int id);
+        public bool UpdateCompany(CompanyModel company);
+        public Task<bool> DeleteCompany(int id);
     }
 }
