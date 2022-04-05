@@ -21,14 +21,13 @@ public class CompanyRepository :ICompanyService
            .FirstOrDefault(c => c.idCompany == idCompany);
     }
 
-    public Result CreateCompany(CompanyModel company)
+    public async Result CreateCompany(CompanyModel company)
     {
         if (CompanyExists(company))
             return new Result(false, $"Esta companhia ja esta cadastrada em nosso sistema!");
 
         _context.company.Add(company);
-        _context.SaveChanges();
-
+        _context.SaveChangesAsync();
         return new Result(true, $"{company.companyName} cadastrada com sucesso");
     }
 
