@@ -47,30 +47,10 @@ namespace AssetManager.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCompanyModel(int id, CompanyModel companyModel)
         {
-            if (id != companyModel.idCompany)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(companyModel).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CompanyModelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            if(_companyService.UpdateCompany(companyModel))
+                return BadRequest("Não conseguimos Atualziar o companyModel");
+            
+            return Ok("Atualizado com sucesso");
         }
 
         [HttpPost]
@@ -96,6 +76,11 @@ namespace AssetManager.Controllers
         private bool CompanyModelExists(int id)
         {
             return _context.company.Any(e => e.idCompany == id);
+        }
+
+        public List<CompanyModel> ListarCompany()
+        {
+            return _companyService.ListarCompany();
         }
     }
 }

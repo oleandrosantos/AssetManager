@@ -15,13 +15,12 @@ public class CompanyRepository :ICompanyService
         _context = context;
     }
 
-    public CompanyModel? ObterCompanyPorId(int idCompany)
+    public CompanyModel ObterCompanyPorId(int idCompany)
     {
-       return _context.company
-           .FirstOrDefault(c => c.idCompany == idCompany);
+        return _context.company.Find(idCompany);
     }
 
-    public async Result CreateCompany(CompanyModel company)
+    public Result CreateCompany(CompanyModel company)
     {
         if (CompanyExists(company))
             return new Result(false, $"Esta companhia ja esta cadastrada em nosso sistema!");
@@ -31,25 +30,39 @@ public class CompanyRepository :ICompanyService
         return new Result(true, $"{company.companyName} cadastrada com sucesso");
     }
 
-    public bool DeleteCompany(int id)
+    public bool UpdateCompany(CompanyModel company)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _context.company.Update(company);
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 
-    public CompanyModel? ObterCompanyPorId()
+    public Task<bool> DeleteCompany(int id)
     {
-        throw new NotImplementedException();
+        CompanyModel company = ObterCompanyPorId(id);
+        if (company == null)
+            return Task.FromResult(false);
+        
+        company.ativa = false;
+        _context.company.Update(company);
+        return Task.FromResult(true);
     }
 
-    public bool UpdateCompany(int id)
+    public List<CompanyModel> ListarCompany()
     {
-        throw new NotImplementedException();
+        return _context.company.Where(c => c.ativa == true).ToList();
     }
-    
+
     private bool CompanyExists(CompanyModel company)
     {
-        var DataCompany = _context.company.Where(c => c.cnpj == company.cnpj && c.companyName.ToLower().Trim() == company.companyName.ToLower().Trim())
-            .FirstOrDefault();
+        CompanyModel DataCompany = _context.company
+            .FirstOrDefault(c => c.cnpj == company.cnpj && c.companyName == company.companyName);
 
         if (DataCompany != null)
             return false;

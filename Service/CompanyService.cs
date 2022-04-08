@@ -25,14 +25,20 @@ namespace AssetManager.Service
             return result;
         }
 
-        public CompanyModel? ObterCompanyPorId(int id)
+        public List<CompanyModel> ListarCompany()
         {
-            throw new NotImplementedException();
+            return _companyRepository.ListarCompany();
+        }
+
+        public CompanyModel ObterCompanyPorId(int id)
+        {
+            return _companyRepository.ObterCompanyPorId(id);
         }
 
         public bool UpdateCompany(CompanyModel company)
         {
-            throw new NotImplementedException();
+            return _companyRepository.UpdateCompany(company);
         }
+        
     }
 }
