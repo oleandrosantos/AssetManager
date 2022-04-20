@@ -2,19 +2,32 @@ using AssetManager;
 using AssetManager.Interfaces;
 using AssetManager.Model;
 using AssetManager.Repository;
+using AssetManager.ViewModel;
+using AutoMapper;
 
 namespace AssetManager.Service;
 
 public class AssetService :IAssetService
 {
     private AssetRepository _assetRepository;
-    public AssetService(AssetRepository assetRepository)
+    private IMapper _mapper;
+    private ICompanyService _companyService;
+    public AssetService(AssetRepository assetRepository, IMapper mapper, ICompanyService companyService)
     {
         _assetRepository = assetRepository;
+        _mapper = mapper;
+        _companyService = companyService;
+        
     }
-    public string Create (AssetModel asset)
+    public string Create (CreateAsset asset)
     {
-        var result = _assetRepository.Create(asset);
+        if(asset == null)
+        {
+            return "Erro";
+        }
+        AssetModel assetModel = _mapper.Map<CreateAsset, AssetModel>(asset);
+        assetModel.company = _companyService.ObterCompanyPorId(asset.idCompany);
+        var result = _assetRepository.Create(assetModel);
         if (result == null)
         {
             throw new Exception("Não foi possivel cadastrar o Asset no banco");

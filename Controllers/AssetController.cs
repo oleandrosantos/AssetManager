@@ -1,5 +1,6 @@
 using AssetManager.Interfaces;
 using AssetManager.Model;
+using AssetManager.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManager.Controllers;
@@ -15,12 +16,12 @@ public class AssetController : ControllerBase
     }
 
     [HttpPost("Create")]
-    public IActionResult Create(AssetModel asset)
+    public IActionResult Create(CreateAsset asset)
     {
-        var restultado = _assetService.Create(asset);
-        if (restultado != null)
+        var resultado = _assetService.Create(asset);
+        if (resultado != null)
         {
-            return Ok(restultado);
+            return Ok(resultado);
         }
 
         return BadRequest("Erro, não foi possivel criar o Asset");

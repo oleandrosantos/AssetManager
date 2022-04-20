@@ -78,6 +78,7 @@ namespace AssetManager.Controllers
             return _context.company.Any(e => e.idCompany == id);
         }
 
+        [HttpGet("ListarCompanhias")]
         public List<CompanyModel> ListarCompany()
         {
             return _companyService.ListarCompany();
