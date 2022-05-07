@@ -18,5 +18,6 @@ public class LocationAssetModel
     public UserModel usuario { get; set; }
     [Required]
     public AssetModel asset { get; set; }
+    public CompanyModel company { get; set; }
     
 }

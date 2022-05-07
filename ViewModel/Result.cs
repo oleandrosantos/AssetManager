@@ -2,14 +2,14 @@ using AssetManager.Model;
 
 namespace AssetManager.ViewModel;
 
-public class LoginResult
+public class Result
 {
-    public bool logado { get; set; }
+    public bool status { get; set; }
     public string mensagem { get; set; }
 
-    public LoginResult(bool resultado, string mensagemLogin)
+    public Result(bool statusLogin, string mensagemLogin)
     {
-        logado = resultado;
+        status = statusLogin;
         mensagem = mensagemLogin;
     }
 }

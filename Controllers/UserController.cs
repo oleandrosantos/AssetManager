@@ -44,12 +44,11 @@ public class UserController: ControllerBase
         }
         var resultadoLogin = _userService.Login(model.email, model.password);
         
-        if (resultadoLogin.logado == true)
+        if (resultadoLogin.status)
         {
             var usuarioModel = _userService.BuscarPorEmail(model.email);
-            var token = _tokenService.GenerateToken(usuarioModel);
-
             usuarioModel.password = "";
+            var token = _tokenService.GenerateToken(usuarioModel);
             return Task.FromResult<ActionResult<dynamic>>(new
             {
                 token = token,

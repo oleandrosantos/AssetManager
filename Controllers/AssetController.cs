@@ -1,5 +1,6 @@
 using AssetManager.Interfaces;
 using AssetManager.Model;
+using AssetManager.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManager.Controllers;
@@ -15,26 +16,46 @@ public class AssetController : ControllerBase
     }
 
     [HttpPost("Create")]
-    public IActionResult Create(AssetModel asset)
+    public IActionResult Create(CreateAsset asset)
     {
-        var restultado = _assetService.Create(asset);
-        if (restultado != null)
+        var resultado = _assetService.Create(asset);
+        if (resultado != null)
         {
-            return Ok(restultado);
+            return Ok(resultado);
         }
 
         return BadRequest("Erro, não foi possivel criar o Asset");
     }
     
     [HttpPatch("Update")]
-    public IActionResult Update(AssetModel asset)
-    {    var restultado = _assetService.Update(asset);
-        if (restultado != null)
+    public IActionResult Update(CreateAsset asset)
+    {   
+        var resultado = _assetService.Update(asset);
+        if (resultado != null)
         {
-            return Ok(restultado);
+            return Ok(resultado);
         }
 
         return BadRequest("Erro, não foi possivel criar o Asset");
         
+    }
+    [HttpGet("AssetCompanyList/{idCompany}")]
+    public IActionResult AssetCompanyList(int idCompany)
+    {
+        var assetList = _assetService.AssetCompanyList(idCompany);
+        if(assetList != null)
+        {
+            return Ok(assetList);
+        }
+        return NoContent();
+    }
+    [HttpPut("DeleteAsset")]
+    public IActionResult DeleteAsset(int idAsset, string exclusionInfo)
+    {
+        if(_assetService.DeleteAsset(idAsset, exclusionInfo))
+        {
+            return Ok("O ativo foi excluido");
+        }
+        return BadRequest("Não conseguimos deletar o ativo");
     }
 }

@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using AssetManager.Data;
 using AssetManager.Model;
 using Microsoft.AspNetCore.Authorization;
+using AssetManager.Interfaces;
+using AssetManager.ViewModel;
 
 namespace AssetManager.Controllers
 {
@@ -11,13 +13,16 @@ namespace AssetManager.Controllers
     public class CompanyController : ControllerBase
     {
         private readonly DataContext _context;
+        private ICompanyService _companyService;
 
-        public CompanyController(DataContext context)
+        public CompanyController(DataContext context, ICompanyService companyService)
         {
             _context = context;
+            _companyService = companyService;
         }
 
-        // GET: api/Company
+
+
         [HttpGet]
         [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<IEnumerable<CompanyModel>>> Getcompany()
@@ -25,7 +30,7 @@ namespace AssetManager.Controllers
             return await _context.company.ToListAsync();
         }
 
-        // GET: api/Company/5
+
         [HttpGet("{id}")]
         [Authorize(Roles = "Administrador,Funcionario")]
         public async Task<ActionResult<CompanyModel>> GetCompanyModel(int id)
@@ -40,67 +45,44 @@ namespace AssetManager.Controllers
             return companyModel;
         }
 
-        // PUT: api/Company/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCompanyModel(int id, CompanyModel companyModel)
         {
-            if (id != companyModel.idCompany)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(companyModel).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CompanyModelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            if(_companyService.UpdateCompany(companyModel))
+                return BadRequest("Não conseguimos Atualziar o companyModel");
+            
+            return Ok("Atualizado com sucesso");
         }
 
-        // POST: api/Company
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<CompanyModel>> PostCompanyModel(CompanyModel companyModel)
+        public async Task<ActionResult<CompanyModel>> CreateCompany(CreateCompanyViewModel companyModel)
         {
-            _context.company.Add(companyModel);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCompanyModel", new { id = companyModel.idCompany }, companyModel);
+            var resultado = _companyService.CreateCompany(companyModel);
+            if(resultado.IsCompleted && resultado.Result.status == true)
+               return Ok(resultado.Result.mensagem);
+        
+            return BadRequest($"{resultado.Result.mensagem}");
         }
 
-        // DELETE: api/Company/5
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCompanyModel(int id)
         {
-            var companyModel = await _context.company.FindAsync(id);
-            if (companyModel == null)
-            {
-                return NotFound();
-            }
+            if (_companyService.DeleteCompany(id).IsCompleted)
+                return Accepted("Efetuada a exclusão da company");
 
-            _context.company.Remove(companyModel);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return BadRequest("A Companhia ja esta desativada");
         }
 
         private bool CompanyModelExists(int id)
         {
             return _context.company.Any(e => e.idCompany == id);
+        }
+
+        [HttpGet("ListarCompanhias")]
+        public List<CompanyModel> ListarCompany()
+        {
+            return _companyService.ListarCompany();
         }
     }
 }
