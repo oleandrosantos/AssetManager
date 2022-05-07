@@ -17,5 +17,7 @@ namespace AssetManager.Repository
             _context.locationAsset.Add(locationAsset);
             return new Result(true, "Criado com sucesso");
         }
+        public List<LocationAssetModel> UserAssetLocationList(string idUser) => _context.locationAsset.Where(l => l.usuario.idUsuario == idUser).ToList();
+        public List<LocationAssetModel> CompanyLocationAssetsList(int idCompany) => _context.locationAsset.Where(l => l.company.idCompany == idCompany && l.devolutionDate == null).ToList();
     }
 }

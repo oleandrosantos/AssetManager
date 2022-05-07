@@ -33,14 +33,14 @@ namespace AssetManager.Service
             throw new NotImplementedException();
         }
 
-        public List<LocationAssetModel> LocationAssetsList()
-        {
-            throw new NotImplementedException();
-        }
+        public List<LocationAssetModel> CompanyLocationAssetsList(int idCompany) => _locationAssetRepository.CompanyLocationAssetsList(idCompany);
 
         public Result UpdateLocationAsset(LocationAssetModel locationAssetModel)
         {
             throw new NotImplementedException();
         }
+
+        public List<LocationAssetModel> UserAssetLocationList(string idUser) => _locationAssetRepository.UserAssetLocationList(idUser);
+
     }
 }
