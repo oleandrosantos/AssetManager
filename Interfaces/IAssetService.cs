@@ -6,6 +6,8 @@ public interface IAssetService
 {
     public string Create(CreateAsset asset);
 
-    public string Update(AssetModel asset);
+    public string Update(CreateAsset asset);
+    public List<AssetModel>? AssetCompanyList(int idCompany);
+    public bool DeleteAsset(int idAsset, string exclusionInfo);
 
 }

@@ -35,13 +35,23 @@ public class AssetService :IAssetService
         return $"{result.assetName} foi cadastrado com sucesso sob o id = {result.idAsset}";
     }
 
-    public string Update(AssetModel asset)
+    public string Update(CreateAsset asset)
     {
-        var result = _assetRepository.Update(asset);
+        var result = _assetRepository.Update(_mapper.Map<CreateAsset, AssetModel>(asset));
         if (result == null)
         {
             throw new Exception("Não foi possivel Atualizado o Asset no banco");
         }
         return $"{result.assetName} foi Atualizado com sucesso sob o id = {result.idAsset}";
     }
+
+    public List<AssetModel>? AssetCompanyList(int idCompany)
+    {
+        if (_companyService.ObterCompanyPorId(idCompany) == null)
+        {
+            return null;
+        }
+       return _assetRepository.AssetCompanyList(idCompany);   
+    }
+    public bool DeleteAsset(int idAsset, string exclusionInfo) => _assetRepository.DeleteAsset(idAsset, exclusionInfo);
 }
