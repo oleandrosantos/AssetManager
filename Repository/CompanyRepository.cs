@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManager.Repository;
 
-public class CompanyRepository :ICompanyService
+public class CompanyRepository
 {
     private DataContext _context;
 
@@ -15,7 +15,7 @@ public class CompanyRepository :ICompanyService
         _context = context;
     }
 
-    public CompanyModel ObterCompanyPorId(int idCompany)
+    public CompanyModel? ObterCompanyPorId(int idCompany)
     {
         return _context.company.Find(idCompany);
     }
@@ -26,7 +26,7 @@ public class CompanyRepository :ICompanyService
             return new Result(false, $"Esta companhia ja esta cadastrada em nosso sistema!");
 
         _context.company.Add(company);
-        _context.SaveChangesAsync();
+        _context.SaveChanges();
         return new Result(true, $"{company.companyName} cadastrada com sucesso");
     }
 
@@ -37,7 +37,7 @@ public class CompanyRepository :ICompanyService
             _context.company.Update(company);
             return true;
         }
-        catch (Exception e)
+        catch
         {
             return false;
         }
@@ -61,10 +61,10 @@ public class CompanyRepository :ICompanyService
 
     private bool CompanyExists(CompanyModel company)
     {
-        CompanyModel DataCompany = _context.company
-            .FirstOrDefault(c => c.cnpj == company.cnpj && c.companyName == company.companyName);
+        CompanyModel? DataCompany = _context.company
+            .FirstOrDefault(c => c.cnpj == company.cnpj);
 
-        if (DataCompany != null)
+        if (DataCompany == null)
             return false;
 
         return true;

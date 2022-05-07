@@ -4,6 +4,7 @@ using AssetManager.Data;
 using AssetManager.Model;
 using Microsoft.AspNetCore.Authorization;
 using AssetManager.Interfaces;
+using AssetManager.ViewModel;
 
 namespace AssetManager.Controllers
 {
@@ -54,13 +55,13 @@ namespace AssetManager.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CompanyModel>> CreateCompany(CompanyModel companyModel)
+        public async Task<ActionResult<CompanyModel>> CreateCompany(CreateCompanyViewModel companyModel)
         {
             var resultado = _companyService.CreateCompany(companyModel);
-            if(resultado.status)
-                return CreatedAtAction("GetCompanyModel", new { id = companyModel.idCompany }, companyModel);
+            if(resultado.IsCompleted && resultado.Result.status == true)
+               return Ok(resultado.Result.mensagem);
         
-            return BadRequest($"{resultado.mensagem}");
+            return BadRequest($"{resultado.Result.mensagem}");
         }
 
 
