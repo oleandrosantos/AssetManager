@@ -9,11 +9,7 @@ public class CompanyModel
     [Key]
     public int idCompany { get; set; }
 
-    public string? companyName
-    {
-        get => companyName; 
-        set => companyName.ToLower().Trim();
-    }
+    public string? companyName { get; set; }
     [MinLength(14), StringLength(14)]
     public string? cnpj { get; set; }
     [DefaultValue(true)]
