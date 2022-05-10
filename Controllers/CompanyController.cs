@@ -46,6 +46,7 @@ namespace AssetManager.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrador, Funcionario")]
         public async Task<IActionResult> PutCompanyModel(int id, CompanyModel companyModel)
         {
             if(_companyService.UpdateCompany(companyModel))
@@ -55,6 +56,7 @@ namespace AssetManager.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<CompanyModel>> CreateCompany(CreateCompanyViewModel companyModel)
         {
             var resultado = _companyService.CreateCompany(companyModel);
@@ -66,6 +68,7 @@ namespace AssetManager.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteCompanyModel(int id)
         {
             if (_companyService.DeleteCompany(id).IsCompleted)
@@ -80,6 +83,7 @@ namespace AssetManager.Controllers
         }
 
         [HttpGet("ListarCompanhias")]
+        [Authorize(Roles = "Administrador")]
         public List<CompanyModel> ListarCompany()
         {
             return _companyService.ListarCompany();

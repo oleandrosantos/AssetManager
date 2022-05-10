@@ -1,6 +1,7 @@
 using AssetManager.Interfaces;
 using AssetManager.Model;
 using AssetManager.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManager.Controllers;
@@ -16,6 +17,7 @@ public class AssetController : ControllerBase
     }
 
     [HttpPost("Create")]
+    [Authorize(Roles = "Administrador")]
     public IActionResult Create(CreateAsset asset)
     {
         var resultado = _assetService.Create(asset);
@@ -28,6 +30,7 @@ public class AssetController : ControllerBase
     }
     
     [HttpPatch("Update")]
+    [Authorize(Roles = "Administrador")]
     public IActionResult Update(CreateAsset asset)
     {   
         var resultado = _assetService.Update(asset);
@@ -40,6 +43,7 @@ public class AssetController : ControllerBase
         
     }
     [HttpGet("AssetCompanyList/{idCompany}")]
+    [Authorize(Roles = "Administrador")]
     public IActionResult AssetCompanyList(int idCompany)
     {
         var assetList = _assetService.AssetCompanyList(idCompany);
@@ -50,6 +54,7 @@ public class AssetController : ControllerBase
         return NoContent();
     }
     [HttpPut("DeleteAsset")]
+    [Authorize(Roles = "Administrador")]
     public IActionResult DeleteAsset(int idAsset, string exclusionInfo)
     {
         if(_assetService.DeleteAsset(idAsset, exclusionInfo))
