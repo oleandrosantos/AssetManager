@@ -5,6 +5,8 @@ using AssetManager.Model;
 using Microsoft.AspNetCore.Authorization;
 using AssetManager.Interfaces;
 using AssetManager.ViewModel;
+using AssetManager.Repository;
+using AutoMapper;
 
 namespace AssetManager.Controllers
 {
@@ -12,77 +14,72 @@ namespace AssetManager.Controllers
     [ApiController]
     public class CompanyController : ControllerBase
     {
-        private readonly DataContext _context;
-        private ICompanyService _companyService;
+        private CompanyRepository _companyRepository;
+        private IMapper _mapper;
 
-        public CompanyController(DataContext context, ICompanyService companyService)
+        public CompanyController(CompanyRepository companyRepository, IMapper mapper)
         {
-            _context = context;
-            _companyService = companyService;
+            _companyRepository = companyRepository;
+            _mapper = mapper;
         }
 
-
-
-        [HttpGet]
-        [Authorize(Roles = "Administrador")]
-        public async Task<ActionResult<IEnumerable<CompanyModel>>> Getcompany()
+        [HttpGet("ListarCompanhias")]
+        [Authorize(Roles = "Administrador,Suporte")]
+        public async Task<ActionResult<IEnumerable<CompanyModel>>> CompanyList()
         {
-            return await _context.company.ToListAsync();
+            return await _companyRepository.CompanyList();
         }
-
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Administrador,Funcionario")]
-        public async Task<ActionResult<CompanyModel>> GetCompanyModel(int id)
+        [Authorize(Roles = "Administrador,Suporte,Funcionario")]
+        public async Task<ActionResult<CompanyModel>> GetCompanyByID(int id)
         {
-            var companyModel = await _context.company.FindAsync(id);
+            var companyModel = _companyRepository.GetCompanyByID(id);
 
             if (companyModel == null)
             {
                 return NotFound();
             }
 
-            return companyModel;
+            return Ok(companyModel);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCompanyModel(int id, CompanyModel companyModel)
+        [Authorize(Roles = "Administrador,Suporte")]
+        public IActionResult PutCompanyModel(CompanyModel companyModel)
         {
-            if(_companyService.UpdateCompany(companyModel))
-                return BadRequest("Não conseguimos Atualziar o companyModel");
-            
-            return Ok("Atualizado com sucesso");
+            if (_companyRepository.UpdateCompany(companyModel).IsCompleted)
+                return Ok("Atualizado com sucesso");
+
+            return BadRequest("Não conseguimos Atualizar o companyModel");
         }
 
         [HttpPost]
+        [Authorize(Roles = "Suporte")]
         public async Task<ActionResult<CompanyModel>> CreateCompany(CreateCompanyViewModel companyModel)
         {
-            var resultado = _companyService.CreateCompany(companyModel);
-            if(resultado.IsCompleted && resultado.Result.status == true)
-               return Ok(resultado.Result.mensagem);
+            CompanyModel? companyResult = _companyRepository.CreateCompany(_mapper.Map<CreateCompanyViewModel, CompanyModel>(companyModel));
+
+            if(companyResult != null)
+               return Ok($"{companyResult.companyName} Cadastrada com sucesso!");
         
-            return BadRequest($"{resultado.Result.mensagem}");
+            return BadRequest($"Não conseguimos cadastrar, verifique os dados!");
         }
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Suporte")]
         public async Task<IActionResult> DeleteCompanyModel(int id)
         {
-            if (_companyService.DeleteCompany(id).IsCompleted)
+            if (_companyRepository.DeleteCompany(id).Result)
                 return Accepted("Efetuada a exclusão da company");
 
             return BadRequest("A Companhia ja esta desativada");
         }
 
-        private bool CompanyModelExists(int id)
+        public CompanyModel? ObterCompanyPorId(int id)
         {
-            return _context.company.Any(e => e.idCompany == id);
-        }
-
-        [HttpGet("ListarCompanhias")]
-        public List<CompanyModel> ListarCompany()
-        {
-            return _companyService.ListarCompany();
+            return _companyRepository.GetCompanyByID(id);
         }
     }
 }

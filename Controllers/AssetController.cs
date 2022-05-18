@@ -1,6 +1,9 @@
 using AssetManager.Interfaces;
 using AssetManager.Model;
+using AssetManager.Repository;
 using AssetManager.ViewModel;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManager.Controllers;
@@ -9,50 +12,61 @@ namespace AssetManager.Controllers;
 [ApiController]
 public class AssetController : ControllerBase
 {
-    private IAssetService _assetService;
-    public AssetController(IAssetService assetService)
+    private AssetRepository _assetRepository;
+    private IMapper _mapper;
+    private CompanyController _companyController;
+
+    public AssetController(AssetRepository assetRepository, IMapper mapper, CompanyController companyController)
     {
-        _assetService = assetService;
+        _assetRepository = assetRepository;
+        _mapper = mapper;
+        _companyController = companyController;
     }
 
     [HttpPost("Create")]
+    [Authorize(Roles = "Administrador,Suporte")]
     public IActionResult Create(CreateAsset asset)
     {
-        var resultado = _assetService.Create(asset);
-        if (resultado != null)
-        {
-            return Ok(resultado);
-        }
+        AssetModel? assetModel = _mapper.Map<CreateAsset, AssetModel>(asset);
+        assetModel.company = _companyController.ObterCompanyPorId(asset.idCompany);
+        assetModel = _assetRepository.Create(assetModel);
+        
+        if (_assetRepository.Create(assetModel) != null)
+            return Ok($"{assetModel.assetName} cadastrado com sucesso");
 
         return BadRequest("Erro, não foi possivel criar o Asset");
     }
     
     [HttpPatch("Update")]
+    [Authorize(Roles = "Administrador,Suporte")]
     public IActionResult Update(CreateAsset asset)
-    {   
-        var resultado = _assetService.Update(asset);
-        if (resultado != null)
+    {
+        AssetModel? assetModel = _assetRepository.Update(_mapper.Map<CreateAsset, AssetModel>(asset));
+        if (assetModel != null)
         {
-            return Ok(resultado);
+            return Ok($"{assetModel.assetName} Atualizado com sucesso!");
         }
 
         return BadRequest("Erro, não foi possivel criar o Asset");
         
     }
     [HttpGet("AssetCompanyList/{idCompany}")]
+    [Authorize(Roles = "Administrador,Suporte")]
     public IActionResult AssetCompanyList(int idCompany)
     {
-        var assetList = _assetService.AssetCompanyList(idCompany);
-        if(assetList != null)
+        List<AssetModel>? assetList = _assetRepository.AssetCompanyList(idCompany);
+
+        if (assetList == null || assetList.Count == 0)
         {
-            return Ok(assetList);
+            return NoContent();
         }
-        return NoContent();
+        return Ok(assetList);
     }
     [HttpPut("DeleteAsset")]
+    [Authorize(Roles = "Administrador,Suporte")]
     public IActionResult DeleteAsset(int idAsset, string exclusionInfo)
     {
-        if(_assetService.DeleteAsset(idAsset, exclusionInfo))
+        if (_assetRepository.DeleteAsset(idAsset, exclusionInfo))
         {
             return Ok("O ativo foi excluido");
         }

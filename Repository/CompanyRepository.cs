@@ -15,22 +15,24 @@ public class CompanyRepository
         _context = context;
     }
 
-    public CompanyModel? ObterCompanyPorId(int idCompany)
+    public CompanyModel? GetCompanyByID(int idCompany)
     {
         return _context.company.Find(idCompany);
     }
 
-    public Result CreateCompany(CompanyModel company)
+    public CompanyModel? CreateCompany(CompanyModel company)
     {
         if (CompanyExists(company))
-            return new Result(false, $"Esta companhia ja esta cadastrada em nosso sistema!");
+        {
+            return null;
+        }
 
         _context.company.Add(company);
         _context.SaveChanges();
-        return new Result(true, $"{company.companyName} cadastrada com sucesso");
+        return company;
     }
 
-    public bool UpdateCompany(CompanyModel company)
+    public async Task<bool> UpdateCompany(CompanyModel company)
     {
         try
         {
@@ -45,18 +47,18 @@ public class CompanyRepository
 
     public Task<bool> DeleteCompany(int id)
     {
-        CompanyModel company = ObterCompanyPorId(id);
+        CompanyModel? company = GetCompanyByID(id);
         if (company == null)
             return Task.FromResult(false);
         
         company.ativa = false;
-        _context.company.Update(company);
+        UpdateCompany(company).Wait();
         return Task.FromResult(true);
     }
 
-    public List<CompanyModel> ListarCompany()
+    public Task<List<CompanyModel>> CompanyList()
     {
-        return _context.company.Where(c => c.ativa == true).ToList();
+        return Task.FromResult(_context.company.Where(c => c.ativa == true).ToList());
     }
 
     private bool CompanyExists(CompanyModel company)
