@@ -5,6 +5,7 @@ using AssetManager.Data;
 using AssetManager.Model;
 using AssetManager.ViewModel;
 using AssetManager.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AssetManager
 {
@@ -23,6 +24,7 @@ namespace AssetManager
 
 
         [HttpGet]
+        [Authorize(Roles = "Administrador,Suporte,Funcionario")]
         public async Task<ActionResult<IEnumerable<LocationAssetModel>>> GetlocationAsset()
         {
             return await _context.locationAsset.ToListAsync();
@@ -30,6 +32,7 @@ namespace AssetManager
 
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Administrador,Suporte,Funcionario")]
         public async Task<ActionResult<LocationAssetModel>> GetLocationAssetModel(string id)
         {
             
@@ -45,6 +48,7 @@ namespace AssetManager
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrador,Suporte")]
         public async Task<IActionResult> PutLocationAssetModel(string id, LocationAssetModel locationAssetModel)
         {
             if (id != locationAssetModel.idLocationAsset)
@@ -75,6 +79,7 @@ namespace AssetManager
 
 
         [HttpPost]
+        [Authorize(Roles = "Administrador,Suporte")]
         public async Task<ActionResult<LocationAssetModel>> PostLocationAssetModel(CreateLocationAsset locationAsset)
         {
             _locationAssetService.CreateLocationAsset(locationAsset);
@@ -82,8 +87,8 @@ namespace AssetManager
             return Ok("Location Criada Com Sucesso");
         }
 
-        // DELETE: api/LocationAsset/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrador,Suporte")]
         public async Task<IActionResult> DeleteLocationAssetModel(string id)
         {
             var locationAssetModel = await _context.locationAsset.FindAsync(id);

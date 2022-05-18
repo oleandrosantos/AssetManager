@@ -24,7 +24,7 @@ namespace AssetManager.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,Suporte")]
         public async Task<ActionResult<IEnumerable<CompanyModel>>> Getcompany()
         {
             return await _context.company.ToListAsync();
@@ -32,7 +32,7 @@ namespace AssetManager.Controllers
 
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Administrador,Funcionario")]
+        [Authorize(Roles = "Administrador,Suporte,Funcionario")]
         public async Task<ActionResult<CompanyModel>> GetCompanyModel(int id)
         {
             var companyModel = await _context.company.FindAsync(id);
@@ -46,15 +46,17 @@ namespace AssetManager.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrador,Suporte")]
         public async Task<IActionResult> PutCompanyModel(int id, CompanyModel companyModel)
         {
             if(_companyService.UpdateCompany(companyModel))
-                return BadRequest("Não conseguimos Atualziar o companyModel");
+                return BadRequest("Não conseguimos Atualizar o companyModel");
             
             return Ok("Atualizado com sucesso");
         }
 
         [HttpPost]
+        [Authorize(Roles = "Suporte")]
         public async Task<ActionResult<CompanyModel>> CreateCompany(CreateCompanyViewModel companyModel)
         {
             var resultado = _companyService.CreateCompany(companyModel);
@@ -66,6 +68,7 @@ namespace AssetManager.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Suporte")]
         public async Task<IActionResult> DeleteCompanyModel(int id)
         {
             if (_companyService.DeleteCompany(id).IsCompleted)
@@ -80,6 +83,7 @@ namespace AssetManager.Controllers
         }
 
         [HttpGet("ListarCompanhias")]
+        [Authorize(Roles = "Suporte")]
         public List<CompanyModel> ListarCompany()
         {
             return _companyService.ListarCompany();
