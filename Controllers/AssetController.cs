@@ -14,13 +14,13 @@ public class AssetController : ControllerBase
 {
     private AssetRepository _assetRepository;
     private IMapper _mapper;
-    private ICompanyService _companyService;
+    private CompanyController _companyController;
 
-    public AssetController(AssetRepository assetRepository, IMapper mapper, ICompanyService companyService)
+    public AssetController(AssetRepository assetRepository, IMapper mapper, CompanyController companyController)
     {
         _assetRepository = assetRepository;
         _mapper = mapper;
-        _companyService = companyService;
+        _companyController = companyController;
     }
 
     [HttpPost("Create")]
@@ -28,7 +28,7 @@ public class AssetController : ControllerBase
     public IActionResult Create(CreateAsset asset)
     {
         AssetModel? assetModel = _mapper.Map<CreateAsset, AssetModel>(asset);
-        assetModel.company = _companyService.ObterCompanyPorId(asset.idCompany);
+        assetModel.company = _companyController.ObterCompanyPorId(asset.idCompany);
         assetModel = _assetRepository.Create(assetModel);
         
         if (_assetRepository.Create(assetModel) != null)

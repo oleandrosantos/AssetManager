@@ -28,9 +28,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<IAssetService, AssetService>();
-builder.Services.AddTransient<ICompanyService, CompanyService>();
-builder.Services.AddTransient<ILocationAssetService, LocationAssetService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddTransient<UserRepository>();
 builder.Services.AddTransient<AssetRepository>();
@@ -99,8 +96,6 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
 });
-
-app.MapGet("/", () => "Hello World!");
 
 app.UseHttpsRedirection();
 

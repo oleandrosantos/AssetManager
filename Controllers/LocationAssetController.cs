@@ -6,6 +6,8 @@ using AssetManager.Model;
 using AssetManager.ViewModel;
 using AssetManager.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using AssetManager.Repository;
+using AutoMapper;
 
 namespace AssetManager
 {
@@ -14,12 +16,14 @@ namespace AssetManager
     public class LocationAssetController : ControllerBase
     {
         private readonly DataContext _context;
-        private ILocationAssetService _locationAssetService;
+        private LocationAssetRepository _locationAssetRepository;
+        private IMapper _mapper;
 
-        public LocationAssetController(DataContext context, ILocationAssetService locationAssetService)
+        public LocationAssetController(DataContext context, IMapper mapper, LocationAssetRepository locationAssetRepository)
         {
             _context = context;
-            _locationAssetService = locationAssetService;
+            _mapper = mapper;
+            _locationAssetRepository = locationAssetRepository;
         }
 
 
@@ -82,7 +86,11 @@ namespace AssetManager
         [Authorize(Roles = "Administrador,Suporte")]
         public async Task<ActionResult<LocationAssetModel>> PostLocationAssetModel(CreateLocationAsset locationAsset)
         {
-            _locationAssetService.CreateLocationAsset(locationAsset);
+            LocationAssetModel locationAssetModel = _mapper.Map<CreateLocationAsset, LocationAssetModel>(locationAsset);
+            locationAssetModel.asset.idAsset = locationAsset.idAsset;
+            locationAssetModel.usuario.idUsuario = locationAsset.idUsuario;
+
+            _locationAssetRepository.CreateLocationAsset(locationAssetModel);
         
             return Ok("Location Criada Com Sucesso");
         }

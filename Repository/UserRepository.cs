@@ -20,7 +20,7 @@ public class UserRepository
     public string Create(CreateUserViewModel dadosUsuario)
     {
         UserModel novoUsuario = _mapper.Map<CreateUserViewModel, UserModel>(dadosUsuario);
-        novoUsuario.company = _companyRepository.ObterCompanyPorId(dadosUsuario.idCompany);
+        novoUsuario.company = _companyRepository.GetCompanyByID(dadosUsuario.idCompany);
         novoUsuario.idUsuario = Guid.NewGuid().ToString("N");
         novoUsuario.token = novoUsuario.idUsuario;
         try
