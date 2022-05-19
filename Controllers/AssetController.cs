@@ -28,7 +28,7 @@ public class AssetController : ControllerBase
     public IActionResult Create(CreateAsset asset)
     {
         AssetModel? assetModel = _mapper.Map<CreateAsset, AssetModel>(asset);
-        assetModel.company = _companyController.ObterCompanyPorId(asset.idCompany);
+        assetModel.company = _companyController.GetCompanyByID(asset.idCompany).Result.Value;
         assetModel = _assetRepository.Create(assetModel);
         
         if (_assetRepository.Create(assetModel) != null)
