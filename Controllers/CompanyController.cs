@@ -23,7 +23,7 @@ namespace AssetManager.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
+        [HttpPost("Create")]
         [Authorize(Roles = "Suporte")]
         public async Task<ActionResult<CompanyModel>> CreateCompany(CreateCompanyViewModel companyModel)
         {
@@ -35,7 +35,7 @@ namespace AssetManager.Controllers
             return BadRequest($"Não conseguimos cadastrar, verifique os dados!");
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         [Authorize(Roles = "Suporte")]
         public async Task<IActionResult> DeleteCompany(int id)
         {
@@ -45,7 +45,7 @@ namespace AssetManager.Controllers
             return BadRequest("A Companhia ja esta desativada");
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         [Authorize(Roles = "Administrador,Suporte")]
         public IActionResult UpdateCompany(CompanyModel companyModel)
         {
@@ -63,7 +63,7 @@ namespace AssetManager.Controllers
             return await _companyRepository.CompanyList();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("ObterCompany/{id}")]
         [Authorize(Roles = "Administrador,Suporte,Funcionario")]
         public async Task<ActionResult<CompanyModel>> GetCompanyByID(int id)
         {
