@@ -39,17 +39,18 @@ namespace AssetManager.Controllers
         [Authorize(Roles = "Suporte")]
         public async Task<IActionResult> DeleteCompany(int id)
         {
-            if (_companyRepository.DeleteCompany(id).Result)
-                return Accepted("Efetuada a exclusão da company");
+            if (_companyRepository.DeleteCompany(id))
+                return Ok("Efetuada a exclusão da company");
 
             return BadRequest("A Companhia ja esta desativada");
         }
 
         [HttpPut("Update/{id}")]
         [Authorize(Roles = "Administrador,Suporte")]
-        public IActionResult UpdateCompany(CompanyModel companyModel)
+        public IActionResult UpdateCompany(int id, CompanyModel companyModel)
         {
-            if (_companyRepository.UpdateCompany(companyModel).IsCompleted)
+            companyModel.idCompany = id;
+            if (_companyRepository.UpdateCompany(companyModel))
                 return Ok("Atualizado com sucesso");
 
             return BadRequest("Não conseguimos Atualizar o companyModel");
