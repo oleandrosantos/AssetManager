@@ -7,9 +7,9 @@ namespace AssetManager.Profile
     {
         public AssetProfile()
         {
-            CreateMap<AssetModel, AssetProfile>();
+            CreateMap<AssetModel, CreateAsset>();
 
-            CreateMap<AssetProfile, AssetModel>();
+            CreateMap<CreateAsset, AssetModel>();
         }
     }
 }
