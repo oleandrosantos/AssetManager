@@ -25,7 +25,7 @@ namespace AssetManager.Controllers
 
         [HttpPost("Create")]
         [Authorize(Roles = "Suporte")]
-        public async Task<ActionResult<CompanyModel>> CreateCompany(CreateCompanyViewModel companyModel)
+        public IActionResult CreateCompany(CreateCompanyViewModel companyModel)
         {
             CompanyModel? companyResult = _companyRepository.CreateCompany(_mapper.Map<CreateCompanyViewModel, CompanyModel>(companyModel));
 
@@ -39,7 +39,8 @@ namespace AssetManager.Controllers
         [Authorize(Roles = "Suporte")]
         public async Task<IActionResult> DeleteCompany(int id)
         {
-            if (_companyRepository.DeleteCompany(id))
+            bool deletado = await _companyRepository.DeleteCompany(id);
+            if (deletado)
                 return Ok("Efetuada a exclusão da company");
 
             return BadRequest("A Companhia ja esta desativada");
@@ -59,14 +60,21 @@ namespace AssetManager.Controllers
 
         [HttpGet("ListarCompanhias")]
         [Authorize(Roles = "Suporte")]
-        public async Task<ActionResult<IEnumerable<CompanyModel>>> CompanyList()
+        public IActionResult CompanyList()
         {
-            return await _companyRepository.CompanyList();
+            List<CompanyModel> companyList = _companyRepository.CompanyList().Result;
+
+            if (companyList.Any() || companyList != null)
+                return Ok(companyList);
+            else if (companyList.Any())
+                return NoContent();
+
+            return BadRequest();            
         }
 
         [HttpGet("ObterCompany/{id}")]
         [Authorize(Roles = "Administrador,Suporte,Funcionario")]
-        public async Task<ActionResult<CompanyModel>> GetCompanyByID(int id)
+        public IActionResult GetCompanyByID(int id)
         {
             var companyModel = _companyRepository.GetCompanyByID(id);
 

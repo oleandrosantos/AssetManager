@@ -46,17 +46,17 @@ public class CompanyRepository
         }
     }
 
-    public bool DeleteCompany(int id)
+    public Task<bool> DeleteCompany(int id)
     {
         CompanyModel? company = GetCompanyByID(id);
         if (company == null)
-            return false;
-        
+            return Task.FromResult(false);
+
         company.ativa = false;
         if(!UpdateCompany(company))
-            return false;
+            return Task.FromResult(false);
         
-        return true;
+        return Task.FromResult(true);
     }
 
     public Task<List<CompanyModel>> CompanyList()
