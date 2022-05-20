@@ -1,5 +1,6 @@
 using AssetManager.Data;
 using AssetManager.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace AssetManager.Repository;
 
@@ -50,7 +51,10 @@ public class AssetRepository
 
     public List<AssetModel>? AssetCompanyList(int idCompany)
     {
-        var assetCompany = _context.asset.Where(a => a.company.idCompany == idCompany).ToList();
+        var assetCompany = _context.asset.Where(a => a.company.idCompany == idCompany)
+            .Include(a => a.company)
+            .ToList();
+
         if(assetCompany.Count == 0 || assetCompany == null)
         {
             return null;
@@ -60,7 +64,7 @@ public class AssetRepository
     public bool DeleteAsset(int idAsset, string exclusionInfo)
     {
         AssetModel? asset = _context.asset.Find(idAsset);
-        if (!asset.Equals(null))
+        if (asset == null)
         {
             asset.exclusionDate = DateTime.Now;
             asset.exclusionInfos = exclusionInfo;
@@ -71,8 +75,10 @@ public class AssetRepository
         return false;
     }
 
-    public AssetModel GetAssetByID(int id)
+    public AssetModel? GetAssetByID(int id)
     {
-        return _context.asset.Find(id);
+        return _context.asset.Where(a => a.idAsset == id)
+            .Include(a => a.company)
+            .FirstOrDefault();
     }
 }
