@@ -14,13 +14,13 @@ public class AssetController : ControllerBase
 {
     private AssetRepository _assetRepository;
     private IMapper _mapper;
-    private CompanyController _companyController;
+    private CompanyRepository _companyRepository;
 
-    public AssetController(AssetRepository assetRepository, IMapper mapper, CompanyController companyController)
+    public AssetController(AssetRepository assetRepository, IMapper mapper, CompanyRepository companyRepository)
     {
         _assetRepository = assetRepository;
         _mapper = mapper;
-        _companyController = companyController;
+        _companyRepository = companyRepository;
     }
 
     [HttpPost("Create")]
@@ -28,20 +28,22 @@ public class AssetController : ControllerBase
     public IActionResult Create(CreateAsset asset)
     {
         AssetModel? assetModel = _mapper.Map<CreateAsset, AssetModel>(asset);
-        assetModel.company = _companyController.GetCompanyByID(asset.idCompany).Result.Value;
+        assetModel.company = _companyRepository.GetCompanyByID(asset.idCompany);
         assetModel = _assetRepository.Create(assetModel);
         
-        if (_assetRepository.Create(assetModel) != null)
+        if (assetModel != null)
             return Ok($"{assetModel.assetName} cadastrado com sucesso");
 
         return BadRequest("Erro, não foi possivel criar o Asset");
     }
     
-    [HttpPatch("Update")]
+    [HttpPatch("Update/{idAsset}")]
     [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult Update(CreateAsset asset)
+    public IActionResult Update(int idAsset, CreateAsset asset)
     {
-        AssetModel? assetModel = _assetRepository.Update(_mapper.Map<CreateAsset, AssetModel>(asset));
+        AssetModel? assetModel = _mapper.Map<CreateAsset, AssetModel>(asset, _assetRepository.GetAssetByID(idAsset));
+        assetModel.idAsset = idAsset;
+        assetModel = _assetRepository.Update(assetModel);
         if (assetModel != null)
         {
             return Ok($"{assetModel.assetName} Atualizado com sucesso!");
@@ -50,6 +52,7 @@ public class AssetController : ControllerBase
         return BadRequest("Erro, não foi possivel criar o Asset");
         
     }
+    
     [HttpGet("AssetCompanyList/{idCompany}")]
     [Authorize(Roles = "Administrador,Suporte")]
     public IActionResult AssetCompanyList(int idCompany)
@@ -62,9 +65,21 @@ public class AssetController : ControllerBase
         }
         return Ok(assetList);
     }
-    [HttpPut("DeleteAsset")]
+
+    [HttpGet("Asset/{id}")]
+    [Authorize(Roles = "Administrador,Suporte,Funcionario")]
+    public IActionResult GetAssetByID(int id)
+    {
+        AssetModel? asset = _assetRepository.GetAssetByID(id);
+        if (asset == null)
+            return NoContent();
+
+        return Ok(asset);
+    }
+
+    [HttpPut("DeleteAsset/{idAsset}")]
     [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult DeleteAsset(int idAsset, string exclusionInfo)
+    public IActionResult DeleteAsset(int idAsset, [FromBody]string exclusionInfo)
     {
         if (_assetRepository.DeleteAsset(idAsset, exclusionInfo))
         {
@@ -72,4 +87,6 @@ public class AssetController : ControllerBase
         }
         return BadRequest("Não conseguimos deletar o ativo");
     }
+
+
 }

@@ -5,7 +5,7 @@ namespace AssetManager.ViewModel
     public class CreateAsset
     {
         [Required]
-        public string? assetName { get; set; }
+        public string assetName { get; set; }
         public int? depreciationTaxInCents { get; set; }
         [Required]
         public ulong assetPriceInCents { get; set; }
