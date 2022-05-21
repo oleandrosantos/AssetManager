@@ -84,7 +84,7 @@ namespace AssetManager
 
         [HttpPost]
         [Authorize(Roles = "Administrador,Suporte")]
-        public async Task<ActionResult<LocationAssetModel>> PostLocationAssetModel(CreateLocationAsset locationAsset)
+        public async Task<ActionResult<LocationAssetModel>> CreateLocationAssetModel(CreateLocationAsset locationAsset)
         {
             LocationAssetModel locationAssetModel = _mapper.Map<CreateLocationAsset, LocationAssetModel>(locationAsset);
             locationAssetModel.asset.idAsset = locationAsset.idAsset;
