@@ -32,11 +32,12 @@ public class CompanyRepository
         return company;
     }
 
-    public async Task<bool> UpdateCompany(CompanyModel company)
+    public bool UpdateCompany(CompanyModel company)
     {
         try
         {
             _context.company.Update(company);
+            _context.SaveChanges();
             return true;
         }
         catch
@@ -50,9 +51,11 @@ public class CompanyRepository
         CompanyModel? company = GetCompanyByID(id);
         if (company == null)
             return Task.FromResult(false);
-        
+
         company.ativa = false;
-        UpdateCompany(company).Wait();
+        if(!UpdateCompany(company))
+            return Task.FromResult(false);
+        
         return Task.FromResult(true);
     }
 
