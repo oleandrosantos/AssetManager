@@ -2,6 +2,7 @@ using AssetManager.Data;
 using AssetManager.Model;
 using AssetManager.ViewModel;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace AssetManager.Repository;
 
@@ -10,7 +11,7 @@ public class UserRepository
     private DataContext _context;
     private IMapper _mapper;
     private CompanyRepository _companyRepository;
-    
+
     public UserRepository(DataContext context, IMapper mapper, CompanyRepository companyRepository)
     {
         _mapper = mapper;
@@ -27,7 +28,7 @@ public class UserRepository
         {
             _context.usuario.Add(novoUsuario);
             _context.SaveChanges();
-            return $"Bem Vindo, {novoUsuario.name }. Seu Cadastro foi efetuado com sucesso!, Seu Id é {novoUsuario.idUsuario}";
+            return $"Bem Vindo, {novoUsuario.name}. Seu Cadastro foi efetuado com sucesso!, Seu Id é {novoUsuario.idUsuario}";
         }
         catch (Exception e)
         {
@@ -41,5 +42,19 @@ public class UserRepository
     {
         UserModel? usuario = _context.usuario.FirstOrDefault(k => k.email == email);
         return usuario;
+    }
+
+    public bool UpdateUser(UserModel dadosUsuario)
+    {
+        _context.Entry(dadosUsuario).State = EntityState.Modified;
+        try
+        {
+            _context.SaveChanges();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace AssetManager.Controllers
         }
 
         [HttpPost("Create")]
-        [Authorize(Roles = "Suporte")]
+        [AllowAnonymous]
         public IActionResult CreateCompany(CreateCompanyViewModel companyModel)
         {
             CompanyModel? companyResult = _companyRepository.CreateCompany(_mapper.Map<CreateCompanyViewModel, CompanyModel>(companyModel));
