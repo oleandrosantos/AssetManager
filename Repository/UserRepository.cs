@@ -37,9 +37,8 @@ public class UserRepository
         }
     }
 
-    public UserModel? BuscarUsuarioPorEmail(string email)
-    {
-        UserModel? usuario = _context.usuario.FirstOrDefault(k => k.email == email);
-        return usuario;
-    }
+    public UserModel? GetUserByEmail(string email) => _context.usuario.FirstOrDefault(k => k.email == email);
+
+    public UserModel? GetUserById(string id) => _context.usuario.Find(id);
+    
 }

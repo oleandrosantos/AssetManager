@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AssetManager.Model;
 
-[Table("tb_locationasset")]
-public class LocationAssetModel
+[Table("tb_loanasset")]
+public class LoanAssetModel
 {
     [Key]
     [MaxLength(32)]
-    public string? idLocationAsset { get; set; }
+    public string? idLoanAsset { get; set; }
     [Required]
     public DateTime loanDate { get; set; }
     public DateTime? devolutionDate { get; set; }

@@ -22,7 +22,7 @@ public class UserService :IUserService
 
     public Result Login(string email, string password)
     {
-        var usuario = _userRepository.BuscarUsuarioPorEmail(email);
+        var usuario = _userRepository.GetUserByEmail(email);
         if (usuario == null)
         {
             return new Result(false, "Email não identificado em nossa base.");
@@ -39,7 +39,7 @@ public class UserService :IUserService
 
     public string? Create(CreateUserViewModel dadosUsuario)
     {
-        var dados = _userRepository.BuscarUsuarioPorEmail(dadosUsuario.email);
+        var dados = _userRepository.GetUserByEmail(dadosUsuario.email);
 
         if (dados != null)
         {
@@ -75,7 +75,7 @@ public class UserService :IUserService
 
     public UserModel? BuscarPorEmail(string email)
     {
-        return _userRepository.BuscarUsuarioPorEmail(email);
+        return _userRepository.GetUserByEmail(email);
     }
     private bool verificandoSenha(byte[] hashPassword,string password)
     {

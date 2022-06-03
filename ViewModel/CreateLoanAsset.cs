@@ -2,7 +2,7 @@
 
 namespace AssetManager.ViewModel
 {
-    public class CreateLocationAsset
+    public class CreateLoanAsset
     {
         [Required]
         public DateTime loanDate { get; set; }
