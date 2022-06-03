@@ -39,19 +39,10 @@ namespace AssetManager
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Administrador,Suporte,Funcionario")]
-        public async Task<ActionResult<LoanAssetModel>> GetLoanAsset(string id)
+        public async Task<ActionResult<LoanAssetModel>> GetLoanAsset(int id)
         {
-            
-            var laonAssetModel = await _context.loanAsset.FindAsync(id);
-
-            if (laonAssetModel == null)
-            {
-                return NotFound();
-            }
-
-            return laonAssetModel;
+            return _loanAssetRepository.GetByID(id);
         }
-
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Administrador,Suporte")]
@@ -113,6 +104,29 @@ namespace AssetManager
             return NoContent();
         }
 
+        [HttpGet("ListarPorCompanhia/{id}")]
+        [Authorize(Roles = "Administrador,Suporte")]
+        public IActionResult CompanyLoanAssetsList(int idCompany)
+        {
+            var loanList = _loanAssetRepository.CompanyLoanAssetsList(idCompany);
+            
+            if (loanList.Any())
+                return Ok(loanList);
+
+            return BadRequest();
+        }
+        
+        [HttpGet("ListarPorUsuario/{id}")]
+        [Authorize(Roles = "Administrador,Suporte, Funcionario")]
+        public IActionResult UserAssetLoanList(string idUsuario)
+        {
+            var loanList = _loanAssetRepository.UserAssetLoanList(idUsuario, true);
+            
+            if (loanList.Any())
+                return Ok(loanList);
+
+            return BadRequest();
+        }
         private bool LoanAssetModelExists(string id)
         {
             return _context.loanAsset.Any(e => e.idLoanAsset == id);

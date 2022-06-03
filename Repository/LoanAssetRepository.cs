@@ -37,5 +37,10 @@ namespace AssetManager.Repository
             .Include(l => l.asset)
             .ToList();
         }
+
+        public LoanAssetModel GetByID(int id)
+        {
+            return _context.loanAsset.Find(id);
+        }
     }
 }
