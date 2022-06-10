@@ -8,6 +8,7 @@ public class UserModel
 {
     [Key]
     [MaxLength(32)]
+    [Column("IdUsuario")]
     public string IdUsuario { get; set; }
     [Required(ErrorMessage = "Nome nao informado")]
     public string Name { get; set; }
@@ -19,6 +20,7 @@ public class UserModel
     public string Token { get; set; }
     public string Role { get; set; }
     [ForeignKey("Company")]
+    [Column("IdCompany")]
     public int IdCompany { get; set; }
     public CompanyModel Company { get; set; }
 }

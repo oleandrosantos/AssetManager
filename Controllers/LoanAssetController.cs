@@ -17,8 +17,6 @@ namespace AssetManager
     {
         private readonly DataContext _context;
         private LoanAssetRepository _loanAssetRepository;
-        private AssetRepository _assetRepository;
-        private UserRepository _userRepository;
         private IMapper _mapper;
 
         public LoanAssetController(DataContext context, IMapper mapper, LoanAssetRepository loanAssetRepository)
@@ -30,7 +28,7 @@ namespace AssetManager
 
 
         [HttpGet]
-        [Authorize(Roles = "Administrador,Suporte,Funcionario")]
+        [Authorize(Roles = "Suporte")]
         public async Task<ActionResult<IEnumerable<LoanAssetModel>>> GetLoanAssetList()
         {
             return await _context.loanAsset.ToListAsync();
@@ -39,39 +37,16 @@ namespace AssetManager
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Administrador,Suporte,Funcionario")]
-        public async Task<ActionResult<LoanAssetModel>> GetLoanAsset(int id)
+        public async Task<ActionResult<LoanAssetModel>> ObterPorId(int id)
         {
             return _loanAssetRepository.GetByID(id);
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Administrador,Suporte")]
-        public async Task<IActionResult> PutLoanAssetModel(string id, LoanAssetModel laonAssetModel)
+        public async Task<IActionResult> UpdateLoanAssetModel(string id, LoanAssetModel laonAssetModel)
         {
-            if (id != laonAssetModel.idLoanAsset)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(laonAssetModel).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LoanAssetModelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            throw new Exception();
         }
 
 
@@ -80,31 +55,23 @@ namespace AssetManager
         public async Task<ActionResult<LoanAssetModel>> CreateLoanAssetModel(CreateLoanAsset loanAsset)
         {
             LoanAssetModel loanAssetModel = _mapper.Map<CreateLoanAsset, LoanAssetModel>(loanAsset);
-            loanAssetModel.asset = _assetRepository.GetAssetByID(loanAsset.IdAsset);
-            loanAssetModel.usuario = _userRepository.GetUserById(loanAsset.IdUsuario);
+            var resultado = _loanAssetRepository.CreateLoanAsset(loanAssetModel);
 
-            _loanAssetRepository.CreateLoanAsset(loanAssetModel);
-        
-            return Ok("Registrado com sucesso");
+            if (resultado.Status)
+            {
+                return Ok("Registrado com sucesso");
+            }
+            return BadRequest(resultado.Mensagem);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Administrador,Suporte")]
         public async Task<IActionResult> DeleteLoanAssetModel(string id)
         {
-            var laonAssetModel = await _context.loanAsset.FindAsync(id);
-            if (laonAssetModel == null)
-            {
-                return NotFound();
-            }
-
-            _context.loanAsset.Remove(laonAssetModel);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            throw new Exception();
         }
 
-        [HttpGet("ListarPorCompanhia/{id}")]
+        [HttpGet("ListarPorCompanhia/{idCompany}")]
         [Authorize(Roles = "Administrador,Suporte")]
         public IActionResult CompanyLoanAssetsList(int idCompany)
         {
@@ -116,8 +83,8 @@ namespace AssetManager
             return BadRequest();
         }
         
-        [HttpGet("ListarPorUsuario/{id}")]
-        [Authorize(Roles = "Administrador,Suporte, Funcionario")]
+        [HttpGet("ListarPorUsuario/{idUsuario}")]
+        [Authorize(Roles = "Administrador, Suporte, Funcionario")]
         public IActionResult UserAssetLoanList(string idUsuario)
         {
             var loanList = _loanAssetRepository.UserAssetLoanList(idUsuario, true);
@@ -127,9 +94,28 @@ namespace AssetManager
 
             return BadRequest();
         }
+
+        [HttpPut("EncerrandoContrato/{id}")]
+        [Authorize(Roles = "Administrador, Suporte")]
+        public IActionResult TerminationLoanAsset(int id, TerminationLoanAssetViewModel terminationLoanAsset)
+        {
+            try
+            {
+                var loanAsset = _loanAssetRepository.GetByID(id);
+                loanAsset.DevolutionDate = terminationLoanAsset.Date ?? DateTime.Now;
+                loanAsset.Description = terminationLoanAsset.Description;
+                return Ok("Termino de Contrato Registrado com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         private bool LoanAssetModelExists(string id)
         {
-            return _context.loanAsset.Any(e => e.idLoanAsset == id);
+            return _context.loanAsset.Any(e => e.IdLoanAsset == id);
         }
     }
 }

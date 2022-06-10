@@ -15,17 +15,26 @@ namespace AssetManager.Repository
 
         public Result CreateLoanAsset(LoanAssetModel loanAsset)
         {
-            _context.loanAsset.Add(loanAsset);
-            return new Result(true, "Criado com sucesso");
+            try
+            {
+                loanAsset.IdLoanAsset = Guid.NewGuid().ToString().Substring(0, 31);
+                _context.loanAsset.Add(loanAsset);
+                _context.SaveChanges();
+                return new Result(true, $"Criado com sucesso Nr. CTO: {loanAsset.IdLoanAsset}");
+            }
+            catch (Exception ex)
+            {
+                return new Result(false, ex.Message);
+            }
         }
         public List<LoanAssetModel> UserAssetLoanList(string idUser, bool isLocatad)
         {
             var loanAssetList = _context.loanAsset
-                .Where(l => l.usuario.idUsuario == idUser)
-                .Include(l => l.asset);
+                .Where(l => l.Usuario.IdUsuario == idUser)
+                .Include(l => l.Asset);
 
             if (isLocatad)
-                loanAssetList.Where(l => l.devolutionDate == null);
+                loanAssetList.Where(l => l.DevolutionDate == null);
 
             return loanAssetList.ToList();
         }
@@ -33,12 +42,12 @@ namespace AssetManager.Repository
         public List<LoanAssetModel> CompanyLoanAssetsList(int idCompany)
         {
             return _context.loanAsset
-            .Where(l => l.company.idCompany == idCompany && l.devolutionDate == null)
-            .Include(l => l.asset)
+            .Where(l => l.Company.IdCompany == idCompany && l.DevolutionDate == null)
+            .Include(l => l.Asset)
             .ToList();
         }
 
-        public LoanAssetModel GetByID(int id)
+        public LoanAssetModel? GetByID(int id)
         {
             return _context.loanAsset.Find(id);
         }

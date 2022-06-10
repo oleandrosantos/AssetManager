@@ -8,6 +8,7 @@ public class LoanAssetModel
 {
     [Key]
     [MaxLength(32)]
+    [Column("IdLoanAsset")]
     public string? IdLoanAsset { get; set; }
     [Required]
     public DateTime LoanDate { get; set; }
@@ -22,13 +23,13 @@ public class LoanAssetModel
     public virtual AssetModel Asset { get; set; }
     public virtual CompanyModel Company { get; set; }
     
-    [ForeignKey("usuario")]
+    [ForeignKey("Usuario")]
     public string IdUsuario { get; set; }
     
-    [ForeignKey("asset")]
-    public string IdAsset { get; set; }
+    [ForeignKey("Asset")]
+    public int IdAsset { get; set; }
     
-    [ForeignKey("company")]
-    public string IdCompany { get; set; }
+    [ForeignKey("Company")]
+    public int IdCompany { get; set; }
 
 }

@@ -17,17 +17,17 @@ namespace AssetManager.Migrations
                 name: "tb_company",
                 columns: table => new
                 {
-                    idCompany = table.Column<int>(type: "int", nullable: false)
+                    IdCompany = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    companyName = table.Column<string>(type: "longtext", nullable: true)
+                    CompanyName = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    cnpj = table.Column<string>(type: "varchar(14)", maxLength: 14, nullable: true)
+                    Cnpj = table.Column<string>(type: "varchar(14)", maxLength: 14, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ativa = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    IsAtiva = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_company", x => x.idCompany);
+                    table.PrimaryKey("PK_tb_company", x => x.IdCompany);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -35,30 +35,30 @@ namespace AssetManager.Migrations
                 name: "tb_asset",
                 columns: table => new
                 {
-                    idAsset = table.Column<int>(type: "int", nullable: false)
+                    IdAsset = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    assetName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                    AssetName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    depreciationTaxInCents = table.Column<int>(type: "int", nullable: true),
-                    assetPriceInCents = table.Column<ulong>(type: "bigint unsigned", nullable: false),
-                    acquisitionDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    exclusionDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    exclusionInfos = table.Column<string>(type: "longtext", nullable: true)
+                    DepreciationTaxInCents = table.Column<int>(type: "int", nullable: true),
+                    AssetPriceInCents = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    AcquisitionDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ExclusionDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    ExclusionInfos = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    companyidCompany = table.Column<int>(type: "int", nullable: false),
-                    status = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: true)
+                    IdCompany = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    decription = table.Column<string>(type: "longtext", nullable: true)
+                    Decription = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_asset", x => x.idAsset);
+                    table.PrimaryKey("PK_tb_asset", x => x.IdAsset);
                     table.ForeignKey(
-                        name: "FK_tb_asset_tb_company_companyidCompany",
-                        column: x => x.companyidCompany,
+                        name: "FK_tb_asset_tb_company_IdCompany",
+                        column: x => x.IdCompany,
                         principalTable: "tb_company",
-                        principalColumn: "idCompany",
+                        principalColumn: "IdCompany",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -67,28 +67,28 @@ namespace AssetManager.Migrations
                 name: "tb_usuario",
                 columns: table => new
                 {
-                    idUsuario = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: false)
+                    IdUsuario = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    name = table.Column<string>(type: "longtext", nullable: false)
+                    Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    email = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: false)
+                    Email = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    password = table.Column<string>(type: "longtext", nullable: false)
+                    Password = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    token = table.Column<string>(type: "longtext", nullable: false)
+                    Token = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    role = table.Column<string>(type: "longtext", nullable: false)
+                    Role = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    companyidCompany = table.Column<int>(type: "int", nullable: false)
+                    IdCompany = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_usuario", x => x.idUsuario);
+                    table.PrimaryKey("PK_tb_usuario", x => x.IdUsuario);
                     table.ForeignKey(
-                        name: "FK_tb_usuario_tb_company_companyidCompany",
-                        column: x => x.companyidCompany,
+                        name: "FK_tb_usuario_tb_company_IdCompany",
+                        column: x => x.IdCompany,
                         principalTable: "tb_company",
-                        principalColumn: "idCompany",
+                        principalColumn: "IdCompany",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -97,65 +97,65 @@ namespace AssetManager.Migrations
                 name: "tb_loanasset",
                 columns: table => new
                 {
-                    idLoanAsset = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: false)
+                    IdLoanAsset = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    loanDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    devolutionDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    description = table.Column<string>(type: "longtext", nullable: false)
+                    LoanDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    DevolutionDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    usuarioidUsuario = table.Column<string>(type: "varchar(32)", nullable: false)
+                    IdUsuario = table.Column<string>(type: "varchar(32)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    assetidAsset = table.Column<int>(type: "int", nullable: false),
-                    companyidCompany = table.Column<int>(type: "int", nullable: false)
+                    IdAsset = table.Column<int>(type: "int", nullable: false),
+                    IdCompany = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_loanasset", x => x.idLoanAsset);
+                    table.PrimaryKey("PK_tb_loanasset", x => x.IdLoanAsset);
                     table.ForeignKey(
-                        name: "FK_tb_loanasset_tb_asset_assetidAsset",
-                        column: x => x.assetidAsset,
+                        name: "FK_tb_loanasset_tb_asset_IdAsset",
+                        column: x => x.IdAsset,
                         principalTable: "tb_asset",
-                        principalColumn: "idAsset",
+                        principalColumn: "IdAsset",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tb_loanasset_tb_company_companyidCompany",
-                        column: x => x.companyidCompany,
+                        name: "FK_tb_loanasset_tb_company_IdCompany",
+                        column: x => x.IdCompany,
                         principalTable: "tb_company",
-                        principalColumn: "idCompany",
+                        principalColumn: "IdCompany",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tb_loanasset_tb_usuario_usuarioidUsuario",
-                        column: x => x.usuarioidUsuario,
+                        name: "FK_tb_loanasset_tb_usuario_IdUsuario",
+                        column: x => x.IdUsuario,
                         principalTable: "tb_usuario",
-                        principalColumn: "idUsuario",
+                        principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_asset_companyidCompany",
+                name: "IX_tb_asset_IdCompany",
                 table: "tb_asset",
-                column: "companyidCompany");
+                column: "IdCompany");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_loanasset_assetidAsset",
+                name: "IX_tb_loanasset_IdAsset",
                 table: "tb_loanasset",
-                column: "assetidAsset");
+                column: "IdAsset");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_loanasset_companyidCompany",
+                name: "IX_tb_loanasset_IdCompany",
                 table: "tb_loanasset",
-                column: "companyidCompany");
+                column: "IdCompany");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_loanasset_usuarioidUsuario",
+                name: "IX_tb_loanasset_IdUsuario",
                 table: "tb_loanasset",
-                column: "usuarioidUsuario");
+                column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_usuario_companyidCompany",
+                name: "IX_tb_usuario_IdCompany",
                 table: "tb_usuario",
-                column: "companyidCompany");
+                column: "IdCompany");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

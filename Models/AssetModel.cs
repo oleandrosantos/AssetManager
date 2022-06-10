@@ -19,6 +19,7 @@ public class AssetModel
     public string? ExclusionInfos { get; set; }
 
     [ForeignKey("Company")]
+    [Column("IdCompany")]
     public int IdCompany { get; set; }
     public virtual CompanyModel Company { get; set; }
     
