@@ -5,12 +5,12 @@ namespace AssetManager.ViewModel
     public class CreateLoanAsset
     {
         [Required]
-        public DateTime loanDate { get; set; }
-        public DateTime? devolutionDate { get; set; }
-        public string? description { get; set; }
+        public DateTime LoanDate { get; set; }
+        public DateTime? DevolutionDate { get; set; }
+        public string? Description { get; set; }
         [Required]
-        public string idUsuario { get; set; }
+        public string IdUsuario { get; set; }
         [Required]
-        public int idAsset { get; set; }
+        public int IdAsset { get; set; }
     }
 }

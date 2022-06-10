@@ -4,12 +4,12 @@ namespace AssetManager.ViewModel;
 
 public class Result
 {
-    public bool status { get; set; }
-    public string mensagem { get; set; }
+    public bool Status { get; set; }
+    public string Mensagem { get; set; }
 
     public Result(bool statusLogin, string mensagemLogin)
     {
-        status = statusLogin;
-        mensagem = mensagemLogin;
+        Status = statusLogin;
+        Mensagem = mensagemLogin;
     }
 }

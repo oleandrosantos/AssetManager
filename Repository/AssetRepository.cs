@@ -33,7 +33,7 @@ public class AssetRepository
     {
         try
         {
-            if (asset.idAsset == 0 || asset.idAsset == null)
+            if (asset.IdAsset == 0 || asset.IdAsset == null)
             {
                 throw new Exception("Não conseguimos atualizar os dados");
             }
@@ -51,8 +51,8 @@ public class AssetRepository
 
     public List<AssetModel>? AssetCompanyList(int idCompany)
     {
-        var assetCompany = _context.asset.Where(a => a.company.idCompany == idCompany)
-            .Include(a => a.company)
+        var assetCompany = _context.asset.Where(a => a.Company.IdCompany == idCompany)
+            .Include(a => a.Company)
             .ToList();
 
         if(assetCompany.Count == 0 || assetCompany == null)
@@ -66,8 +66,8 @@ public class AssetRepository
         AssetModel? asset = _context.asset.Find(idAsset);
         if (asset == null)
         {
-            asset.exclusionDate = DateTime.Now;
-            asset.exclusionInfos = exclusionInfo;
+            asset.ExclusionDate = DateTime.Now;
+            asset.ExclusionInfos = exclusionInfo;
             _context.asset.Update(asset);
             _context.SaveChanges();
             return true;
@@ -77,8 +77,8 @@ public class AssetRepository
 
     public AssetModel? GetAssetByID(int id)
     {
-        return _context.asset.Where(a => a.idAsset == id)
-            .Include(a => a.company)
+        return _context.asset.Where(a => a.IdAsset == id)
+            .Include(a => a.Company)
             .FirstOrDefault();
     }
 }

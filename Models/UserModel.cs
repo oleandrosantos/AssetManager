@@ -8,15 +8,17 @@ public class UserModel
 {
     [Key]
     [MaxLength(32)]
-    public string idUsuario { get; set; }
+    public string IdUsuario { get; set; }
     [Required(ErrorMessage = "Nome nao informado")]
-    public string name { get; set; }
+    public string Name { get; set; }
     [Required(ErrorMessage = "Email nao informado")]
     [MaxLength(256)]
-    public string email { get; set; }
+    public string Email { get; set; }
     [Required(ErrorMessage = "Senha nao informada")]
-    public string password { get; set; }
-    public string token { get; set; }
-    public string role { get; set; }
-    public CompanyModel company { get; set; }
+    public string Password { get; set; }
+    public string Token { get; set; }
+    public string Role { get; set; }
+    [ForeignKey("Company")]
+    public int IdCompany { get; set; }
+    public CompanyModel Company { get; set; }
 }

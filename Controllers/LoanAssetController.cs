@@ -80,8 +80,8 @@ namespace AssetManager
         public async Task<ActionResult<LoanAssetModel>> CreateLoanAssetModel(CreateLoanAsset loanAsset)
         {
             LoanAssetModel loanAssetModel = _mapper.Map<CreateLoanAsset, LoanAssetModel>(loanAsset);
-            loanAssetModel.asset = _assetRepository.GetAssetByID(loanAsset.idAsset);
-            loanAssetModel.usuario = _userRepository.GetUserById(loanAsset.idUsuario);
+            loanAssetModel.asset = _assetRepository.GetAssetByID(loanAsset.IdAsset);
+            loanAssetModel.usuario = _userRepository.GetUserById(loanAsset.IdUsuario);
 
             _loanAssetRepository.CreateLoanAsset(loanAssetModel);
         

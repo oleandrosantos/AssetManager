@@ -8,16 +8,27 @@ public class LoanAssetModel
 {
     [Key]
     [MaxLength(32)]
-    public string? idLoanAsset { get; set; }
+    public string? IdLoanAsset { get; set; }
     [Required]
-    public DateTime loanDate { get; set; }
-    public DateTime? devolutionDate { get; set; }
+    public DateTime LoanDate { get; set; }
+    public DateTime? DevolutionDate { get; set; }
     [Required]
-    public string? description { get; set; }
-    [Required]
-    public UserModel usuario { get; set; }
-    [Required]
-    public AssetModel asset { get; set; }
-    public CompanyModel company { get; set; }
+    public string? Description { get; set; }
     
+    [Required]
+    public virtual UserModel Usuario { get; set; }
+    
+    [Required]
+    public virtual AssetModel Asset { get; set; }
+    public virtual CompanyModel Company { get; set; }
+    
+    [ForeignKey("usuario")]
+    public string IdUsuario { get; set; }
+    
+    [ForeignKey("asset")]
+    public string IdAsset { get; set; }
+    
+    [ForeignKey("company")]
+    public string IdCompany { get; set; }
+
 }

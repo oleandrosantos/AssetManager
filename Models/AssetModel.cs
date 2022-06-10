@@ -6,18 +6,23 @@ namespace AssetManager.Model;
 public class AssetModel
 {
     [Key]
-    public int idAsset { get; set; }
+    public int IdAsset { get; set; }
     [Required]
     [MaxLength(100)]
-    public string? assetName { get; set; }
-    public int? depreciationTaxInCents { get; set; }
-    public ulong assetPriceInCents { get; set; }
+    public string? AssetName { get; set; }
+    public int? DepreciationTaxInCents { get; set; }
+    public ulong AssetPriceInCents { get; set; }
+    
     [Required]
-    public DateTime acquisitionDate { get; set; }
-    public DateTime? exclusionDate { get; set; }
-    public string? exclusionInfos { get; set; }
-    public CompanyModel company { get; set; }
+    public DateTime AcquisitionDate { get; set; }
+    public DateTime? ExclusionDate { get; set; }
+    public string? ExclusionInfos { get; set; }
+
+    [ForeignKey("Company")]
+    public int IdCompany { get; set; }
+    public virtual CompanyModel Company { get; set; }
+    
     [MaxLength(64)]
-    public string? status { get; set; }
-    public string? decription { get; set; }
+    public string? Status { get; set; }
+    public string? Decription { get; set; }
 }

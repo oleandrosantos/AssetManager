@@ -27,7 +27,7 @@ public class UserService :IUserService
         {
             return new Result(false, "Email não identificado em nossa base.");
         }
-        if (verificandoSenha(Convert.FromBase64String(usuario.password), password))
+        if (verificandoSenha(Convert.FromBase64String(usuario.Password), password))
         {
             return new Result(true, "");
         }
@@ -39,13 +39,13 @@ public class UserService :IUserService
 
     public string? Create(CreateUserViewModel dadosUsuario)
     {
-        var dados = _userRepository.GetUserByEmail(dadosUsuario.email);
+        var dados = _userRepository.GetUserByEmail(dadosUsuario.Email);
 
         if (dados != null)
         {
             return null;
         }
-        dadosUsuario.password = criandoHashDaSenha(dadosUsuario.password);
+        dadosUsuario.Password = criandoHashDaSenha(dadosUsuario.Password);
         string resultado = _userRepository.Create(dadosUsuario);
         
         return resultado;
