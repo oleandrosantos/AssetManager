@@ -32,7 +32,7 @@ builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddTransient<UserRepository>();
 builder.Services.AddTransient<AssetRepository>();
 builder.Services.AddTransient<CompanyRepository>();
-builder.Services.AddTransient<LocationAssetRepository>();
+builder.Services.AddTransient<LoanAssetRepository>();
 
 var connectionString = builder.Configuration["AppSettings:ConnectionString"];
 var serverVersion = ServerVersion.AutoDetect(connectionString);

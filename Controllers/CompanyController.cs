@@ -30,7 +30,7 @@ namespace AssetManager.Controllers
             CompanyModel? companyResult = _companyRepository.CreateCompany(_mapper.Map<CreateCompanyViewModel, CompanyModel>(companyModel));
 
             if (companyResult != null)
-                return Ok($"{companyResult.companyName} Cadastrada com sucesso!");
+                return Ok($"{companyResult.CompanyName} Cadastrada com sucesso!");
 
             return BadRequest($"Não conseguimos cadastrar, verifique os dados!");
         }
@@ -50,7 +50,7 @@ namespace AssetManager.Controllers
         [Authorize(Roles = "Administrador,Suporte")]
         public IActionResult UpdateCompany(int id, CompanyModel companyModel)
         {
-            companyModel.idCompany = id;
+            companyModel.IdCompany = id;
             if (_companyRepository.UpdateCompany(companyModel))
                 return Ok("Atualizado com sucesso");
 

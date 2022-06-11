@@ -7,11 +7,11 @@ namespace AssetManager.Model;
 public class CompanyModel
 {
     [Key]
-    public int idCompany { get; set; }
+    public int IdCompany { get; set; }
 
-    public string? companyName { get; set; }
+    public string? CompanyName { get; set; }
     [MinLength(14), StringLength(14)]
-    public string? cnpj { get; set; }
+    public string? Cnpj { get; set; }
     [DefaultValue(true)]
-    public bool ativa { get; set; }
+    public bool IsAtiva { get; set; }
 }

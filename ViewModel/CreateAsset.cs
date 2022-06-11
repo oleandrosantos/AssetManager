@@ -5,15 +5,15 @@ namespace AssetManager.ViewModel
     public class CreateAsset
     {
         [Required]
-        public string assetName { get; set; }
-        public int? depreciationTaxInCents { get; set; }
+        public string AssetName { get; set; }
+        public int? DepreciationTaxInCents { get; set; }
         [Required]
-        public ulong assetPriceInCents { get; set; }
+        public ulong AssetPriceInCents { get; set; }
         [Required]
-        public DateTime acquisitionDate { get; set; }
-        public DateTime exclusionDate { get; set; }
-        public string? exclusionInfos { get; set; }
+        public DateTime AcquisitionDate { get; set; }
+        public DateTime ExclusionDate { get; set; }
+        public string? ExclusionInfos { get; set; }
         [Required]
-        public int idCompany { get; set; }
+        public int IdCompany { get; set; }
     }
 }

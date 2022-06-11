@@ -20,26 +20,25 @@ public class UserRepository
     public string Create(CreateUserViewModel dadosUsuario)
     {
         UserModel novoUsuario = _mapper.Map<CreateUserViewModel, UserModel>(dadosUsuario);
-        novoUsuario.company = _companyRepository.GetCompanyByID(dadosUsuario.idCompany);
-        novoUsuario.idUsuario = Guid.NewGuid().ToString("N");
-        novoUsuario.token = novoUsuario.idUsuario;
+        novoUsuario.Company = _companyRepository.GetCompanyByID(dadosUsuario.IdCompany);
+        novoUsuario.IdUsuario = Guid.NewGuid().ToString("N");
+        novoUsuario.Token = novoUsuario.IdUsuario;
         try
         {
             _context.usuario.Add(novoUsuario);
             _context.SaveChanges();
-            return $"Bem Vindo, {novoUsuario.name }. Seu Cadastro foi efetuado com sucesso!, Seu Id é {novoUsuario.idUsuario}";
+            return $"Bem Vindo, {novoUsuario.Name }. Seu Cadastro foi efetuado com sucesso!, Seu Id é {novoUsuario.IdUsuario}";
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return $"{novoUsuario.company}, {novoUsuario.email}, {novoUsuario.name}" +
+            return $"{novoUsuario.Company}, {novoUsuario.Email}, {novoUsuario.Name}" +
                    $"Erro {e.Message}";
         }
     }
 
-    public UserModel? BuscarUsuarioPorEmail(string email)
-    {
-        UserModel? usuario = _context.usuario.FirstOrDefault(k => k.email == email);
-        return usuario;
-    }
+    public UserModel? GetUserByEmail(string email) => _context.usuario.FirstOrDefault(k => k.Email == email);
+
+    public UserModel? GetUserById(string id) => _context.usuario.Find(id);
+    
 }

@@ -22,7 +22,7 @@ public class UserController: ControllerBase
     [AllowAnonymous]
     public IActionResult CadatrarUsuario(CreateUserViewModel dadosUsuario)
     {
-        dadosUsuario.email = dadosUsuario.email.ToLower().Trim();
+        dadosUsuario.Email = dadosUsuario.Email.ToLower().Trim();
         var resultado = _userService.Create(dadosUsuario);
         if (resultado == null)
         {
@@ -37,17 +37,17 @@ public class UserController: ControllerBase
     [AllowAnonymous]
     public Task<ActionResult<dynamic>> Authenticate([FromBody]AuthenticationModel model)
     {
-        model.email = model.email.ToLower().Trim();
-        if (string.IsNullOrEmpty(model.email) || string.IsNullOrEmpty(model.password))
+        model.Email = model.Email.ToLower().Trim();
+        if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
         {
             return Task.FromResult<ActionResult<dynamic>>(NotFound(new {message = "Email ou senha não informados"}));
         }
-        var resultadoLogin = _userService.Login(model.email, model.password);
+        var resultadoLogin = _userService.Login(model.Email, model.Password);
         
-        if (resultadoLogin.status)
+        if (resultadoLogin.Status)
         {
-            var usuarioModel = _userService.BuscarPorEmail(model.email);
-            usuarioModel.password = "";
+            var usuarioModel = _userService.BuscarPorEmail(model.Email);
+            usuarioModel.Password = "";
             var token = _tokenService.GenerateToken(usuarioModel);
             return Task.FromResult<ActionResult<dynamic>>(new
             {
@@ -56,7 +56,7 @@ public class UserController: ControllerBase
         }
         else
         {
-            return Task.FromResult<ActionResult<dynamic>>(BadRequest(resultadoLogin.mensagem));
+            return Task.FromResult<ActionResult<dynamic>>(BadRequest(resultadoLogin.Mensagem));
         }
         
     }

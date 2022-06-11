@@ -83,9 +83,9 @@ namespace AssetManager.Migrations
                     b.ToTable("tb_company");
                 });
 
-            modelBuilder.Entity("AssetManager.Model.LocationAssetModel", b =>
+            modelBuilder.Entity("AssetManager.Model.LoanAssetModel", b =>
                 {
-                    b.Property<string>("idLocationAsset")
+                    b.Property<string>("idLoanAsset")
                         .HasMaxLength(32)
                         .HasColumnType("varchar(32)");
 
@@ -109,7 +109,7 @@ namespace AssetManager.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(32)");
 
-                    b.HasKey("idLocationAsset");
+                    b.HasKey("idLoanAsset");
 
                     b.HasIndex("assetidAsset");
 
@@ -117,7 +117,7 @@ namespace AssetManager.Migrations
 
                     b.HasIndex("usuarioidUsuario");
 
-                    b.ToTable("tb_locationasset");
+                    b.ToTable("tb_loanasset");
                 });
 
             modelBuilder.Entity("AssetManager.Model.UserModel", b =>
@@ -126,7 +126,7 @@ namespace AssetManager.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("varchar(32)");
 
-                    b.Property<int?>("companyidCompany")
+                    b.Property<int>("companyidCompany")
                         .HasColumnType("int");
 
                     b.Property<string>("email")
@@ -168,7 +168,7 @@ namespace AssetManager.Migrations
                     b.Navigation("company");
                 });
 
-            modelBuilder.Entity("AssetManager.Model.LocationAssetModel", b =>
+            modelBuilder.Entity("AssetManager.Model.LoanAssetModel", b =>
                 {
                     b.HasOne("AssetManager.Model.AssetModel", "asset")
                         .WithMany()
@@ -199,7 +199,9 @@ namespace AssetManager.Migrations
                 {
                     b.HasOne("AssetManager.Model.CompanyModel", "company")
                         .WithMany()
-                        .HasForeignKey("companyidCompany");
+                        .HasForeignKey("companyidCompany")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("company");
                 });

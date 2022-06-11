@@ -56,10 +56,10 @@ namespace AssetManager.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "tb_locationasset",
+                name: "tb_loanasset",
                 columns: table => new
                 {
-                    idLocationAsset = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: false)
+                    idLoanAsset = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     loanDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     devolutionDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
@@ -71,15 +71,15 @@ namespace AssetManager.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_locationasset", x => x.idLocationAsset);
+                    table.PrimaryKey("PK_tb_loanasset", x => x.idLoanAsset);
                     table.ForeignKey(
-                        name: "FK_tb_locationasset_tb_asset_assetidAsset",
+                        name: "FK_tb_loanasset_tb_asset_assetidAsset",
                         column: x => x.assetidAsset,
                         principalTable: "tb_asset",
                         principalColumn: "idAsset",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tb_locationasset_tb_usuario_usuarioidUsuario",
+                        name: "FK_tb_loanasset_tb_usuario_usuarioidUsuario",
                         column: x => x.usuarioidUsuario,
                         principalTable: "tb_usuario",
                         principalColumn: "idUsuario",
@@ -88,20 +88,20 @@ namespace AssetManager.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_locationasset_assetidAsset",
-                table: "tb_locationasset",
+                name: "IX_tb_loanasset_assetidAsset",
+                table: "tb_loanasset",
                 column: "assetidAsset");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_locationasset_usuarioidUsuario",
-                table: "tb_locationasset",
+                name: "IX_tb_loanasset_usuarioidUsuario",
+                table: "tb_loanasset",
                 column: "usuarioidUsuario");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "tb_locationasset");
+                name: "tb_loanasset");
 
             migrationBuilder.DropTable(
                 name: "tb_asset");

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AssetManager.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220519033532_user_model_company_null")]
-    partial class user_model_company_null
+    [Migration("20220610190335_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,187 +23,194 @@ namespace AssetManager.Migrations
 
             modelBuilder.Entity("AssetManager.Model.AssetModel", b =>
                 {
-                    b.Property<int>("idAsset")
+                    b.Property<int>("IdAsset")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("acquisitionDate")
+                    b.Property<DateTime>("AcquisitionDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("assetName")
+                    b.Property<string>("AssetName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<ulong>("assetPriceInCents")
+                    b.Property<ulong>("AssetPriceInCents")
                         .HasColumnType("bigint unsigned");
 
-                    b.Property<int>("companyidCompany")
-                        .HasColumnType("int");
-
-                    b.Property<string>("decription")
+                    b.Property<string>("Decription")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("depreciationTaxInCents")
+                    b.Property<int?>("DepreciationTaxInCents")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("exclusionDate")
+                    b.Property<DateTime?>("ExclusionDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("exclusionInfos")
+                    b.Property<string>("ExclusionInfos")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("status")
+                    b.Property<int>("IdCompany")
+                        .HasColumnType("int")
+                        .HasColumnName("IdCompany");
+
+                    b.Property<string>("Status")
                         .HasMaxLength(64)
                         .HasColumnType("varchar(64)");
 
-                    b.HasKey("idAsset");
+                    b.HasKey("IdAsset");
 
-                    b.HasIndex("companyidCompany");
+                    b.HasIndex("IdCompany");
 
                     b.ToTable("tb_asset");
                 });
 
             modelBuilder.Entity("AssetManager.Model.CompanyModel", b =>
                 {
-                    b.Property<int>("idCompany")
+                    b.Property<int>("IdCompany")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<bool>("ativa")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("cnpj")
+                    b.Property<string>("Cnpj")
                         .HasMaxLength(14)
                         .HasColumnType("varchar(14)");
 
-                    b.Property<string>("companyName")
+                    b.Property<string>("CompanyName")
                         .HasColumnType("longtext");
 
-                    b.HasKey("idCompany");
+                    b.Property<bool>("IsAtiva")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("IdCompany");
 
                     b.ToTable("tb_company");
                 });
 
             modelBuilder.Entity("AssetManager.Model.LoanAssetModel", b =>
                 {
-                    b.Property<string>("idLoanAsset")
+                    b.Property<string>("IdLoanAsset")
                         .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasColumnType("varchar(32)")
+                        .HasColumnName("IdLoanAsset");
 
-                    b.Property<int>("assetidAsset")
-                        .HasColumnType("int");
 
-                    b.Property<int>("companyidCompany")
-                        .HasColumnType("int");
-
-                    b.Property<string>("description")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime?>("devolutionDate")
+                    b.Property<DateTime?>("DevolutionDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("loanDate")
+                    b.Property<int>("IdAsset")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdCompany")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("LoanDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("usuarioidUsuario")
+                    b.Property<string>("IdUsuario")
                         .IsRequired()
                         .HasColumnType("varchar(32)");
 
-                    b.HasKey("idLoanAsset");
+                    b.HasKey("IdLoanAsset");
 
-                    b.HasIndex("assetidAsset");
+                    b.HasIndex("IdAsset");
 
-                    b.HasIndex("companyidCompany");
+                    b.HasIndex("IdCompany");
 
-                    b.HasIndex("usuarioidUsuario");
+                    b.HasIndex("IdUsuario");
 
                     b.ToTable("tb_loanasset");
                 });
 
             modelBuilder.Entity("AssetManager.Model.UserModel", b =>
                 {
-                    b.Property<string>("idUsuario")
+                    b.Property<string>("IdUsuario")
                         .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasColumnType("varchar(32)")
+                        .HasColumnName("IdUsuario");
 
-                    b.Property<int?>("companyidCompany")
-                        .HasColumnType("int");
-
-                    b.Property<string>("email")
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
-                    b.Property<string>("name")
+                    b.Property<int>("IdCompany")
+                        .HasColumnType("int")
+                        .HasColumnName("IdCompany");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("password")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("role")
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("token")
+                    b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("idUsuario");
+                    b.HasKey("IdUsuario");
 
-                    b.HasIndex("companyidCompany");
+                    b.HasIndex("IdCompany");
 
                     b.ToTable("tb_usuario");
                 });
 
             modelBuilder.Entity("AssetManager.Model.AssetModel", b =>
                 {
-                    b.HasOne("AssetManager.Model.CompanyModel", "company")
+                    b.HasOne("AssetManager.Model.CompanyModel", "Company")
                         .WithMany()
-                        .HasForeignKey("companyidCompany")
+                        .HasForeignKey("IdCompany")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("company");
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("AssetManager.Model.LoanAssetModel", b =>
                 {
-                    b.HasOne("AssetManager.Model.AssetModel", "asset")
+                    b.HasOne("AssetManager.Model.AssetModel", "Asset")
                         .WithMany()
-                        .HasForeignKey("assetidAsset")
+                        .HasForeignKey("IdAsset")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AssetManager.Model.CompanyModel", "company")
+                    b.HasOne("AssetManager.Model.CompanyModel", "Company")
                         .WithMany()
-                        .HasForeignKey("companyidCompany")
+                        .HasForeignKey("IdCompany")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AssetManager.Model.UserModel", "usuario")
+                    b.HasOne("AssetManager.Model.UserModel", "Usuario")
                         .WithMany()
-                        .HasForeignKey("usuarioidUsuario")
+                        .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("asset");
+                    b.Navigation("Asset");
 
-                    b.Navigation("company");
+                    b.Navigation("Company");
 
-                    b.Navigation("usuario");
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("AssetManager.Model.UserModel", b =>
                 {
-                    b.HasOne("AssetManager.Model.CompanyModel", "company")
+                    b.HasOne("AssetManager.Model.CompanyModel", "Company")
                         .WithMany()
-                        .HasForeignKey("companyidCompany");
+                        .HasForeignKey("IdCompany")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("company");
+                    b.Navigation("Company");
                 });
 #pragma warning restore 612, 618
         }

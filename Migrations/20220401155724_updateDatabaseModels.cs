@@ -11,7 +11,7 @@ namespace AssetManager.Migrations
         {
             migrationBuilder.AddColumn<int>(
                 name: "companyidCompany",
-                table: "tb_locationasset",
+                table: "tb_loanasset",
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
@@ -62,13 +62,13 @@ namespace AssetManager.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_locationasset_companyidCompany",
-                table: "tb_locationasset",
+                name: "IX_tb_loanasset_companyidCompany",
+                table: "tb_loanasset",
                 column: "companyidCompany");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_tb_locationasset_tb_company_companyidCompany",
-                table: "tb_locationasset",
+                name: "FK_tb_loanasset_tb_company_companyidCompany",
+                table: "tb_loanasset",
                 column: "companyidCompany",
                 principalTable: "tb_company",
                 principalColumn: "idCompany",
@@ -78,16 +78,16 @@ namespace AssetManager.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_tb_locationasset_tb_company_companyidCompany",
-                table: "tb_locationasset");
+                name: "FK_tb_loanasset_tb_company_companyidCompany",
+                table: "tb_loanasset");
 
             migrationBuilder.DropIndex(
-                name: "IX_tb_locationasset_companyidCompany",
-                table: "tb_locationasset");
+                name: "IX_tb_loanasset_companyidCompany",
+                table: "tb_loanasset");
 
             migrationBuilder.DropColumn(
                 name: "companyidCompany",
-                table: "tb_locationasset");
+                table: "tb_loanasset");
 
             migrationBuilder.DropColumn(
                 name: "decription",
