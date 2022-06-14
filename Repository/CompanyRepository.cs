@@ -52,7 +52,7 @@ public class CompanyRepository
         if (company == null)
             return Task.FromResult(false);
 
-        company.ativa = false;
+        company.IsAtiva = false;
         if(!UpdateCompany(company))
             return Task.FromResult(false);
         
@@ -61,13 +61,13 @@ public class CompanyRepository
 
     public Task<List<CompanyModel>> CompanyList()
     {
-        return Task.FromResult(_context.company.Where(c => c.ativa == true).ToList());
+        return Task.FromResult(_context.company.Where(c => c.IsAtiva == true).ToList());
     }
 
     private bool CompanyExists(CompanyModel company)
     {
         CompanyModel? DataCompany = _context.company
-            .FirstOrDefault(c => c.cnpj == company.cnpj);
+            .FirstOrDefault(c => c.Cnpj == company.Cnpj);
 
         if (DataCompany == null)
             return false;

@@ -83,9 +83,9 @@ namespace AssetManager.Migrations
                     b.ToTable("tb_company");
                 });
 
-            modelBuilder.Entity("AssetManager.Model.LocationAssetModel", b =>
+            modelBuilder.Entity("AssetManager.Model.LoanAssetModel", b =>
                 {
-                    b.Property<string>("idLocationAsset")
+                    b.Property<string>("idLoanAsset")
                         .HasMaxLength(32)
                         .HasColumnType("varchar(32)");
 
@@ -109,7 +109,7 @@ namespace AssetManager.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(32)");
 
-                    b.HasKey("idLocationAsset");
+                    b.HasKey("idLoanAsset");
 
                     b.HasIndex("assetidAsset");
 
@@ -117,7 +117,7 @@ namespace AssetManager.Migrations
 
                     b.HasIndex("usuarioidUsuario");
 
-                    b.ToTable("tb_locationasset");
+                    b.ToTable("tb_loanasset");
                 });
 
             modelBuilder.Entity("AssetManager.Model.UserModel", b =>
@@ -171,7 +171,7 @@ namespace AssetManager.Migrations
                     b.Navigation("company");
                 });
 
-            modelBuilder.Entity("AssetManager.Model.LocationAssetModel", b =>
+            modelBuilder.Entity("AssetManager.Model.LoanAssetModel", b =>
                 {
                     b.HasOne("AssetManager.Model.AssetModel", "asset")
                         .WithMany()

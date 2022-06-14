@@ -28,11 +28,11 @@ public class AssetController : ControllerBase
     public IActionResult Create(CreateAsset asset)
     {
         AssetModel? assetModel = _mapper.Map<CreateAsset, AssetModel>(asset);
-        assetModel.company = _companyRepository.GetCompanyByID(asset.idCompany);
+        assetModel.Company = _companyRepository.GetCompanyByID(asset.IdCompany);
         assetModel = _assetRepository.Create(assetModel);
         
         if (assetModel != null)
-            return Ok($"{assetModel.assetName} cadastrado com sucesso");
+            return Ok($"{assetModel.AssetName} cadastrado com sucesso");
 
         return BadRequest("Erro, não foi possivel criar o Asset");
     }
@@ -42,11 +42,11 @@ public class AssetController : ControllerBase
     public IActionResult Update(int idAsset, CreateAsset asset)
     {
         AssetModel? assetModel = _mapper.Map<CreateAsset, AssetModel>(asset, _assetRepository.GetAssetByID(idAsset));
-        assetModel.idAsset = idAsset;
+        assetModel.IdAsset = idAsset;
         assetModel = _assetRepository.Update(assetModel);
         if (assetModel != null)
         {
-            return Ok($"{assetModel.assetName} Atualizado com sucesso!");
+            return Ok($"{assetModel.AssetName} Atualizado com sucesso!");
         }
 
         return BadRequest("Erro, não foi possivel criar o Asset");
