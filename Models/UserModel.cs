@@ -24,4 +24,6 @@ public class UserModel
     [Column("IdCompany")]
     public int IdCompany { get; set; }
     public CompanyModel Company { get; set; }
+    [DefaultValue(true)]
+    public bool isActive { get; set; }
 }
