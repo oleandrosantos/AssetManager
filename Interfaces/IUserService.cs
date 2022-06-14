@@ -5,7 +5,8 @@ namespace AssetManager.Interfaces;
 
 public interface IUserService
 {
-    public string Create(CreateUserViewModel newUser);
-    public Result Login(string email, string password);
-    public UserModel? BuscarPorEmail(string email);
+  public string Create(CreateUserViewModel newUser);
+  public Result Login(string email, string password);
+  public UserModel? BuscarPorEmail(string email);
+  public bool UpdateUser(UserModel dadosDoUsuario);
 }

@@ -3,6 +3,7 @@ using System;
 using AssetManager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AssetManager.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220526041458_adicionando_boleano_usuarioativo")]
+    partial class adicionando_boleano_usuarioativo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,9 +85,9 @@ namespace AssetManager.Migrations
                     b.ToTable("tb_company");
                 });
 
-            modelBuilder.Entity("AssetManager.Model.LoanAssetModel", b =>
+            modelBuilder.Entity("AssetManager.Model.LocationAssetModel", b =>
                 {
-                    b.Property<string>("idLoanAsset")
+                    b.Property<string>("idLocationAsset")
                         .HasMaxLength(32)
                         .HasColumnType("varchar(32)");
 
@@ -109,7 +111,7 @@ namespace AssetManager.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(32)");
 
-                    b.HasKey("idLoanAsset");
+                    b.HasKey("idLocationAsset");
 
                     b.HasIndex("assetidAsset");
 
@@ -117,7 +119,7 @@ namespace AssetManager.Migrations
 
                     b.HasIndex("usuarioidUsuario");
 
-                    b.ToTable("tb_loanasset");
+                    b.ToTable("tb_locationasset");
                 });
 
             modelBuilder.Entity("AssetManager.Model.UserModel", b =>
@@ -171,7 +173,7 @@ namespace AssetManager.Migrations
                     b.Navigation("company");
                 });
 
-            modelBuilder.Entity("AssetManager.Model.LoanAssetModel", b =>
+            modelBuilder.Entity("AssetManager.Model.LocationAssetModel", b =>
                 {
                     b.HasOne("AssetManager.Model.AssetModel", "asset")
                         .WithMany()

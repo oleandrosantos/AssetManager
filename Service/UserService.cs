@@ -7,13 +7,13 @@ using AssetManager.Interfaces;
 
 namespace AssetManager.Service;
 
-public class UserService :IUserService
+public class UserService : IUserService
 {
     private UserRepository _userRepository;
     private const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA1;
-    private const int IterCount = 1000;
-    private const int SubkeyLength = 256 / 8;
-    private const int SaltSize = 128 / 8;
+    private const int ITER_COUNT = 1000;
+    private const int SUBKEY_LENGTH = 256 / 8;
+    private const int SALT_SIZE = 128 / 8;
 
     public UserService(UserRepository repository)
     {
@@ -23,10 +23,16 @@ public class UserService :IUserService
     public Result Login(string email, string password)
     {
         var usuario = _userRepository.GetUserByEmail(email);
+
         if (usuario == null)
         {
             return new Result(false, "Email não identificado em nossa base.");
         }
+        else if (!usuario.isActive)
+        {
+            return new Result(false, "Voce não tem permissão para acessar o sistema.");
+        }
+
         if (verificandoSenha(Convert.FromBase64String(usuario.Password), password))
         {
             return new Result(true, "");
@@ -35,6 +41,7 @@ public class UserService :IUserService
         {
             return new Result(false, "Usuario ou senha incorretos");
         }
+
     }
 
     public string? Create(CreateUserViewModel dadosUsuario)
@@ -46,15 +53,16 @@ public class UserService :IUserService
             return null;
         }
         dadosUsuario.Password = criandoHashDaSenha(dadosUsuario.Password);
-        string resultado = _userRepository.Create(dadosUsuario);
         
+        string resultado = _userRepository.Create(dadosUsuario);
+
         return resultado;
     }
 
     private string criandoHashDaSenha(string senha)
     {
-        byte[] salt = new byte[SaltSize];
-        using (var rng = RandomNumberGenerator.Create())  
+        byte[] salt = new byte[SALT_SIZE];
+        using (var rng = RandomNumberGenerator.Create())
         {
             rng.GetBytes(salt);
         }
@@ -62,14 +70,14 @@ public class UserService :IUserService
             password: senha,
             salt: salt,
             prf: HashType,
-            iterationCount: IterCount,
-            numBytesRequested: SubkeyLength);
-        
-        var outputBytes = new byte[1+SaltSize+SubkeyLength];
+            iterationCount: ITER_COUNT,
+            numBytesRequested: SUBKEY_LENGTH);
+
+        var outputBytes = new byte[1 + SALT_SIZE + SUBKEY_LENGTH];
         outputBytes[0] = 0x00;
-        Buffer.BlockCopy(salt,0,outputBytes,1,SaltSize);
-        Buffer.BlockCopy(subkey,0,outputBytes,1+SaltSize,SubkeyLength);
-        
+        Buffer.BlockCopy(salt, 0, outputBytes, 1, SALT_SIZE);
+        Buffer.BlockCopy(subkey, 0, outputBytes, 1 + SALT_SIZE, SUBKEY_LENGTH);
+
         return Convert.ToBase64String(outputBytes);
     }
 
@@ -77,19 +85,22 @@ public class UserService :IUserService
     {
         return _userRepository.GetUserByEmail(email);
     }
-    private bool verificandoSenha(byte[] hashPassword,string password)
+    private bool verificandoSenha(byte[] hashPassword, string password)
     {
-        if (hashPassword.Length != 1 + SaltSize + SubkeyLength)
+        if (hashPassword.Length != 1 + SALT_SIZE + SUBKEY_LENGTH)
             return false;
 
-        byte[] salt = new byte[SaltSize];
-        Buffer.BlockCopy(hashPassword, 1, salt, 0,salt.Length);
+        byte[] salt = new byte[SALT_SIZE];
+        Buffer.BlockCopy(hashPassword, 1, salt, 0, salt.Length);
 
-        byte[] expectedSubkey = new byte[SubkeyLength];
-        Buffer.BlockCopy(hashPassword,1+salt.Length, expectedSubkey, 0, expectedSubkey.Length);
+        byte[] expectedSubkey = new byte[SUBKEY_LENGTH];
+        Buffer.BlockCopy(hashPassword, 1 + salt.Length, expectedSubkey, 0, expectedSubkey.Length);
 
-        byte[] actualSubkey = KeyDerivation.Pbkdf2(password, salt, HashType, IterCount, SubkeyLength);
+        byte[] actualSubkey = KeyDerivation.Pbkdf2(password, salt, HashType, ITER_COUNT, SUBKEY_LENGTH);
 
         return CryptographicOperations.FixedTimeEquals(actualSubkey, expectedSubkey);
     }
+
+    public bool UpdateUser(UserModel dadosDoUsuario) => _userRepository.UpdateUser(dadosDoUsuario);
+
 }

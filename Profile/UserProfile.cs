@@ -4,14 +4,17 @@ using AssetManager.ViewModel;
 
 namespace AssetManager.Profile;
 
-public class UserProfile :AutoMapper.Profile
+public class UserProfile : AutoMapper.Profile
 {
-    
     public UserProfile()
     {
-        CreateMap<CreateUserViewModel, UserModel>();
+        CreateMap<CreateUserViewModel, UserModel>()
+                .AfterMap((src, dest) =>
+                {
+                    dest.isActive = true;
+                });
 
-        CreateMap<UserModel, CreateUserViewModel>();
+        CreateMap<UpdateUserViewModel, UserModel>();
     }
-    
+
 }
