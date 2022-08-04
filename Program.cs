@@ -37,6 +37,13 @@ builder.Services.AddTransient<LoanAssetRepository>();
 var connectionString = builder.Configuration["AppSettings:ConnectionString"];
 var serverVersion = ServerVersion.AutoDetect(connectionString);
 
+builder.Services.AddDbContext<DataContext>(
+    dbContextOptions => dbContextOptions
+        .UseMySql(connectionString, serverVersion)
+        .LogTo(Console.WriteLine, LogLevel.Information)
+        .EnableSensitiveDataLogging()
+        .EnableDetailedErrors()
+);
 
 var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Secret"]);
 
@@ -63,13 +70,6 @@ builder.Services.AddAuthentication(x =>
         };
     });
 
-builder.Services.AddDbContext<DataContext>(
-    dbContextOptions => dbContextOptions
-        .UseMySql(connectionString, serverVersion)
-        .LogTo(Console.WriteLine, LogLevel.Information)
-        .EnableSensitiveDataLogging()
-        .EnableDetailedErrors()
-    );
 
 var app = builder.Build();
 

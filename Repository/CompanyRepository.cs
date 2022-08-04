@@ -2,6 +2,7 @@ using AssetManager.Data;
 using AssetManager.Interfaces;
 using AssetManager.Model;
 using AssetManager.ViewModel;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AssetManager.Repository;
