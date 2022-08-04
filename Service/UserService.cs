@@ -25,22 +25,13 @@ public class UserService : IUserService
         var usuario = _userRepository.GetUserByEmail(email);
 
         if (usuario == null)
-        {
             return new Result(false, "Email não identificado em nossa base.");
-        }
-        else if (!usuario.isActive)
-        {
+        if (!usuario.isActive)
             return new Result(false, "Voce não tem permissão para acessar o sistema.");
-        }
-
         if (verificandoSenha(Convert.FromBase64String(usuario.Password), password))
-        {
             return new Result(true, "");
-        }
         else
-        {
             return new Result(false, "Usuario ou senha incorretos");
-        }
 
     }
 
@@ -49,14 +40,10 @@ public class UserService : IUserService
         var dados = _userRepository.GetUserByEmail(dadosUsuario.Email);
 
         if (dados != null)
-        {
             return null;
-        }
-        dadosUsuario.Password = criandoHashDaSenha(dadosUsuario.Password);
         
-        string resultado = _userRepository.Create(dadosUsuario);
-
-        return resultado;
+        dadosUsuario.Password = criandoHashDaSenha(dadosUsuario.Password);
+        return _userRepository.Create(dadosUsuario);
     }
 
     private string criandoHashDaSenha(string senha)

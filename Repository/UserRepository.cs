@@ -39,8 +39,11 @@ public class UserRepository
     }
 
 
-    public UserModel? GetUserByEmail(string email) => _context.usuario.FirstOrDefault(k => k.Email == email);
-
+    public UserModel? GetUserByEmail(string email)
+    {
+        return _context.usuario?.FirstOrDefault(k => k.Email == email);
+    }
+    
     public UserModel? GetUserById(string id) => _context.usuario.Find(id);
     
     public bool UpdateUser(UserModel dadosUsuario)

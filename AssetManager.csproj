@@ -45,6 +45,11 @@
     <Compile Remove="Migrations\20220519033532_user_model_company_null.cs" />
     <Compile Remove="Migrations\20220519033532_user_model_company_null.Designer.cs" />
     <Compile Remove="Migrations\DataContextModelSnapshot.cs" />
+    <Compile Remove="Models\Enum.cs" />
+    <Compile Remove="Migrations\20220610190335_init.cs" />
+    <Compile Remove="Migrations\20220610190335_init.Designer.cs" />
+    <Compile Remove="Migrations\20220526041458_adicionando_boleano_usuarioativo.cs" />
+    <Compile Remove="Migrations\20220526041458_adicionando_boleano_usuarioativo.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
