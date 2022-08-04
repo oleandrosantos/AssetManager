@@ -47,7 +47,7 @@ namespace AssetManager.Repository
             .ToList();
         }
 
-        public LoanAssetModel? GetByID(int id)
+        public LoanAssetModel? GetByID(string id)
         {
             return _context.loanAsset.Find(id);
         }

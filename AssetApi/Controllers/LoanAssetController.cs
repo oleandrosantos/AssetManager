@@ -37,7 +37,7 @@ namespace AssetManager
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Administrador,Suporte,Funcionario")]
-        public async Task<ActionResult<LoanAssetModel>> ObterPorId(int id)
+        public async Task<ActionResult<LoanAssetModel>> ObterPorId(string id)
         {
             return _loanAssetRepository.GetByID(id);
         }
@@ -97,7 +97,7 @@ namespace AssetManager
 
         [HttpPut("EncerrandoContrato/{id}")]
         [Authorize(Roles = "Administrador, Suporte")]
-        public IActionResult TerminationLoanAsset(int id, TerminationLoanAssetViewModel terminationLoanAsset)
+        public IActionResult TerminationLoanAsset(string id, TerminationLoanAssetViewModel terminationLoanAsset)
         {
             try
             {
