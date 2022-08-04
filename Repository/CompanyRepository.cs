@@ -17,7 +17,7 @@ public class CompanyRepository
 
     public CompanyModel? GetCompanyByID(int idCompany)
     {
-        return _context.company.Find(idCompany);
+        return _context.company.FirstOrDefault(c => c.IdCompany == idCompany);
     }
 
     public CompanyModel? CreateCompany(CompanyModel company)
@@ -66,12 +66,7 @@ public class CompanyRepository
 
     private bool CompanyExists(CompanyModel company)
     {
-        CompanyModel? DataCompany = _context.company
-            .FirstOrDefault(c => c.Cnpj == company.Cnpj);
-
-        if (DataCompany == null)
-            return false;
-
-        return true;
+        return _context.company
+            .Any(c => c.Cnpj == company.Cnpj);
     }
 }

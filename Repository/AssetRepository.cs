@@ -49,17 +49,13 @@ public class AssetRepository
         }
     }
 
-    public List<AssetModel>? AssetCompanyList(int idCompany)
+    public async Task<List<AssetModel>> AssetCompanyList(int idCompany)
     {
         var assetCompany = _context.asset.Where(a => a.Company.IdCompany == idCompany)
             .Include(a => a.Company)
-            .ToList();
+            .ToListAsync();
 
-        if(assetCompany.Count == 0 || assetCompany == null)
-        {
-            return null;
-        }
-        return assetCompany;
+        return await assetCompany;
     }
     public bool DeleteAsset(int idAsset, string exclusionInfo)
     {

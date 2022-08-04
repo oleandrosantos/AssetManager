@@ -70,13 +70,11 @@ public class UserController : ControllerBase
     public IActionResult UpdateUser(UpdateUserViewModel dadosUsuario)
     {
         UserModel usuario = _userService.BuscarPorEmail(dadosUsuario.email);
-        usuario.name = dadosUsuario.name ?? usuario.name;
-        usuario.password = dadosUsuario.password ?? usuario.password;
-        usuario.role = dadosUsuario.role ?? usuario.role;
+        usuario.Name = dadosUsuario.name ?? usuario.Name;
+        usuario.Password = dadosUsuario.password ?? usuario.Password;
+        usuario.Role = dadosUsuario.role ?? usuario.Role;
         if (!_userService.UpdateUser(usuario))
-        {
             return BadRequest("Não foi possivel atualizar o usuario");
-        }
 
         return Ok("Usuario atualizado com sucesso");
     }
@@ -86,12 +84,14 @@ public class UserController : ControllerBase
     public IActionResult RevogarAcesso(string email)
     {
         UserModel usuario = _userService.BuscarPorEmail(email);
+        if (usuario == null)
+            return BadRequest("Não conseguimos localizar este usuario!");
+        
         usuario.isActive = false;
+        
         if (!_userService.UpdateUser(usuario))
-        {
             return BadRequest("Não foi possivel revogar o acesso");
-        }
-
+        
         return Ok("Acesso revogado com sucesso");
     }
 }

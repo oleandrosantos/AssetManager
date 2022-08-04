@@ -57,13 +57,12 @@ public class AssetController : ControllerBase
     [Authorize(Roles = "Administrador,Suporte")]
     public IActionResult AssetCompanyList(int idCompany)
     {
-        List<AssetModel>? assetList = _assetRepository.AssetCompanyList(idCompany);
+        var assetList = _assetRepository.AssetCompanyList(idCompany);
 
-        if (assetList == null || assetList.Count == 0)
-        {
+        if (assetList.Result.Count == 0)
             return NoContent();
-        }
-        return Ok(assetList);
+
+        return Ok(assetList.Result);
     }
 
     [HttpGet("Asset/{id}")]
