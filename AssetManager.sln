@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssetManager", "AssetApi/AssetManager.csproj", "{A1761566-9731-4E9D-97F5-D3242015B28C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetTests", "AssetTests\AssetTests.csproj", "{BFCA4A57-F6C5-4FE5-886D-8A37DFEBE5F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A1761566-9731-4E9D-97F5-D3242015B28C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1761566-9731-4E9D-97F5-D3242015B28C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1761566-9731-4E9D-97F5-D3242015B28C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFCA4A57-F6C5-4FE5-886D-8A37DFEBE5F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFCA4A57-F6C5-4FE5-886D-8A37DFEBE5F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFCA4A57-F6C5-4FE5-886D-8A37DFEBE5F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFCA4A57-F6C5-4FE5-886D-8A37DFEBE5F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

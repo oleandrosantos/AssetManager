@@ -39,17 +39,48 @@ namespace AssetManager.Repository
             return loanAssetList.ToList();
         }
 
-        public List<LoanAssetModel> CompanyLoanAssetsList(int idCompany)
+        public async Task<IEnumerable<LoanAssetModel>> CompanyLoanAssetsList(int idCompany)
         {
-            return _context.loanAsset
+            return await _context.loanAsset
             .Where(l => l.Company.IdCompany == idCompany && l.DevolutionDate == null)
             .Include(l => l.Asset)
-            .ToList();
+            .ToListAsync();
+        }
+
+        public async Task<IEnumerable<LoanAssetModel>> LoanAssetList(LoanAssetFilter filter)
+        {
+            var loanAsset = _context.loanAsset.Include(l => l.Asset);;
+            if (filter.IdUsuario != null)
+                loanAsset.Where(l => l.IdUsuario == filter.IdUsuario);
+            if(filter.IsAtive != null)
+                if (filter.IsAtive == true)
+                    loanAsset.Where(l => l.DevolutionDate == null);
+                else
+                    loanAsset.Where(l => l.DevolutionDate.HasValue);
+            if(filter.IdCompany != null)
+                loanAsset.Where(l => l.IdCompany == filter.IdCompany);
+
+            return await loanAsset.ToListAsync();
         }
 
         public LoanAssetModel? GetByID(string id)
         {
             return _context.loanAsset.Find(id);
         }
+
+        public bool UpdateLocationAsset(LoanAssetModel loan)
+        {
+            try
+            {
+                _context.loanAsset.Update(loan);
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        
     }
 }

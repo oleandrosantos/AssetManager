@@ -35,12 +35,12 @@ public class UserService : IUserService
 
     }
 
-    public string? Create(CreateUserViewModel dadosUsuario)
+    public string Create(CreateUserViewModel dadosUsuario)
     {
         var dados = _userRepository.GetUserByEmail(dadosUsuario.Email);
 
         if (dados != null)
-            return null;
+            return "";
         
         dadosUsuario.Password = criandoHashDaSenha(dadosUsuario.Password);
         return _userRepository.Create(dadosUsuario);

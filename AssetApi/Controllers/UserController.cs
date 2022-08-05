@@ -1,7 +1,6 @@
 using AssetManager.Interfaces;
 using AssetManager.Model;
 using AssetManager.ViewModel;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,28 +12,23 @@ public class UserController : ControllerBase
 {
     private IUserService _userService;
     private ITokenService _tokenService;
-    private IMapper _mapper;
 
-    public UserController(IUserService userService, ITokenService tokenService, IMapper mapper)
+    public UserController(IUserService userService, ITokenService tokenService)
     {
         _userService = userService;
         _tokenService = tokenService;
-        _mapper = mapper;
     }
 
     [HttpPost("Create")]
     [AllowAnonymous]
-    public IActionResult CadatrarUsuario(CreateUserViewModel dadosUsuario)
+    public IActionResult CadastrarUsuario(CreateUserViewModel dadosUsuario)
     {
         dadosUsuario.Email = dadosUsuario.Email.ToLower().Trim();
         var resultado = _userService.Create(dadosUsuario);
-        if (resultado == null)
-        {
-            return BadRequest("este email encontra-se cadastrado em nosos banco!");
-        }
-
+        if (string.IsNullOrEmpty(resultado))
+            return BadRequest("Este email encontra-se cadastrado em nosos banco!");
+        
         return Ok(resultado);
-
     }
 
     [HttpPost("Login")]
@@ -51,11 +45,11 @@ public class UserController : ControllerBase
         if (resultadoLogin.Status)
         {
             var usuarioModel = _userService.BuscarPorEmail(model.Email);
-            usuarioModel.Password = "";
+            usuarioModel!.Password = "";
             var token = _tokenService.GenerateToken(usuarioModel);
             return Task.FromResult<ActionResult<dynamic>>(new
             {
-                token = token,
+                token,
             });
         }
         else
@@ -69,11 +63,9 @@ public class UserController : ControllerBase
     [Authorize(Roles = "Administrador,Suporte,Funcionario")]
     public IActionResult UpdateUser(UpdateUserViewModel dadosUsuario)
     {
-        UserModel usuario = _userService.BuscarPorEmail(dadosUsuario.email);
-        usuario.Name = dadosUsuario.name ?? usuario.Name;
-        usuario.Password = dadosUsuario.password ?? usuario.Password;
-        usuario.Role = dadosUsuario.role ?? usuario.Role;
-        if (!_userService.UpdateUser(usuario))
+        UserModel? usuario = _userService.BuscarPorEmail(dadosUsuario.email);
+        
+        if (usuario == null || !AtualizarDadosUsuario(usuario,dadosUsuario))
             return BadRequest("Não foi possivel atualizar o usuario");
 
         return Ok("Usuario atualizado com sucesso");
@@ -83,7 +75,7 @@ public class UserController : ControllerBase
     [Authorize(Roles = "Administrador,Suporte")]
     public IActionResult RevogarAcesso(string email)
     {
-        UserModel usuario = _userService.BuscarPorEmail(email);
+        UserModel? usuario = _userService.BuscarPorEmail(email);
         if (usuario == null)
             return BadRequest("Não conseguimos localizar este usuario!");
         
@@ -93,5 +85,13 @@ public class UserController : ControllerBase
             return BadRequest("Não foi possivel revogar o acesso");
         
         return Ok("Acesso revogado com sucesso");
+    }
+
+    private bool AtualizarDadosUsuario(UserModel usuario, UpdateUserViewModel dadosUsuario)
+    {
+        usuario.Name = dadosUsuario.name ?? usuario.Name;
+        usuario.Password = dadosUsuario.password ?? usuario.Password;
+        usuario.Role = dadosUsuario.role ?? usuario.Role;
+        return _userService.UpdateUser(usuario);
     }
 }

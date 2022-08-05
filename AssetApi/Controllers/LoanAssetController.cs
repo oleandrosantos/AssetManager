@@ -1,74 +1,77 @@
-﻿#nullable disable
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AssetManager.Data;
-using AssetManager.Model;
-using AssetManager.ViewModel;
-using AssetManager.Interfaces;
-using Microsoft.AspNetCore.Authorization;
+﻿using AssetManager.Model;
 using AssetManager.Repository;
+using AssetManager.ViewModel;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace AssetManager
+namespace AssetManager.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class LoanAssetController : ControllerBase
     {
-        private readonly DataContext _context;
         private LoanAssetRepository _loanAssetRepository;
         private IMapper _mapper;
 
-        public LoanAssetController(DataContext context, IMapper mapper, LoanAssetRepository loanAssetRepository)
+        public LoanAssetController( IMapper mapper, LoanAssetRepository loanAssetRepository)
         {
-            _context = context;
             _mapper = mapper;
             _loanAssetRepository = loanAssetRepository;
         }
 
-
         [HttpGet]
         [Authorize(Roles = "Suporte")]
-        public async Task<ActionResult<IEnumerable<LoanAssetModel>>> GetLoanAssetList()
+        public ActionResult<IEnumerable<LoanAssetModel>> GetLoanAssetList(LoanAssetFilter filter)
         {
-            return await _context.loanAsset.ToListAsync();
+            var loanAssetList = _loanAssetRepository.LoanAssetList(filter);
+            return Ok(loanAssetList);
         }
-
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Administrador,Suporte,Funcionario")]
-        public async Task<ActionResult<LoanAssetModel>> ObterPorId(string id)
+        public IActionResult ObterPorId(string id)
         {
-            return _loanAssetRepository.GetByID(id);
+            var loanAsset = _loanAssetRepository.GetByID(id);
+            if(loanAsset != null)
+                return Ok(loanAsset);
+
+            return BadRequest("Não conseguimos localzar este ID em nosso sistema");
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Administrador,Suporte")]
-        public async Task<IActionResult> UpdateLoanAssetModel(string id, LoanAssetModel laonAssetModel)
+        public Task<IActionResult> UpdateLoanAssetModel(string id, LoanAssetModel laonAssetModel)
         {
             throw new Exception();
         }
 
-
         [HttpPost("Create")]
         [Authorize(Roles = "Administrador,Suporte")]
-        public async Task<ActionResult<LoanAssetModel>> CreateLoanAssetModel(CreateLoanAsset loanAsset)
+        public IActionResult CreateLoanAssetModel(CreateLoanAsset loanAsset)
         {
             LoanAssetModel loanAssetModel = _mapper.Map<CreateLoanAsset, LoanAssetModel>(loanAsset);
             var resultado = _loanAssetRepository.CreateLoanAsset(loanAssetModel);
 
             if (resultado.Status)
             {
-                return Ok("Registrado com sucesso");
+                return Ok("Contrato registrado com sucesso");
             }
             return BadRequest(resultado.Mensagem);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Administrador,Suporte")]
-        public async Task<IActionResult> DeleteLoanAssetModel(string id)
+        public IActionResult DeleteLoanAssetModel(string id)
         {
-            throw new Exception();
+            var terminationLoanAsset = new TerminationLoanAssetViewModel();
+            terminationLoanAsset.Date = DateTime.Now;
+            terminationLoanAsset.Description = "Contrato de locação deletado!";
+            
+            if (EncerrandoContrato(id, terminationLoanAsset))
+                return Ok("Termino de Contrato Registrado com sucesso!");
+            else
+                return BadRequest("Não foi possivel registrar o termino do contrato");
         }
 
         [HttpGet("ListarPorCompanhia/{idCompany}")]
@@ -77,7 +80,7 @@ namespace AssetManager
         {
             var loanList = _loanAssetRepository.CompanyLoanAssetsList(idCompany);
             
-            if (loanList.Any())
+            if (loanList.IsCompleted && loanList.Result.Any())
                 return Ok(loanList);
 
             return BadRequest();
@@ -101,10 +104,10 @@ namespace AssetManager
         {
             try
             {
-                var loanAsset = _loanAssetRepository.GetByID(id);
-                loanAsset.DevolutionDate = terminationLoanAsset.Date ?? DateTime.Now;
-                loanAsset.Description = terminationLoanAsset.Description;
-                return Ok("Termino de Contrato Registrado com sucesso!");
+                if (EncerrandoContrato(id, terminationLoanAsset))
+                    return Ok("Termino de Contrato Registrado com sucesso!");
+                else
+                    throw new Exception("Não foi possivel registrar o termino do contrato");
             }
             catch (Exception ex)
             {
@@ -112,10 +115,12 @@ namespace AssetManager
             }
         }
 
-
-        private bool LoanAssetModelExists(string id)
+        private bool EncerrandoContrato(string id, TerminationLoanAssetViewModel terminationLoanAsset)
         {
-            return _context.loanAsset.Any(e => e.IdLoanAsset == id);
+            var loanAsset = _loanAssetRepository.GetByID(id);
+            loanAsset!.DevolutionDate = terminationLoanAsset.Date ?? DateTime.Now;
+            loanAsset.Description = terminationLoanAsset.Description;
+            return _loanAssetRepository.UpdateLocationAsset(loanAsset);
         }
     }
 }
