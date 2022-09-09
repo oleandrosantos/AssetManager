@@ -11,9 +11,10 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" type="text/css" href="src/style.css" />
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
-  <body>
+  <body class="text-bg-secondary">
     <noscript>
       <strong
         >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work
@@ -21,7 +22,7 @@
         continue.</strong
       >
     </noscript>
-    <div id="app"></div>
+    <div id="app" class="align-items-center"></div>
     <!-- built files will be auto injected -->
   </body>
   <script
