@@ -21,10 +21,15 @@ async function request(method, url, body) {
       body: JSON.stringify(body)
     }
   };
-  const response = await fetch(baseURL + url, options);
-  console.log("resposata", response);
-  console.log("em js", response.json());
-  return response.json();
+  const result = await fetch(baseURL + url, options)
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then(text => { throw new Error(text.message) })
+      }
+      return response.json();
+    });
+
+  return result;
 }
 
 export { request as default, request, getHeaders }

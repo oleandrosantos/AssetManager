@@ -2,13 +2,26 @@ import decode from 'jwt-decode';
 import request from './request';
 
 export async function signIn(email, password) {
-  console.log('signin!');
-  const { token } = await request('POST', 'User/Login', {
+  const result = await request('POST', 'User/Login', {
     email,
     password
+  }).then((data) => {
+    return {
+      ok: true,
+      token: data.token
+    };
+  }).catch((error) => {
+    return {
+      ok: false,
+      mensagem: error.message
+    };
   });
-  console.log(token);
-  //localStorage.set('token', token);
+
+  if (!result.ok) {
+    return result;
+  }
+  localStorage.setItem('token', result.token);
+  return true;
 }
 
 export function signOut() {
