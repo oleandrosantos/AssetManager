@@ -110,7 +110,6 @@ export default {
     rules: {
           required: value => !!value || 'Required.',
           min: v => v.length >= 8 || 'Minimo de 8 caracteres',
-          emailMatch: () => (`The email and password you entered don't match`),
           emailRules: [
             v => !!v || 'E-mail é requerido',
             v => /.+@.+\..+/.test(v) || 'E-mail não é valido',
