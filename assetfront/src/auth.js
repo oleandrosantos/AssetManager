@@ -1,5 +1,5 @@
 import decode from 'jwt-decode';
-import request from './request';
+import request from './modulos/request';
 
 export async function signIn(email, password) {
   const result = await request('POST', 'User/Login', {

@@ -9,7 +9,17 @@
         <v-container fluid>
           <v-row  class="mb-5"> 
             <v-col align-self="center">
-              <p class="text-h4 text-center">Login</p>
+              <p class="text-h4 text-center">Registrar</p>
+            </v-col>
+          </v-row>
+          <v-row > 
+            <v-col align-self="center">
+              <v-text-field label="Nome" 
+              v-model="usuario.nome" 
+              type="text" 
+              placeholder="João da Silva Silveira" 
+              required
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row > 
@@ -31,10 +41,27 @@
               :rules="[rules.required, rules.min]"
               :type="showPassword ? 'text' : 'password'"
               name="input-10-1"
-              label="Senha"
+              label="Digite uma senha"
               hint="At least 8 characters"
               counter
+              required
               @click:append="showPassword = !showPassword"
+              ></v-text-field>
+            </v-col>  
+          </v-row>
+          <v-row > 
+            <v-col align-self="center">
+              <v-text-field
+              v-model="usuario.password2"
+              :append-icon="showPassword2 ? 'mdi-eye' : 'mdi-eye-off'"
+              :rules="[rules.required, rules.min, matchingPasswords]"
+              :type="showPassword2 ? 'text' : 'password'"
+              name="input-10-1"
+              label="Digite novamente a senha"
+              hint="At least 8 characters"
+              counter
+              required
+              @click:append="showPassword2 = !showPassword2"
               ></v-text-field>
             </v-col>  
           </v-row>
@@ -63,20 +90,22 @@
     </v-card>
   </v-sheet>
 </template>
-
 <script>
 import { signIn } from '../auth';
 
 export default {
-  name: 'LoginApp',
+  name: 'RegisterView',
   data: () => ({
     usuario:{
+      nome: '',
       email: '',
       password: '',
+      password2: '',
     },
     form: false,
     loading: false,
     showPassword: false,
+    showPassword2: false,
     mensagemErro: '',
     rules: {
           required: value => !!value || 'Required.',
@@ -99,11 +128,14 @@ export default {
       this.loading = false;
       console.log(result.mensagem);
       this.mensagemErro= result.mensagem;
+    }, 
+    matchingPasswords: function() {
+      if (this.usuario.password === this.usuario.password2) {
+        return true;
+      } else {
+        return 'As senha não siguais.';
+      }
     }
   }
 }
 </script>
-
-<style>
-
-</style>
