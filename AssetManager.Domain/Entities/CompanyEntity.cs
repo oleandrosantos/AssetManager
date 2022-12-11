@@ -16,4 +16,5 @@ public class CompanyEntity
     [DefaultValue(true)]
     public bool IsAtiva { get; set; }
     public virtual List<UserEntity> Users { get; set; }
+    public virtual IList<AssetEntity> Asset { get; set; }
 }
