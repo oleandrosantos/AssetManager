@@ -15,6 +15,8 @@ public class CompanyEntity
     public string? Cnpj { get; set; }
     [DefaultValue(true)]
     public bool IsAtiva { get; set; }
-    public virtual List<UserEntity> Users { get; set; }
-    public virtual IList<AssetEntity> Asset { get; set; }
+    public virtual ICollection<UserEntity> Users { get; set; }
+    public virtual ICollection<AssetEntity> Asset { get; set; }
+    public virtual ICollection<LoanAssetEntity> Loans { get; set; }
+
 }

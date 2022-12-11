@@ -13,6 +13,7 @@ public class AssetEntity
     public ulong AssetPriceInCents { get; set; }
     public string Status { get; set; }
     public int IdCompany { get; set; }
-    public virtual CompanyEntity Company { get; set; }
-    public virtual List<AssetEventsEntity> AssetEvents { get; set; }
+    public CompanyEntity Company { get; set; }
+    public LoanAssetEntity LoanAsset { get; set; }
+    public ICollection<AssetEventsEntity> AssetEvents { get; set; }
 }

@@ -6,7 +6,7 @@ namespace AssetManager.Domain.Entities;
 
 public class UserEntity
 {
-    public string IdUsuario { get; set; }
+    public string IdUser { get; set; }
     public string Name { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
@@ -14,4 +14,5 @@ public class UserEntity
     public int IdCompany { get; set; }
     public bool isActive { get; set; }
     public CompanyEntity Company { get; set; }
+    public ICollection<LoanAssetEntity> Loans { get; set; }
 }
