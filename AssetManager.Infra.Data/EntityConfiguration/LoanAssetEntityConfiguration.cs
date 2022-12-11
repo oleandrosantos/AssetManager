@@ -14,7 +14,6 @@ public class LoanAssetEntityConfiguration : IEntityTypeConfiguration<LoanAssetEn
     {
         builder.HasIndex(a => a.IdLoanAsset);
         builder.Property(a => a.IdLoanAsset).HasMaxLength(32).IsRequired();
-
         builder.Property(a => a.LoanDate).IsRequired();
         builder.Property(a => a.Description).HasMaxLength(256);
         builder.Property(a => a.IdUser).HasMaxLength(32);

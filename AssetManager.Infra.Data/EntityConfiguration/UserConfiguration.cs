@@ -17,6 +17,9 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
         builder.HasOne(u => u.Company)
             .WithMany(c => c.Users)
             .HasForeignKey(u => u.IdCompany);
+        builder.HasMany(a => a.Loans)
+            .WithOne(u => u.User)
+            .HasForeignKey(a => a.IdUser);
         builder.Property(u => u.isActive).HasDefaultValue(true);
     }
 }
