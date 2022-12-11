@@ -12,14 +12,17 @@ namespace AssetManager.Infra.Data.Context
         public DbSet<LoanAssetEntity> loanAsset => Set<LoanAssetEntity>();
         public DbSet<UserEntity> usuario => Set<UserEntity>();
         public DbSet<CompanyEntity> company => Set<CompanyEntity>();
+        public DbSet<AssetEventsEntity> assetEvents => Set<AssetEventsEntity>();
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
             builder.ApplyConfiguration(new UserConfiguration());
             builder.ApplyConfiguration(new AssetConfiguration());
-
-
+            builder.ApplyConfiguration(new LoanAssetConfiguration());
+            builder.ApplyConfiguration(new CompanyConfiguration());
+            builder.ApplyConfiguration(new AssetEventsConfiguration());
         }
     }
 }

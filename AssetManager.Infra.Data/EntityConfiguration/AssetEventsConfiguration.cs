@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AssetManager.Infra.Data.EntityConfiguration;
-public class AssetEventsEntityConfiguration : IEntityTypeConfiguration<AssetEventsEntity>
+public class AssetEventsConfiguration : IEntityTypeConfiguration<AssetEventsEntity>
 {
     public void Configure(EntityTypeBuilder<AssetEventsEntity> builder)
     {
+        builder.ToTable("tb_asset_events");
         builder.HasKey(a => a.IdEvent);
         builder.Property(a => a.Description).HasMaxLength(120);
         builder.Property(a => a.IdUserRegister).HasMaxLength(32).IsRequired();

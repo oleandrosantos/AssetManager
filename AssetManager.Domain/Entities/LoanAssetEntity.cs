@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AssetManager.Domain.Entities;
 
-[Table("tb_loanasset")]
 public class LoanAssetEntity
 {
     public string? IdLoanAsset { get; set; }

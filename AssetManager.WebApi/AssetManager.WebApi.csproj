@@ -11,7 +11,7 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -23,7 +23,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.2" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
@@ -32,32 +32,16 @@
     <Compile Remove="Controllers\WeatherForecastController.cs" />
     <Compile Remove="WeatherForecast.cs" />
     <Compile Remove="Service\IUsuarService.cs" />
-    <Compile Remove="Migrations\20220312191952_initial_migration.cs" />
-    <Compile Remove="Migrations\20220312191952_initial_migration.Designer.cs" />
-    <Compile Remove="Migrations\20220321230152_ajusteUserTable.cs" />
-    <Compile Remove="Migrations\20220321230152_ajusteUserTable.Designer.cs" />
-    <Compile Remove="Migrations\20220326024908_create_company.cs" />
-    <Compile Remove="Migrations\20220326024908_create_company.Designer.cs" />
-    <Compile Remove="Migrations\20220401155724_updateDatabaseModels.cs" />
-    <Compile Remove="Migrations\20220401155724_updateDatabaseModels.Designer.cs" />
-    <Compile Remove="Migrations\20220405025001_upgrade-companyModels.cs" />
-    <Compile Remove="Migrations\20220405025001_upgrade-companyModels.Designer.cs" />
-    <Compile Remove="Migrations\20220519033532_user_model_company_null.cs" />
-    <Compile Remove="Migrations\20220519033532_user_model_company_null.Designer.cs" />
-    <Compile Remove="Migrations\DataContextModelSnapshot.cs" />
     <Compile Remove="Models\Enum.cs" />
-    <Compile Remove="Migrations\20220610190335_init.cs" />
-    <Compile Remove="Migrations\20220610190335_init.Designer.cs" />
-    <Compile Remove="Migrations\20220526041458_adicionando_boleano_usuarioativo.cs" />
-    <Compile Remove="Migrations\20220526041458_adicionando_boleano_usuarioativo.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Properties\launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AssetManager.Infra.Data\AssetManager.Infra.Data.csproj" />
+    <ProjectReference Include="..\AssetManager.Infra.IoC\AssetManager.Infra.IoC.csproj" />
   </ItemGroup>
 
 </Project>

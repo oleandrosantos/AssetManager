@@ -8,12 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AssetManager.Infra.Data.EntityConfiguration;
-public class LoanAssetEntityConfiguration : IEntityTypeConfiguration<LoanAssetEntity>
+public class LoanAssetConfiguration : IEntityTypeConfiguration<LoanAssetEntity>
 {
     public void Configure(EntityTypeBuilder<LoanAssetEntity> builder)
     {
-        builder.HasIndex(a => a.IdLoanAsset);
-        builder.Property(a => a.IdLoanAsset).HasMaxLength(32).IsRequired();
+        builder.ToTable("tb_loan_asset");
+        builder.HasKey(a => a.IdLoanAsset);
+        builder.Property(a => a.IdLoanAsset).HasMaxLength(32);
         builder.Property(a => a.LoanDate).IsRequired();
         builder.Property(a => a.Description).HasMaxLength(256);
         builder.Property(a => a.IdUser).HasMaxLength(32);
