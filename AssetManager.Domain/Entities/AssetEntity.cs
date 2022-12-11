@@ -14,4 +14,5 @@ public class AssetEntity
     public string Status { get; set; }
     public int IdCompany { get; set; }
     public virtual CompanyEntity Company { get; set; }
+    public virtual List<AssetEventsEntity> AssetEvents { get; set; }
 }

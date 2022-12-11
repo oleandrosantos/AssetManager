@@ -18,5 +18,8 @@ public class AssetConfiguration : IEntityTypeConfiguration<AssetEntity>
         builder.HasOne(a => a.Company)
             .WithMany(a => a.Asset)
             .HasForeignKey(a => a.IdCompany);
+        builder.HasMany(a => a.AssetEvents)
+            .WithOne(a => a.Asset)
+            .HasForeignKey(a => a.IdAsset);
     }
 }
