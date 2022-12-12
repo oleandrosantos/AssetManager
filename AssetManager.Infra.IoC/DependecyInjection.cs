@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using AssetManager.Infra.Data.Context;
-using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore.Design;
+using AssetManager.Infra.Data.Repository;
 
 namespace AssetManager.Infra.IoC
 {
@@ -19,6 +18,7 @@ namespace AssetManager.Infra.IoC
                     .EnableDetailedErrors()
             );
 
+            services.AddTransient<AssetRepository>();
         }
     }
 }
