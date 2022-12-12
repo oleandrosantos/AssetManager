@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AssetManager.Infra.Data.EntityConfiguration;
-public class CompanyConfiguration : IEntityTypeConfiguration<CompanyEntity>
+public class CompanyConfiguration : IEntityTypeConfiguration<AssetEventsEntity>
 {
-    public void Configure(EntityTypeBuilder<CompanyEntity> builder)
+    public void Configure(EntityTypeBuilder<AssetEventsEntity> builder)
     {
         builder.ToTable("tb_company");
         builder.HasKey(c => c.IdCompany);

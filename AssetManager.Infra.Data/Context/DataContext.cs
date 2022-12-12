@@ -11,7 +11,7 @@ namespace AssetManager.Infra.Data.Context
         public DbSet<AssetEntity> asset => Set<AssetEntity>();
         public DbSet<LoanAssetEntity> loanAsset => Set<LoanAssetEntity>();
         public DbSet<UserEntity> usuario => Set<UserEntity>();
-        public DbSet<CompanyEntity> company => Set<CompanyEntity>();
+        public DbSet<AssetEventsEntity> company => Set<AssetEventsEntity>();
         public DbSet<AssetEventsEntity> assetEvents => Set<AssetEventsEntity>();
 
 

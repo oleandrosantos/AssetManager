@@ -13,5 +13,5 @@ public class LoanAssetEntity
     public int IdCompany { get; set; }
     public UserEntity User { get; set; }
     public AssetEntity Asset { get; set; }
-    public CompanyEntity Company { get; set; }
+    public AssetEventsEntity Company { get; set; }
 }
