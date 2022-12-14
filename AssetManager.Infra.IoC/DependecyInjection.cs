@@ -19,6 +19,11 @@ namespace AssetManager.Infra.IoC
             );
 
             services.AddTransient<AssetRepository>();
+            services.AddTransient<AssetEventsRepository>();
+            services.AddTransient<LoanAssetRepository>();
+            services.AddTransient<CompanyRepository>();
+            services.AddTransient<UserRepository>();
+
         }
     }
 }
