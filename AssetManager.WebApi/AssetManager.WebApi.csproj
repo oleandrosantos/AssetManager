@@ -28,11 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\UserContext.cs" />
     <Compile Remove="Controllers\WeatherForecastController.cs" />
     <Compile Remove="WeatherForecast.cs" />
-    <Compile Remove="Service\IUsuarService.cs" />
-    <Compile Remove="Models\Enum.cs" />
   </ItemGroup>
 
   <ItemGroup>

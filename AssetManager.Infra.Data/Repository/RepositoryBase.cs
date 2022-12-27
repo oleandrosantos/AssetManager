@@ -30,7 +30,7 @@ public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where T
         }
     }
 
-    public virtual async Task Insert(TEntity entity)
+    public virtual async Task Create(TEntity entity)
     {
         context.Add(entity);
         await context.SaveChangesAsync();

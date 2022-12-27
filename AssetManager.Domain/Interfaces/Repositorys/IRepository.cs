@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace AssetManager.Domain.Interfaces.Repositorys;
 public interface IRepositoryBase<TEntity> where TEntity : class
 {
-    Task Insert(TEntity obj);
+    Task Create(TEntity obj);
     Task<TEntity?> GetById(int id);
     Task<IEnumerable<TEntity>> GetAll();
     Task Delete(TEntity obj);

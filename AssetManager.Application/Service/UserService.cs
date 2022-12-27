@@ -1,41 +1,41 @@
-using AssetManager.Model;
-using AssetManager.ViewModel;
 using System.Security.Cryptography;
-using AssetManager.Repository;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using AssetManager.Interfaces;
+using AssetManager.Domain.Interfaces.Repositorys;
+using AssetManager.Domain.Utils;
+using AssetManager.Domain.DTO;
+using AssetManager.Domain.Interfaces.Application;
 
-namespace AssetManager.Service;
+namespace AssetManager.Application.Service;
 
 public class UserService : IUserService
 {
-    private UserRepository _userRepository;
+    private IUserRepository _userRepository;
     private const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA1;
     private const int ITER_COUNT = 1000;
     private const int SUBKEY_LENGTH = 256 / 8;
     private const int SALT_SIZE = 128 / 8;
 
-    public UserService(UserRepository repository)
+    public UserService(IUserRepository repository)
     {
         _userRepository = repository;
     }
 
-    public Result Login(string email, string password)
+    public ResultRequest Login(string email, string password)
     {
         var usuario = _userRepository.GetUserByEmail(email);
 
         if (usuario == null)
-            return new Result(false, "Email não identificado em nossa base.");
+            return new ResultRequest(false, "Email não identificado em nossa base.");
         if (!usuario.isActive)
-            return new Result(false, "Voce não tem permissão para acessar o sistema.");
+            return new ResultRequest(false, "Voce não tem permissão para acessar o sistema.");
         if (verificandoSenha(Convert.FromBase64String(usuario.Password), password))
-            return new Result(true, "");
+            return new ResultRequest(true, "");
         else
-            return new Result(false, "Usuario ou senha incorretos");
+            return new ResultRequest(false, "Usuario ou senha incorretos");
 
     }
 
-    public string Create(CreateUserViewModel dadosUsuario)
+    public string Create(CreateUserDTO dadosUsuario)
     {
         var dados = _userRepository.GetUserByEmail(dadosUsuario.Email);
 
@@ -68,7 +68,7 @@ public class UserService : IUserService
         return Convert.ToBase64String(outputBytes);
     }
 
-    public UserModel? BuscarPorEmail(string email)
+    public UserDTO? BuscarPorEmail(string email)
     {
         return _userRepository.GetUserByEmail(email);
     }
@@ -88,6 +88,6 @@ public class UserService : IUserService
         return CryptographicOperations.FixedTimeEquals(actualSubkey, expectedSubkey);
     }
 
-    public bool UpdateUser(UserModel dadosDoUsuario) => _userRepository.UpdateUser(dadosDoUsuario);
+    public bool UpdateUser(UpdateUserDTO dadosDoUsuario) => _userRepository.Update(dadosDoUsuario);
 
 }

@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 
-namespace AssetManager.Domain.InputModel
+namespace AssetManager.Domain.DTO
 {
-    public class UserInputModel
+    public class UserDTO
     {
         [MaxLength(32)]
         public string IdUsuario { get; set; }

@@ -1,6 +1,5 @@
-namespace AssetManager.ViewModel;
-
-public class LoanAssetFilter
+﻿namespace AssetManager.Domain.Filters;
+public class LoatAssetFilter
 {
     public string? IdUsuario { get; set; }
     public bool? IsAtive { get; set; }

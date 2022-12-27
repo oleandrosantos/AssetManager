@@ -1,7 +1,5 @@
-using AssetManager.Interfaces;
-using AssetManager.Model;
-using AssetManager.Repository;
-using AssetManager.ViewModel;
+using AssetManager.Domain.DTO;
+using AssetManager.Domain.Interfaces.Repositorys;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +10,11 @@ namespace AssetManager.Controllers;
 [ApiController]
 public class AssetController : ControllerBase
 {
-    private AssetRepository _assetRepository;
+    private IAssetRepository _assetRepository;
     private IMapper _mapper;
-    private CompanyRepository _companyRepository;
+    private ICompanyRepository _companyRepository;
 
-    public AssetController(AssetRepository assetRepository, IMapper mapper, CompanyRepository companyRepository)
+    public AssetController(IAssetRepository assetRepository, IMapper mapper, ICompanyRepository companyRepository)
     {
         _assetRepository = assetRepository;
         _mapper = mapper;
@@ -25,7 +23,7 @@ public class AssetController : ControllerBase
 
     [HttpPost("Create")]
     [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult Create(CreateAsset asset)
+    public IActionResult Create(CreateAssetDTO asset)
     {
         AssetModel? assetModel = _mapper.Map<CreateAsset, AssetModel>(asset);
         assetModel.Company = _companyRepository.GetCompanyByID(asset.IdCompany);
