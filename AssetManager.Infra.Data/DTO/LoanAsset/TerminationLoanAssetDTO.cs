@@ -1,4 +1,4 @@
-﻿namespace AssetManager.Domain.DTO;
+﻿namespace AssetManager.Infra.Data.DTO.LoanAsset;
 
 public class TerminationLoanAssetViewModel
 {

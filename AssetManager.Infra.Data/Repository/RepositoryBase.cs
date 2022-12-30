@@ -21,11 +21,12 @@ public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where T
         return await context.Set<TEntity>().ToListAsync();
     }
 
-    public virtual async Task Delete(TEntity entityid)
+    public virtual async Task Delete(int id)
     {
-        if (entityid != null)
+        TEntity entity = GetById(id).Result;
+        if (entity != null)
         {
-            context.Remove(entityid);
+            context.Remove(entity);
             await context.SaveChangesAsync();
         }
     }

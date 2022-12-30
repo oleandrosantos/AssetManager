@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AssetManager.Domain.DTO;
+namespace AssetManager.Infra.Data.DTO.LoanAsset;
 public class CreateLoanAssetDTO
 {
     [Required]

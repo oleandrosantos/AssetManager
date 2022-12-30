@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AssetManager.Domain.DTO;
+namespace AssetManager.Infra.Data.DTO.User;
 public class CreateUserDTO
 {
     public string? Name { get; set; }

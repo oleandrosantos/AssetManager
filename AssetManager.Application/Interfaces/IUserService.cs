@@ -1,8 +1,7 @@
-using AssetManager.Domain.DTO;
 using AssetManager.Domain.Utils;
+using AssetManager.Infra.Data.DTO.User;
 
-namespace AssetManager.Domain.Interfaces.Application;
-
+namespace AssetManager.Application.Interfaces;
 public interface IUserService
 {
   public string Create(CreateUserDTO newUser);

@@ -1,4 +1,4 @@
-﻿namespace AssetManager.Domain.DTO;
+﻿namespace AssetManager.Infra.Data.DTO.User;
 
 public class AuthenticationDTO
 {

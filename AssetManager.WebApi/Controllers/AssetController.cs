@@ -1,5 +1,7 @@
-using AssetManager.Domain.DTO;
+using AssetManager.Application.Interfaces;
+using AssetManager.Domain.Entities;
 using AssetManager.Domain.Interfaces.Repositorys;
+using AssetManager.Infra.Data.DTO.Asset;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,75 +12,68 @@ namespace AssetManager.Controllers;
 [ApiController]
 public class AssetController : ControllerBase
 {
-    private IAssetRepository _assetRepository;
-    private IMapper _mapper;
-    private ICompanyRepository _companyRepository;
+    private IAssetService _assetService;
+    private ICompanyService _companyService;
 
-    public AssetController(IAssetRepository assetRepository, IMapper mapper, ICompanyRepository companyRepository)
+    public AssetController(IAssetService assetService, ICompanyService companyService)
     {
-        _assetRepository = assetRepository;
-        _mapper = mapper;
-        _companyRepository = companyRepository;
+        _assetService = assetService;
+        _companyService = companyService;
     }
 
     [HttpPost("Create")]
     [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult Create(CreateAssetDTO asset)
+    public IActionResult Create(AssetDTO asset)
     {
-        AssetModel? assetModel = _mapper.Map<CreateAsset, AssetModel>(asset);
-        assetModel.Company = _companyRepository.GetCompanyByID(asset.IdCompany);
-        assetModel = _assetRepository.Create(assetModel);
-        
-        if (assetModel != null)
-            return Ok($"{assetModel.AssetName} cadastrado com sucesso");
+        var result = _assetService.CreateAsset(asset).Result;
+        if (result.IsSucess)
+            return Ok(result.Message);
 
-        return BadRequest("Erro, não foi possivel criar o Asset");
+        return BadRequest(result.Message);
     }
     
     [HttpPatch("Update/{idAsset}")]
     [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult Update(int idAsset, CreateAsset asset)
+    public IActionResult Update(int idAsset, AssetDTO asset)
     {
-        AssetModel? assetModel = _mapper.Map<CreateAsset, AssetModel>(asset, _assetRepository.GetAssetByID(idAsset));
-        assetModel.IdAsset = idAsset;
-        assetModel = _assetRepository.Update(assetModel);
-        if (assetModel != null)
-        {
-            return Ok($"{assetModel.AssetName} Atualizado com sucesso!");
-        }
+        UpdateAssetDTO updateAsset = asset;
+        updateAsset.IdAsset = idAsset;
+        var result = _assetService.UpdateAsset(updateAsset).Result;
 
-        return BadRequest("Erro, não foi possivel criar o Asset");
-        
+        if (result.IsSucess)
+            return Ok(result.Message);
+
+        return BadRequest(result.Message);
     }
     
     [HttpGet("AssetCompanyList/{idCompany}")]
     [Authorize(Roles = "Administrador,Suporte")]
     public IActionResult AssetCompanyList(int idCompany)
     {
-        var assetList = _assetRepository.AssetCompanyList(idCompany);
+        var assetList = _assetService.GetAssetsByCompany(idCompany);
 
-        if (assetList.Result.Count == 0)
+        if (assetList.Count == 0)
             return NoContent();
 
-        return Ok(assetList.Result);
+        return Ok(assetList);
     }
 
     [HttpGet("Asset/{id}")]
     [Authorize(Roles = "Administrador,Suporte,Funcionario")]
     public IActionResult GetAssetByID(int id)
     {
-        AssetModel? asset = _assetRepository.GetAssetByID(id);
+        AssetDTO? asset = _assetService.GetByID(id);
         if (asset == null)
             return NoContent();
 
         return Ok(asset);
     }
 
-    [HttpPut("DeleteAsset/{idAsset}")]
+    [HttpDelete("DeleteAsset/{idAsset}")]
     [Authorize(Roles = "Administrador,Suporte")]
     public IActionResult DeleteAsset(int idAsset, [FromBody]string exclusionInfo)
     {
-        if (_assetRepository.DeleteAsset(idAsset, exclusionInfo))
+        if (_assetService.DeleteAsset(idAsset, exclusionInfo))
         {
             return Ok("O ativo foi excluido");
         }

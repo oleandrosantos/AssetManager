@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AssetManager.Domain.DTO;
-public class CreateAssetDTO
+namespace AssetManager.Infra.Data.DTO.Asset;
+public class AssetDTO
 {
     [Required]
     public string AssetName { get; set; }
