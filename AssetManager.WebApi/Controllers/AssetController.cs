@@ -36,7 +36,7 @@ public class AssetController : ControllerBase
     [Authorize(Roles = "Administrador,Suporte")]
     public IActionResult Update(int idAsset, AssetDTO asset)
     {
-        UpdateAssetDTO updateAsset = asset;
+        UpdateAssetDTO updateAsset = (UpdateAssetDTO)asset;
         updateAsset.IdAsset = idAsset;
         var result = _assetService.UpdateAsset(updateAsset).Result;
 
@@ -74,9 +74,8 @@ public class AssetController : ControllerBase
     public IActionResult DeleteAsset(int idAsset, [FromBody]string exclusionInfo)
     {
         if (_assetService.DeleteAsset(idAsset, exclusionInfo))
-        {
             return Ok("O ativo foi excluido");
-        }
+
         return BadRequest("Não conseguimos deletar o ativo");
     }
 

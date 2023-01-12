@@ -8,4 +8,5 @@ public interface IAssetService
     List<AssetDTO> GetAssetsByCompany(int idCompany);
     AssetDTO? GetByID(int idAsset);
     Task<ResultOperation> UpdateAsset(UpdateAssetDTO asset);
+    Task<ResultOperation> DeleteAsset(int idAsset, string exclusionInfo);
 }
