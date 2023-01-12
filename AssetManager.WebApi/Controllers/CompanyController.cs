@@ -7,6 +7,7 @@ using AssetManager.Interfaces;
 using AssetManager.ViewModel;
 using AssetManager.Repository;
 using AutoMapper;
+using AssetManager.Application.Interfaces;
 
 namespace AssetManager.Controllers
 {
@@ -14,12 +15,12 @@ namespace AssetManager.Controllers
     [ApiController]
     public class CompanyController : ControllerBase
     {
-        private CompanyRepository _companyRepository;
+        private ICompanyService _companyService;
         private IMapper _mapper;
 
-        public CompanyController(CompanyRepository companyRepository, IMapper mapper)
+        public CompanyController(ICompanyService companyService, IMapper mapper)
         {
-            _companyRepository = companyRepository;
+            _companyService = companyService;
             _mapper = mapper;
         }
 
@@ -27,7 +28,7 @@ namespace AssetManager.Controllers
         [AllowAnonymous]
         public IActionResult CreateCompany(CreateCompanyViewModel companyModel)
         {
-            CompanyModel? companyResult = _companyRepository.CreateCompany(_mapper.Map<CreateCompanyViewModel, CompanyModel>(companyModel));
+            CompanyModel? companyResult = _companyService.CreateCompany(_mapper.Map<CreateCompanyViewModel, CompanyModel>(companyModel));
 
             if (companyResult != null)
                 return Ok($"{companyResult.CompanyName} Cadastrada com sucesso!");
@@ -39,7 +40,7 @@ namespace AssetManager.Controllers
         [Authorize(Roles = "Suporte")]
         public async Task<IActionResult> DeleteCompany(int id)
         {
-            bool deletado = await _companyRepository.DeleteCompany(id);
+            bool deletado = await _companyService.DeleteCompany(id);
             if (deletado)
                 return Ok("Efetuada a exclusão da company");
 
@@ -51,7 +52,7 @@ namespace AssetManager.Controllers
         public IActionResult UpdateCompany(int id, CompanyModel companyModel)
         {
             companyModel.IdCompany = id;
-            if (_companyRepository.UpdateCompany(companyModel))
+            if (_companyService.UpdateCompany(companyModel))
                 return Ok("Atualizado com sucesso");
 
             return BadRequest("Não conseguimos Atualizar o companyModel");
@@ -62,7 +63,7 @@ namespace AssetManager.Controllers
         [Authorize(Roles = "Suporte")]
         public IActionResult CompanyList()
         {
-            List<CompanyModel> companyList = _companyRepository.CompanyList().Result;
+            List<CompanyModel> companyList = _companyService.CompanyList().Result;
 
             if (companyList.Any() || companyList != null)
                 return Ok(companyList);
@@ -76,7 +77,7 @@ namespace AssetManager.Controllers
         [Authorize(Roles = "Administrador,Suporte,Funcionario")]
         public IActionResult GetCompanyByID(int id)
         {
-            var companyModel = _companyRepository.GetCompanyByID(id);
+            var companyModel = _companyService.GetCompanyByID(id);
 
             if (companyModel == null)
             {
