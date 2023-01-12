@@ -22,7 +22,7 @@ namespace AssetManager.Application.Service
 
         public Task<ResultOperation> CreateAsset(AssetDTO asset)
         {
-            AssetEntity? assetEntity = _mapper.Map<AssetDTO, AssetEntity>(asset);
+            AssetEntity? assetEntity = _mapper.Map<AssetEntity>(asset);
             var company = _companyRepository.GetById(asset.IdCompany).Result;
             if (company != null)
                 assetEntity.Company = company;
@@ -37,7 +37,7 @@ namespace AssetManager.Application.Service
 
         public Task<ResultOperation> UpdateAsset(UpdateAssetDTO asset)
         {
-            AssetEntity? assetEntity = _mapper.Map<UpdateAssetDTO, AssetEntity>(asset);
+            AssetEntity? assetEntity = _mapper.Map<AssetEntity>(asset);
             var result = _assetRepository.Update(assetEntity);
 
             if (result.IsCompletedSuccessfully)
