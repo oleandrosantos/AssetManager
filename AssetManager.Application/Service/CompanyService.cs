@@ -23,17 +23,23 @@ namespace AssetManager.Application.Service
 
             if (companyEntity == null)
                 return Task.FromResult(new ResultOperation("Houve um erro no cadasro da Companhia"));
-   
-            return Task.FromResult(new ResultOperation("Compnhia Cadastrada com sucesso", true));
+
+            var result = _companyRepository.Create(companyEntity);
+            if (result.IsCompletedSuccessfully)
+                return Task.FromResult(new ResultOperation("Houve um erro no cadasro da Companhia"));
+
+            return Task.FromResult(new ResultOperation("Companhia Cadastrada com sucesso", true));
             
         }
 
-        Task<CompanyDTO> ICompanyService.GetCompany(int id)
+        public Task<CompanyDTO> GetCompany(int id)
         {
-            throw new NotImplementedException();
+            CompanyEntity? company = _companyRepository.GetById(id).Result;
+            CompanyDTO companyDTO = _mapper.Map<CompanyDTO>(company);
+            return Task.FromResult(companyDTO);
         }
 
-        Task<ResultOperation> ICompanyService.UpdateCompany(CompanyDTO companyDTO)
+        public Task<ResultOperation> UpdateCompany(CompanyDTO companyDTO)
         {
             throw new NotImplementedException();
         }
