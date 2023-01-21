@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AssetManager.Application\AssetManager.Application.csproj" />
+    <ProjectReference Include="..\AssetManager.Domain\AssetManager.Domain.csproj" />
+    <ProjectReference Include="..\AssetManager.Infra.Data\AssetManager.Infra.Data.csproj" />
+  </ItemGroup>
+
+</Project>
