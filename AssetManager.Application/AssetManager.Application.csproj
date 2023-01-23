@@ -14,7 +14,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AssetManager.Domain\AssetManager.Domain.csproj" />
-    <ProjectReference Include="..\AssetManager.Infra.Data\AssetManager.Infra.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Profiles\" />
   </ItemGroup>
 
 </Project>
