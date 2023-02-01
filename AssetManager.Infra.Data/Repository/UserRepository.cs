@@ -1,5 +1,6 @@
 ﻿using AssetManager.Domain.Entities;
 using AssetManager.Domain.Interfaces.Repositorys;
+using AssetManager.Domain.Validations;
 using AssetManager.Infra.Data.Context;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,12 @@ namespace AssetManager.Infra.Data.Repository
 
         public async Task<UserEntity?> GetUserByEmail(string email)
         {
-            return context.usuario.FirstOrDefault(u => u.Email == email);
+            var user = context.usuario.FirstOrDefault(u => u.Email == email);
+            
+            if (user == null)
+                throw new EmptyReturnException("Não existe usuario cadastrado neste email");
+            
+            return user;
         }
     }
 }
