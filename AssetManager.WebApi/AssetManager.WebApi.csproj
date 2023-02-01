@@ -37,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AssetManager.Application\AssetManager.Application.csproj" />
     <ProjectReference Include="..\AssetManager.Infra.Data\AssetManager.Infra.Data.csproj" />
     <ProjectReference Include="..\AssetManager.Infra.IoC\AssetManager.Infra.IoC.csproj" />
   </ItemGroup>

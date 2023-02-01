@@ -16,8 +16,4 @@
     <ProjectReference Include="..\AssetManager.Domain\AssetManager.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Profiles\" />
-  </ItemGroup>
-
 </Project>

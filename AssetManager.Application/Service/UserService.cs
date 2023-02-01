@@ -1,49 +1,67 @@
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using AssetManager.Domain.Interfaces.Repositorys;
-using AssetManager.Domain.Utils;
-using AssetManager.Domain.DTO;
-using AssetManager.Domain.Interfaces.Application;
+using AssetManager.Application.Interfaces;
+using AssetManager.Application.DTO.User;
+using AutoMapper;
+using AssetManager.Domain.Entities;
 
 namespace AssetManager.Application.Service;
 
 public class UserService : IUserService
 {
-    private IUserRepository _userRepository;
+    private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
     private const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA1;
     private const int ITER_COUNT = 1000;
     private const int SUBKEY_LENGTH = 256 / 8;
     private const int SALT_SIZE = 128 / 8;
 
-    public UserService(IUserRepository repository)
+    public UserService(IUserRepository repository, IMapper mapper)
     {
         _userRepository = repository;
+        _mapper = mapper;
     }
 
-    public ResultRequest Login(string email, string password)
+    public Task<string> Create(CreateUserDTO newUser)
     {
-        var usuario = _userRepository.GetUserByEmail(email);
+        var dadosUsuario = _userRepository.GetUserByEmail(newUser.Email).Result;
 
-        if (usuario == null)
-            return new ResultRequest(false, "Email não identificado em nossa base.");
-        if (!usuario.isActive)
-            return new ResultRequest(false, "Voce não tem permissão para acessar o sistema.");
-        if (verificandoSenha(Convert.FromBase64String(usuario.Password), password))
-            return new ResultRequest(true, "");
-        else
-            return new ResultRequest(false, "Usuario ou senha incorretos");
+        if (dadosUsuario != null)
+            return Task.FromResult("");
 
-    }
-
-    public string Create(CreateUserDTO dadosUsuario)
-    {
-        var dados = _userRepository.GetUserByEmail(dadosUsuario.Email);
-
-        if (dados != null)
-            return "";
-        
         dadosUsuario.Password = criandoHashDaSenha(dadosUsuario.Password);
-        return _userRepository.Create(dadosUsuario);
+        _userRepository.Create(dadosUsuario);
+
+        return Task.FromResult("Usuario Cadastrdo com sucesso!");
+    }
+
+    Task<UserDTO> IUserService.Login(string email, string password)
+    {
+        var user = _userRepository.GetUserByEmail(email);
+
+        return Task.FromResult(_mapper.Map<UserDTO>(user.Result));
+    }
+
+    Task<UserDTO?> IUserService.BuscarPorEmail(string email)
+    {
+        UserEntity? user = _userRepository.GetUserByEmail(email).Result;
+
+        return Task.FromResult(_mapper.Map<UserDTO?>(user));
+    }
+
+    public Task<bool> UpdateUser(UpdateUserDTO dadosDoUsuario)
+    {
+        try
+        {
+            _userRepository.Update(_mapper.Map<UserEntity>(dadosDoUsuario));
+            return Task.FromResult(true);
+        }
+        catch
+        {
+            return Task.FromResult(false);
+
+        }
     }
 
     private string criandoHashDaSenha(string senha)
@@ -68,10 +86,6 @@ public class UserService : IUserService
         return Convert.ToBase64String(outputBytes);
     }
 
-    public UserDTO? BuscarPorEmail(string email)
-    {
-        return _userRepository.GetUserByEmail(email);
-    }
     private bool verificandoSenha(byte[] hashPassword, string password)
     {
         if (hashPassword.Length != 1 + SALT_SIZE + SUBKEY_LENGTH)
@@ -87,7 +101,4 @@ public class UserService : IUserService
 
         return CryptographicOperations.FixedTimeEquals(actualSubkey, expectedSubkey);
     }
-
-    public bool UpdateUser(UpdateUserDTO dadosDoUsuario) => _userRepository.Update(dadosDoUsuario);
-
 }

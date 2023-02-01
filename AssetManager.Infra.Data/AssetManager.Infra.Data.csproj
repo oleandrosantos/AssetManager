@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Profiles\**" />
+    <EmbeddedResource Remove="Profiles\**" />
+    <None Remove="Profiles\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.7">
       <PrivateAssets>all</PrivateAssets>
@@ -25,7 +31,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Profiles\" />
   </ItemGroup>
 
 </Project>

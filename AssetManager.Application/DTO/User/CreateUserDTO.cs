@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AssetManager.Infra.Data.DTO.User;
+﻿namespace AssetManager.Application.DTO.User;
 public class CreateUserDTO
 {
     public string? Name { get; set; }

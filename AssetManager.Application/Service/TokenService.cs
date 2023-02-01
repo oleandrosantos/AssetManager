@@ -1,8 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using AssetManager.Domain.DTO;
-using AssetManager.Domain.Interfaces.Application;
+using AssetManager.Application.DTO.User;
+using AssetManager.Application.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AssetManager.Application.Service;

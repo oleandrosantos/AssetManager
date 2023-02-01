@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 
-namespace AssetManager.Infra.Data.DTO.Company;
+namespace AssetManager.Application.DTO.Company;
 public class CreateCompanyDTO
 {
     public string? CompanyName { get; set; }

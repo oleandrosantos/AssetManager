@@ -13,7 +13,7 @@ namespace AssetManager.Infra.Data.Repository
     {
         public UserRepository(DataContext DbContext):base(DbContext) { }
 
-        public UserEntity? GetUserByEmail(string email)
+        public async Task<UserEntity?> GetUserByEmail(string email)
         {
             return context.usuario.FirstOrDefault(u => u.Email == email);
         }

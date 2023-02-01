@@ -4,28 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssetManager.WebApi", "AssetManager.WebApi\AssetManager.WebApi.csproj", "{25706825-B970-4663-934D-815B975BA511}"
-	ProjectSection(ProjectDependencies) = postProject
-		{2F236B97-2C17-4499-858C-17FAA567AF38} = {2F236B97-2C17-4499-858C-17FAA567AF38}
-		{D3A2FF99-2A21-4EE5-8FEB-0454D07F9B16} = {D3A2FF99-2A21-4EE5-8FEB-0454D07F9B16}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssetManager.Application", "AssetManager.Application\AssetManager.Application.csproj", "{0AF0463F-25D4-4C8D-B70A-403A35B7AAC7}"
-	ProjectSection(ProjectDependencies) = postProject
-		{9DE1BBED-01EE-45EA-AABF-896D42C3ED1B} = {9DE1BBED-01EE-45EA-AABF-896D42C3ED1B}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssetManager.Domain", "AssetManager.Domain\AssetManager.Domain.csproj", "{9DE1BBED-01EE-45EA-AABF-896D42C3ED1B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssetManager.Infra.Data", "AssetManager.Infra.Data\AssetManager.Infra.Data.csproj", "{D3A2FF99-2A21-4EE5-8FEB-0454D07F9B16}"
-	ProjectSection(ProjectDependencies) = postProject
-		{9DE1BBED-01EE-45EA-AABF-896D42C3ED1B} = {9DE1BBED-01EE-45EA-AABF-896D42C3ED1B}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssetManager.Infra.IoC", "AssetManager.Infra.IoC\AssetManager.Infra.IoC.csproj", "{2F236B97-2C17-4499-858C-17FAA567AF38}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0AF0463F-25D4-4C8D-B70A-403A35B7AAC7} = {0AF0463F-25D4-4C8D-B70A-403A35B7AAC7}
-		{9DE1BBED-01EE-45EA-AABF-896D42C3ED1B} = {9DE1BBED-01EE-45EA-AABF-896D42C3ED1B}
-		{D3A2FF99-2A21-4EE5-8FEB-0454D07F9B16} = {D3A2FF99-2A21-4EE5-8FEB-0454D07F9B16}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssetManager.Tests", "AssetManager.Tests\AssetManager.Tests.csproj", "{1515B366-726C-46A8-A6D0-9D7F109ED12B}"

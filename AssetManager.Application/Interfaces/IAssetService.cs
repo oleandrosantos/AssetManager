@@ -1,12 +1,11 @@
-﻿using AssetManager.Infra.Data.DTO;
-using AssetManager.Infra.Data.DTO.Asset;
+﻿using AssetManager.Application.DTO.Asset;
 
 namespace AssetManager.Application.Interfaces;
 public interface IAssetService
 {
-    Task<ResultOperation> CreateAsset(AssetDTO asset);
-    List<AssetDTO> GetAssetsByCompany(int idCompany);
-    AssetDTO? GetByID(int idAsset);
-    Task<ResultOperation> UpdateAsset(UpdateAssetDTO asset);
-    Task<ResultOperation> DeleteAsset(int idAsset, string exclusionInfo);
+    Task<string> CreateAsset(AssetDTO asset);
+    Task<IList<AssetDTO>> GetAssetsByCompany(int idCompany);
+    Task<AssetDTO?> GetByID(int idAsset);
+    Task<string> UpdateAsset(UpdateAssetDTO asset);
+    Task<string> DeleteAsset(int idAsset, string exclusionInfo);
 }

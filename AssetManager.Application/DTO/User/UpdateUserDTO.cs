@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 
-namespace AssetManager.Infra.Data.DTO.User;
+namespace AssetManager.Application.DTO.User;
 public class UpdateUserDTO
 {
     public string? Name { get; set; }

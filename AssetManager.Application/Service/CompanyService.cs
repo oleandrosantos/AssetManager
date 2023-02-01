@@ -1,8 +1,7 @@
-﻿using AssetManager.Application.Interfaces;
+﻿using AssetManager.Application.DTO.Company;
+using AssetManager.Application.Interfaces;
 using AssetManager.Domain.Entities;
 using AssetManager.Domain.Interfaces.Repositorys;
-using AssetManager.Infra.Data.DTO;
-using AssetManager.Infra.Data.DTO.Company;
 using AutoMapper;
 
 namespace AssetManager.Application.Service
@@ -17,29 +16,29 @@ namespace AssetManager.Application.Service
             _companyRepository = companyRepository;
             _mapper = mapper; 
         }
-        public Task<ResultOperation> CreateCompany(CreateCompanyDTO company)
+        public Task<string> CreateCompany(CreateCompanyDTO company)
         {
             CompanyEntity? companyEntity = _mapper.Map<CompanyEntity>(company);
 
             if (companyEntity == null)
-                return Task.FromResult(new ResultOperation("Houve um erro no cadasro da Companhia"));
+                return Task.FromResult("Houve um erro no cadasro da Companhia");
 
             var result = _companyRepository.Create(companyEntity);
             if (result.IsCompletedSuccessfully)
-                return Task.FromResult(new ResultOperation("Houve um erro no cadasro da Companhia"));
+                return Task.FromResult("Houve um erro no cadasro da Companhia");
 
-            return Task.FromResult(new ResultOperation("Companhia Cadastrada com sucesso", true));
+            return Task.FromResult("Companhia Cadastrada com sucesso");
             
         }
 
-        public Task<CompanyDTO> GetCompany(int id)
+        public Task<CompanyDTO?> GetCompany(int id)
         {
             CompanyEntity? company = _companyRepository.GetById(id).Result;
-            CompanyDTO companyDTO = _mapper.Map<CompanyDTO>(company);
-            return Task.FromResult(companyDTO);
+
+            return Task.FromResult(_mapper.Map<CompanyDTO?>(company));
         }
 
-        public Task<ResultOperation> UpdateCompany(CompanyDTO companyDTO)
+        public Task<string> UpdateCompany(CompanyDTO companyDTO)
         {
             throw new NotImplementedException();
         }
