@@ -1,7 +1,7 @@
+using AssetManager.Application.DTO.Asset;
 using AssetManager.Application.Interfaces;
 using AssetManager.Domain.Entities;
 using AssetManager.Domain.Interfaces.Repositorys;
-using AssetManager.Infra.Data.DTO.Asset;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,11 +25,12 @@ public class AssetController : ControllerBase
     [Authorize(Roles = "Administrador,Suporte")]
     public IActionResult Create(AssetDTO asset)
     {
-        var result = _assetService.CreateAsset(asset).Result;
-        if (result.IsSucess)
-            return Ok(result.Message);
+        var result = _assetService.CreateAsset(asset);
 
-        return BadRequest(result.Message);
+        if (result.IsCompletedSuccessfully)
+            return Ok(result);
+
+        return BadRequest(result);
     }
     
     [HttpPatch("Update/{idAsset}")]
@@ -50,7 +51,7 @@ public class AssetController : ControllerBase
     [Authorize(Roles = "Administrador,Suporte")]
     public IActionResult AssetCompanyList(int idCompany)
     {
-        var assetList = _assetService.GetAssetsByCompany(idCompany);
+        var assetList = _assetService.GetAssetsByCompany(idCompany).Result;
 
         if (assetList.Count == 0)
             return NoContent();

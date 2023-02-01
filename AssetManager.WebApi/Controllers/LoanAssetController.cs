@@ -1,6 +1,7 @@
-﻿using AssetManager.Model;
-using AssetManager.Repository;
-using AssetManager.ViewModel;
+﻿using AssetManager.Application.DTO.LoanAsset;
+using AssetManager.Domain.Entities;
+using AssetManager.Domain.Interfaces.Repositorys;
+using AssetManager.Infra.Data.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,10 @@ namespace AssetManager.Controllers
     [ApiController]
     public class LoanAssetController : ControllerBase
     {
-        private LoanAssetRepository _loanAssetRepository;
+        private ILoanAssetRepository _loanAssetRepository;
         private IMapper _mapper;
 
-        public LoanAssetController( IMapper mapper, LoanAssetRepository loanAssetRepository)
+        public LoanAssetController( IMapper mapper, ILoanAssetRepository loanAssetRepository)
         {
             _mapper = mapper;
             _loanAssetRepository = loanAssetRepository;
@@ -22,7 +23,7 @@ namespace AssetManager.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Suporte")]
-        public ActionResult<IEnumerable<LoanAssetModel>> GetLoanAssetList(LoanAssetFilter filter)
+        public ActionResult<IEnumerable<LoanAssetEntity>> GetLoanAssetList(LoanAssetFilter filter)
         {
             var loanAssetList = _loanAssetRepository.LoanAssetList(filter);
             return Ok(loanAssetList);
@@ -41,23 +42,23 @@ namespace AssetManager.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Administrador,Suporte")]
-        public Task<IActionResult> UpdateLoanAssetModel(string id, LoanAssetModel laonAssetModel)
+        public Task<IActionResult> UpdateLoanAssetModel(string id, LoanAssetEntity laonAssetModel)
         {
             throw new Exception();
         }
 
         [HttpPost("Create")]
         [Authorize(Roles = "Administrador,Suporte")]
-        public IActionResult CreateLoanAssetModel(CreateLoanAsset loanAsset)
+        public IActionResult CreateLoanAssetModel(CreateLoanAssetDTO loanAsset)
         {
-            LoanAssetModel loanAssetModel = _mapper.Map<CreateLoanAsset, LoanAssetModel>(loanAsset);
-            var resultado = _loanAssetRepository.CreateLoanAsset(loanAssetModel);
+            LoanAssetEntity loanAssetEntity = _mapper.Map<LoanAssetEntity>(loanAsset);
+            var resultado = _loanAssetRepository.Create(loanAssetEntity);
 
-            if (resultado.Status)
+            if (resultado.IsCompletedSuccessfully)
             {
                 return Ok("Contrato registrado com sucesso");
             }
-            return BadRequest(resultado.Mensagem);
+            return BadRequest("Houve um Erro");
         }
 
         [HttpDelete("{id}")]

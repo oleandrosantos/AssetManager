@@ -23,7 +23,6 @@ namespace AssetManager.Infra.IoC
             services.AddTransient<LoanAssetRepository>();
             services.AddTransient<CompanyRepository>();
             services.AddTransient<UserRepository>();
-
         }
     }
 }

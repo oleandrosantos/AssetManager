@@ -1,52 +1,28 @@
 using System.Text;
-using AssetManager.Data;
-using AssetManager.Helpers;
-using AssetManager.Interfaces;
-using AssetManager.Profile;
-using AssetManager.Repository;
-using AssetManager.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using AssetManager.Infra.Data;
 using AssetManager.Infra.IoC;
+using AssetManager.Application.Interfaces;
+using AssetManager.Application.Service;
 
 var builder = WebApplication.CreateBuilder(args);
-{
-    var services = builder.Services;
-    services.AddControllers();
-    services.AddCors();
-
-    services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
-
-    services.AddScoped<IUserService, UserService>();
-    services.AddEndpointsApiExplorer();
-    services.AddSwaggerGen();
-}
-
-builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("DefaultConnection"));
-
-builder.Services.AddAutoMapper(typeof(UserProfile));
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddSingleton<ITokenService, TokenService>();
-builder.Services.AddTransient<UserRepository>();
-builder.Services.AddTransient<AssetRepository>();
-builder.Services.AddTransient<CompanyRepository>();
-builder.Services.AddTransient<LoanAssetRepository>();
-
-builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("DefaultConnection"));
-
-var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Secret"]);
 
 var config = new ConfigurationBuilder()
     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
     .AddJsonFile("appsettings.json").Build();
 
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
+
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddSingleton<ITokenService, TokenService>();
+
+DependecyInjection.AddInfrastructure(builder.Services, builder.Configuration.GetConnectionString("DefaultConnection"));
+
+var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Secret"]);
 
 builder.Services.AddAuthentication(x =>
     {
@@ -81,6 +57,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.UseCors(x => x

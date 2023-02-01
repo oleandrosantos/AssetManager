@@ -3,6 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using AssetManager.Application.DTO.User;
 using AssetManager.Application.Interfaces;
+using AssetManager.Domain.Utils;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AssetManager.Application.Service;
