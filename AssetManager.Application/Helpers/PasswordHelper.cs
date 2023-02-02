@@ -15,8 +15,11 @@ namespace AssetManager.Application.Helpers
         private const int SUBKEY_LENGTH = 256 / 8;
         private const int SALT_SIZE = 128 / 8;
 
-        public static string CriandoHashDaSenha(string senha)
+        public static string CriandoHashDaSenha(string? senha)
         {
+            if (string.IsNullOrEmpty(senha))
+                return string.Empty;
+
             byte[] salt = new byte[SALT_SIZE];
             using (var rng = RandomNumberGenerator.Create())
             {

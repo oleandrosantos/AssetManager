@@ -20,7 +20,7 @@ builder.Services.AddCors();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
 
-DependecyInjection.AddInfrastructure(builder.Services, builder.Configuration.GetConnectionString("DefaultConnection"));
+DependecyInjection.AddInfrastructure(builder.Services, config);
 
 var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Secret"]);
 

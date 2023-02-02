@@ -21,64 +21,70 @@ public class AssetController : ControllerBase
         _companyService = companyService;
     }
 
-    [HttpPost("Create")]
-    [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult Create(AssetDTO asset)
-    {
-        var result = _assetService.CreateAsset(asset);
+    //[HttpPost("Create")]
+    //[Authorize(Roles = "Administrador,Suporte")]
+    //public IActionResult Create(AssetDTO asset)
+    //{
+    //    var result = _assetService.CreateAsset(asset);
 
-        if (result.IsCompletedSuccessfully)
-            return Ok(result);
+    //    if (result.IsCompletedSuccessfully)
+    //        return Ok(result);
 
-        return BadRequest(result);
-    }
+    //    return BadRequest(result);
+    //}
     
-    [HttpPatch("Update/{idAsset}")]
-    [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult Update(int idAsset, AssetDTO asset)
-    {
-        UpdateAssetDTO updateAsset = (UpdateAssetDTO)asset;
-        updateAsset.IdAsset = idAsset;
-        var result = _assetService.UpdateAsset(updateAsset).Result;
+    //[HttpPatch("Update/{idAsset}")]
+    //[Authorize(Roles = "Administrador,Suporte")]
+    //public IActionResult Update(int idAsset, UpdateAssetDTO asset)
+    //{
+    //    try
+    //    {
+    //        if (idAsset != asset.IdAsset)
+    //            throw new Exception("Não foi possivel atualizar o Asset");
 
-        if (result.IsSucess)
-            return Ok(result.Message);
+    //        var result = _assetService.UpdateAsset(asset);
 
-        return BadRequest(result.Message);
-    }
+    //        if (result.IsCompletedSuccessfully)
+    //            return Ok(result.Result);
+    //    }
+    //    catch(Exception ex)
+    //    {
+    //        return BadRequest(ex.Message);
+    //    }
+    //}
     
-    [HttpGet("AssetCompanyList/{idCompany}")]
-    [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult AssetCompanyList(int idCompany)
-    {
-        var assetList = _assetService.GetAssetsByCompany(idCompany).Result;
+    //[HttpGet("AssetCompanyList/{idCompany}")]
+    //[Authorize(Roles = "Administrador,Suporte")]
+    //public IActionResult AssetCompanyList(int idCompany)
+    //{
+    //    var assetList = _assetService.GetAssetsByCompany(idCompany).Result;
 
-        if (assetList.Count == 0)
-            return NoContent();
+    //    if (assetList.Count == 0)
+    //        return NoContent();
 
-        return Ok(assetList);
-    }
+    //    return Ok(assetList);
+    //}
 
-    [HttpGet("Asset/{id}")]
-    [Authorize(Roles = "Administrador,Suporte,Funcionario")]
-    public IActionResult GetAssetByID(int id)
-    {
-        AssetDTO? asset = _assetService.GetByID(id);
-        if (asset == null)
-            return NoContent();
+    //[HttpGet("Asset/{id}")]
+    //[Authorize(Roles = "Administrador,Suporte,Funcionario")]
+    //public IActionResult GetAssetByID(int id)
+    //{
+    //    AssetDTO? asset = _assetService.GetByID(id);
+    //    if (asset == null)
+    //        return NoContent();
 
-        return Ok(asset);
-    }
+    //    return Ok(asset);
+    //}
 
-    [HttpDelete("DeleteAsset/{idAsset}")]
-    [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult DeleteAsset(int idAsset, [FromBody]string exclusionInfo)
-    {
-        if (_assetService.DeleteAsset(idAsset, exclusionInfo))
-            return Ok("O ativo foi excluido");
+    //[HttpDelete("DeleteAsset/{idAsset}")]
+    //[Authorize(Roles = "Administrador,Suporte")]
+    //public IActionResult DeleteAsset(int idAsset, [FromBody]string exclusionInfo)
+    //{
+    //    if (_assetService.DeleteAsset(idAsset, exclusionInfo))
+    //        return Ok("O ativo foi excluido");
 
-        return BadRequest("Não conseguimos deletar o ativo");
-    }
+    //    return BadRequest("Não conseguimos deletar o ativo");
+    //}
 
 
 }

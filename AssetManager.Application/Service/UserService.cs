@@ -29,16 +29,24 @@ public class UserService : IUserService
 
             return Task.FromResult("Usuario ja possui cadastro em nossa sistema");
         }
-        catch (EmptyReturnException e)
+        catch (AggregateException ae)
         {
-            var dadosUsuario = _mapper.Map<UserEntity>(newUser);
-            _userRepository.Create(dadosUsuario);
-            return Task.FromResult("Usuario Cadastrdo com sucesso!");
+            string resultado = "Houve um erro, e não foi possivel cadastrar o usuario";
+            ae.Handle((x) =>
+            {
+                if (x is EmptyReturnException)
+                {
+                    var dadosUsuario = _mapper.Map<UserEntity>(newUser);
+                    _userRepository.Create(dadosUsuario);
+                    resultado = "Usuario Cadastrado com sucesso!";
+                    return true;
+                }
+                return false;
+            });
+
+            return Task.FromResult(resultado);
         }
-        catch (Exception e)
-        {
-            return Task.FromResult("Houve um erro no cadastro do usuario");
-        }
+
     }
 
     Task<UserDTO> IUserService.Login(string email, string password)

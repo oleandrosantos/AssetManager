@@ -39,10 +39,10 @@ namespace AssetManager.Application.Service
             AssetEntity? assetEntity = _mapper.Map<AssetEntity>(asset);
             var result = _assetRepository.Update(assetEntity);
 
-            if (result.IsCompletedSuccessfully)
+            if (result.IsCompleted)
                 return Task.FromResult($"{asset.AssetName} Atualizar com sucesso");
 
-            return Task.FromResult("Erro, não foi possivel Atualizar o Asset");
+            throw new Exception($"Houve um erro e não foi possivel atualizar");
         }
     
         public Task<IList<AssetDTO>> GetAssetsByCompany(int idCompany)

@@ -20,6 +20,8 @@ public class CompanyEntity
     }
     public bool IsAtiva { get; set; }
 
+    public CompanyEntity() { }
+
     public CompanyEntity(int id, string name, string cnpj, bool isAtiva)
     {
         IdCompany = id;
