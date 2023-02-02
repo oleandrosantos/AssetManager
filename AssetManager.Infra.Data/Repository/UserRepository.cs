@@ -11,11 +11,8 @@ namespace AssetManager.Infra.Data.Repository
 
         public async Task<UserEntity?> GetUserByEmail(string email)
         {
-            var user = context.usuario.FirstOrDefault(u => u.Email == email);
-            
-            if (user == null)
-                EmptyReturnException.When(true, "Não existe usuario cadastrado neste email");
-            
+            var user = Context.usuario.FirstOrDefault(u => u.Email == email);
+                        
             return user;
         }
     }

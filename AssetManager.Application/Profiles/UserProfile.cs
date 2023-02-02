@@ -9,6 +9,7 @@ namespace AssetManager.Application.Profiles
         public UserProfile()
         { 
             CreateMap<UserDTO, UserEntity>().ReverseMap();
+            CreateMap<CreateUserDTO, UserEntity>().ReverseMap();
             CreateMap<UpdateUserDTO, UserEntity>().ReverseMap();
         }
     }

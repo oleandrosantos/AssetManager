@@ -21,33 +21,23 @@ public class UserService : IUserService
         _mapper = mapper;
     }
 
-    public Task<string> Create(CreateUserDTO newUser)
+    public async Task Create(CreateUserDTO newUser)
     {
         try
         {
-            var dadosUsuario = _userRepository.GetUserByEmail(newUser.Email).Result;
+            var dadosUsuario = await _userRepository.GetUserByEmail(newUser.Email);
+            if (dadosUsuario != null)
+                ObjectAlreadyException.When("Email ja cadastrado no sistema");
 
-            return Task.FromResult("Usuario ja possui cadastro em nossa sistema");
+            dadosUsuario = _mapper.Map<UserEntity>(newUser);
+            dadosUsuario.IdUser = Guid.NewGuid().ToString();
+            await _userRepository.Create(dadosUsuario);
         }
-        catch (AggregateException ae)
+        catch(Exception e)
         {
-            string resultado = "Houve um erro, e não foi possivel cadastrar o usuario";
-            ae.Handle((x) =>
-            {
-                if (x is EmptyReturnException)
-                {
-                    var dadosUsuario = _mapper.Map<UserEntity>(newUser);
-                    _userRepository.Create(dadosUsuario);
-                    resultado = "Usuario Cadastrado com sucesso!";
-                    return true;
-                }
-                return false;
-            });
-
-            return Task.FromResult(resultado);
+            throw e;
         }
-
-    }
+     }
 
     Task<UserDTO> IUserService.Login(string email, string password)
     {
@@ -63,17 +53,16 @@ public class UserService : IUserService
         return Task.FromResult(_mapper.Map<UserDTO?>(user));
     }
 
-    public Task<bool> UpdateUser(UpdateUserDTO dadosDoUsuario)
+    public Task UpdateUser(UpdateUserDTO dadosDoUsuario)
     {
         try
         {
             _userRepository.Update(_mapper.Map<UserEntity>(dadosDoUsuario));
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
-        catch
+        catch(Exception e)
         {
-            return Task.FromResult(false);
-
+            return Task.FromException(e);
         }
     }
 }

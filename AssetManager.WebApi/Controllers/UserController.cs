@@ -24,12 +24,18 @@ public class UserController : ControllerBase
   [AllowAnonymous]
   public IActionResult CadastrarUsuario(CreateUserDTO dadosUsuario)
   {
-    dadosUsuario.Email = dadosUsuario.Email.ToLower().Trim();
-    var resultado = _userService.Create(dadosUsuario).Result;
-    if (string.IsNullOrEmpty(resultado))
-      return BadRequest("Este email encontra-se cadastrado em nosos banco!");
+        try
+        {
+            dadosUsuario.Email = dadosUsuario.Email.ToLower().Trim();
+            var resultado = _userService.Create(dadosUsuario);
 
-    return Ok(resultado);
+            return Ok("Usuario cadastrado com sucesso!");
+        }
+        catch(Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+
   }
 
   [HttpPost("Login")]
