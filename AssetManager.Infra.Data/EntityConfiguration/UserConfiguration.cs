@@ -10,7 +10,7 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
         builder.ToTable("tb_user");
         builder.HasKey(u => u.IdUser);
         builder.HasAlternateKey(u => u.Email);
-        builder.Property(u => u.IdUser).HasMaxLength(32);
+        builder.Property(u => u.IdUser).HasMaxLength(36);
         builder.Property(u => u.Name).HasMaxLength(50).IsRequired();
         builder.Property(u => u.Email).HasMaxLength(256).IsRequired();
         builder.Property(u => u.Password).HasMaxLength(256).IsRequired();

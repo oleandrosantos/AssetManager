@@ -40,8 +40,10 @@ namespace AssetManager.Application.Helpers
             return Convert.ToBase64String(outputBytes);
         }
 
-        public static bool VerificandoSenha(byte[] hashPassword, string password)
+        public static bool VerificandoSenha(string userPassword, string password)
         {
+            byte[] hashPassword = Encoding.ASCII.GetBytes(userPassword);
+
             if (hashPassword.Length != 1 + SALT_SIZE + SUBKEY_LENGTH)
                 return false;
 

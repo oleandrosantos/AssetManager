@@ -1,5 +1,6 @@
 using AssetManager.Application.DTO.User;
 using AssetManager.Application.Interfaces;
+using AssetManager.Application.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
@@ -12,12 +13,10 @@ public class UserController : ControllerBase
 {
 
   private IUserService _userService;
-  private ITokenService _tokenService;
 
-  public UserController(IUserService userService, ITokenService tokenService)
+  public UserController(IUserService userService)
   {
     _userService = userService;
-    _tokenService = tokenService;
   }
 
   [HttpPost("Create")]
@@ -49,11 +48,8 @@ public class UserController : ControllerBase
             {
               return NotFound(new { message = "Email ou senha não informados" });
             }
-            var resultadoLogin = _userService.Login(model.Email, model.Password);
 
-            var usuarioModel = _userService.BuscarPorEmail(model.Email).Result;
-            usuarioModel!.Password = "";
-            var tokenJWT = _tokenService.GenerateToken(usuarioModel);
+            var tokenJWT = _userService.Login(model.Email, model.Password);
             return Ok(new { token = tokenJWT });
         }
         catch
