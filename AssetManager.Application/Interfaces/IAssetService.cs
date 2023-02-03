@@ -3,7 +3,7 @@
 namespace AssetManager.Application.Interfaces;
 public interface IAssetService
 {
-    Task<string> CreateAsset(AssetDTO asset);
+    Task CreateAsset(AssetDTO asset);
     Task<IList<AssetDTO>> GetAssetsByCompany(int idCompany);
     Task<AssetDTO?> GetByID(int idAsset);
     Task<string> UpdateAsset(UpdateAssetDTO asset);

@@ -19,19 +19,23 @@ namespace AssetManager.Application.Service
             _companyRepository = companyRepository;
         }
 
-        public Task<string> CreateAsset(AssetDTO asset)
+        public Task CreateAsset(AssetDTO asset)
         {
-            AssetEntity? assetEntity = _mapper.Map<AssetEntity>(asset);
-            var company = _companyRepository.GetById(asset.IdCompany).Result;
-            if (company != null)
-                assetEntity.Company = company;
+            try
+            {
+                AssetEntity? assetEntity = _mapper.Map<AssetEntity>(asset);
+                var company = _companyRepository.GetById(asset.IdCompany).Result;
+                if (company != null)
+                    assetEntity.Company = company;
 
-            var result = _assetRepository.Create(assetEntity);
+                var result = _assetRepository.Create(assetEntity);
 
-            if (result.IsCompletedSuccessfully)
-                return Task.FromResult($"{assetEntity.AssetName} cadastrado com sucesso");
-
-            return Task.FromResult("Erro, não foi possivel criar o Asset");
+                return Task.CompletedTask;
+            }
+            catch(Exception e)
+            {
+                return Task.FromException(e);
+            }
         }
 
         public Task<string> UpdateAsset(UpdateAssetDTO asset)

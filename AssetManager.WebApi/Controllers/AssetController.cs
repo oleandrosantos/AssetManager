@@ -21,18 +21,26 @@ public class AssetController : ControllerBase
         _companyService = companyService;
     }
 
-    //[HttpPost("Create")]
-    //[Authorize(Roles = "Administrador,Suporte")]
-    //public IActionResult Create(AssetDTO asset)
-    //{
-    //    var result = _assetService.CreateAsset(asset);
+    [HttpPost("Create")]
+    [Authorize(Roles = "Administrador,Suporte")]
+    public IActionResult Create(AssetDTO asset)
+    {
+        try
+        {
+            var result = _assetService.CreateAsset(asset);
 
-    //    if (result.IsCompletedSuccessfully)
-    //        return Ok(result);
+            if (result.IsCompleted)
+                return Ok("Cadastrado com Sucesso");
+            else
+                throw new Exception();
 
-    //    return BadRequest(result);
-    //}
-    
+        }
+        catch (Exception ex)
+        {
+            return BadRequest("Nâo foi possivel cadastrar");
+        }
+    }
+
     //[HttpPatch("Update/{idAsset}")]
     //[Authorize(Roles = "Administrador,Suporte")]
     //public IActionResult Update(int idAsset, UpdateAssetDTO asset)
@@ -52,7 +60,7 @@ public class AssetController : ControllerBase
     //        return BadRequest(ex.Message);
     //    }
     //}
-    
+
     //[HttpGet("AssetCompanyList/{idCompany}")]
     //[Authorize(Roles = "Administrador,Suporte")]
     //public IActionResult AssetCompanyList(int idCompany)
