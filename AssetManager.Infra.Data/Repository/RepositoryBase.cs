@@ -2,25 +2,26 @@
 using AssetManager.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-System.Data.Linq;
 
 namespace AssetManager.Infra.Data.Repository;
 public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where TEntity : class
 {
     protected readonly DataContext Context;
+    protected readonly DbSet<TEntity> dbSet;
 
     public RepositoryBase(DataContext dbContext)
     {
         Context = dbContext;
+        dbSet = dbContext.Set<TEntity>();
     }
     public virtual async Task<TEntity?> GetById(int id)
     {
-        return await Context.FindAsync(id);
+        return await dbSet.FindAsync(id);
     }
 
     public virtual async Task<IEnumerable<TEntity>> GetAll()
     {
-        return await Context.Set<TEntity>().ToListAsync();
+        return await dbSet.ToListAsync();
     }
 
     public virtual async Task Delete(int id)
@@ -28,26 +29,21 @@ public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where T
         TEntity entity = GetById(id).Result;
         if (entity != null)
         {
-            Context.Remove(entity);
-            await Context.SaveChangesAsync();
+            dbSet.Remove(entity);
+            Context.SaveChanges();
         }
     }
 
     public virtual async Task Create(TEntity entity)
     {
-        GetTable().Ins
-        Context.Add(entity);
-        await Context.SaveChangesAsync();
+        dbSet.Add(entity);
+        Context.SaveChanges();
     }
 
     public virtual async Task Update(TEntity entity)
     {
-        Context.Update(entity);
-        await Context.SaveChangesAsync();
-    }
-
-    public virtual ITable GetTable()
-    {
-        return Context.GetTable<TEntity>();
+        dbSet.Attach(entity);
+        Context.Entry(entity).State = EntityState.Modified;
+        Context.SaveChanges();
     }
 }

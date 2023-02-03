@@ -6,19 +6,22 @@ using AssetManager.Application.DTO.User;
 using AutoMapper;
 using AssetManager.Domain.Entities;
 using AssetManager.Domain.Validations;
+using AssetManager.Application.Helpers;
 
 namespace AssetManager.Application.Service;
 
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
+    private readonly ITokenService _tokenService;
     private readonly IMapper _mapper;
 
 
-    public UserService(IUserRepository repository, IMapper mapper)
+    public UserService(IUserRepository repository, IMapper mapper, ITokenService tokenService)
     {
         _userRepository = repository;
         _mapper = mapper;
+        _tokenService = tokenService;
     }
 
     public async Task Create(CreateUserDTO newUser)
@@ -39,11 +42,16 @@ public class UserService : IUserService
         }
      }
 
-    Task<UserDTO> IUserService.Login(string email, string password)
+    Task<string> IUserService.Login(string email, string password)
     {
-        var user = _userRepository.GetUserByEmail(email);
+        var user = _userRepository.GetUserByEmail(email).Result;
 
-        return Task.FromResult(_mapper.Map<UserDTO>(user.Result));
+        if (user == null || PasswordHelper.VerificandoSenha(user.Password, password))
+            throw new Exception();
+
+        string token = _tokenService.GenerateToken(_mapper.Map<UserDTO>(user));
+
+        return Task.FromResult(token);
     }
 
     Task<UserDTO?> IUserService.BuscarPorEmail(string email)
