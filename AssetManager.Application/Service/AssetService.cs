@@ -1,8 +1,7 @@
-﻿using AssetManager.Application.Interfaces;
+﻿using AssetManager.Application.DTO.Asset;
+using AssetManager.Application.Interfaces;
 using AssetManager.Domain.Entities;
 using AssetManager.Domain.Interfaces.Repositorys;
-using AssetManager.Infra.Data.DTO;
-using AssetManager.Infra.Data.DTO.Asset;
 using AutoMapper;
 
 namespace AssetManager.Application.Service
@@ -20,48 +19,58 @@ namespace AssetManager.Application.Service
             _companyRepository = companyRepository;
         }
 
-        public Task<ResultOperation> CreateAsset(AssetDTO asset)
+        public Task CreateAsset(AssetDTO asset)
         {
-            AssetEntity? assetEntity = _mapper.Map<AssetEntity>(asset);
-            var company = _companyRepository.GetById(asset.IdCompany).Result;
-            if (company != null)
-                assetEntity.Company = company;
+            try
+            {
+                AssetEntity? assetEntity = _mapper.Map<AssetEntity>(asset);
+                var company = _companyRepository.GetById(asset.IdCompany).Result;
+                if (company != null)
+                    assetEntity.Company = company;
 
-            var result = _assetRepository.Create(assetEntity);
+                var result = _assetRepository.Create(assetEntity);
 
-            if (result.IsCompletedSuccessfully)
-                return Task.FromResult(new ResultOperation($"{assetEntity.AssetName} cadastrado com sucesso", true));
-
-            return Task.FromResult(new ResultOperation("Erro, não foi possivel criar o Asset"));
+                return Task.CompletedTask;
+            }
+            catch(Exception e)
+            {
+                return Task.FromException(e);
+            }
         }
 
-        public Task<ResultOperation> UpdateAsset(UpdateAssetDTO asset)
+        public Task<string> UpdateAsset(UpdateAssetDTO asset)
         {
             AssetEntity? assetEntity = _mapper.Map<AssetEntity>(asset);
             var result = _assetRepository.Update(assetEntity);
 
-            if (result.IsCompletedSuccessfully)
-                return Task.FromResult(new ResultOperation($"{asset.AssetName} Atualizar com sucesso", true));
+            if (result.IsCompleted)
+                return Task.FromResult($"{asset.AssetName} Atualizar com sucesso");
 
-            return Task.FromResult(new ResultOperation("Erro, não foi possivel Atualizar o Asset"));
+            throw new Exception($"Houve um erro e não foi possivel atualizar");
         }
     
-        public List<AssetDTO> GetAssetsByCompany(int idCompany)
+        public Task<IList<AssetDTO>> GetAssetsByCompany(int idCompany)
         {
             var assets = _assetRepository.GetAssetsByCompany(idCompany).Result;
-            return _mapper.Map<List<AssetDTO>>(assets);
+
+            return Task.FromResult(_mapper.Map<IList<AssetDTO>>(assets));
         }
 
-        public AssetDTO? GetByID(int idAsset) => _mapper.Map<AssetDTO>(_assetRepository.GetById(idAsset).Result);
+        public Task<AssetDTO?> GetByID(int idAsset)
+        {
+            var asset = _assetRepository.GetById(idAsset).Result;
 
-        public Task<ResultOperation> DeleteAsset(int idAsset, string exclusionInfo)
+           return Task.FromResult(_mapper.Map<AssetDTO?>(asset));
+        }               
+
+        public Task<string> DeleteAsset(int idAsset, string exclusionInfo)
         {
             var result = _assetRepository.Delete(idAsset);
 
             if (result.IsCompletedSuccessfully)
-                return Task.FromResult(new ResultOperation($"Asset removido com sucesso", true));
+                return Task.FromResult($"Asset removido com sucesso");
 
-            return Task.FromResult(new ResultOperation("Erro, não foi possivel removido o Asset"));
+            return Task.FromResult("Erro, não foi possivel removido o Asset");
         }
 
     }

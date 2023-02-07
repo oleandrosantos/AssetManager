@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace AssetManager.Infra.Data.DTO.Asset;
+namespace AssetManager.Application.DTO.Asset;
 public class AssetDTO
 {
     [Required]

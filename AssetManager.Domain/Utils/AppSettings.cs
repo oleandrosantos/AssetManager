@@ -1,4 +1,4 @@
-﻿namespace AssetManager.Helpers;
+﻿namespace AssetManager.Domain.Utils;
 
 public class AppSettings
 {

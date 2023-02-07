@@ -3,6 +3,7 @@ using System;
 using AssetManager.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AssetManager.Infra.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230201121401_migrando_arquitetura")]
+    partial class migrando_arquitetura
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,7 +84,7 @@ namespace AssetManager.Infra.Data.Migrations
 
                     b.Property<string>("UserIdUser")
                         .IsRequired()
-                        .HasColumnType("varchar(36)");
+                        .HasColumnType("varchar(32)");
 
                     b.HasKey("IdEvent");
 
@@ -159,8 +161,8 @@ namespace AssetManager.Infra.Data.Migrations
             modelBuilder.Entity("AssetManager.Domain.Entities.UserEntity", b =>
                 {
                     b.Property<string>("IdUser")
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar(36)");
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
 
                     b.Property<string>("Email")
                         .IsRequired()

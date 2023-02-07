@@ -1,11 +1,7 @@
 ﻿using AssetManager.Domain.Entities;
 using AssetManager.Domain.Interfaces.Repositorys;
+using AssetManager.Domain.Validations;
 using AssetManager.Infra.Data.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AssetManager.Infra.Data.Repository
 {
@@ -13,9 +9,11 @@ namespace AssetManager.Infra.Data.Repository
     {
         public UserRepository(DataContext DbContext):base(DbContext) { }
 
-        public UserEntity? GetUserByEmail(string email)
+        public async Task<UserEntity?> GetUserByEmail(string email)
         {
-            return context.usuario.FirstOrDefault(u => u.Email == email);
+            var user = Context.usuario.FirstOrDefault(u => u.Email == email);
+                        
+            return user;
         }
     }
 }

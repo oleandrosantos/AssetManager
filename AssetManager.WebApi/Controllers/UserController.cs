@@ -1,8 +1,9 @@
-using AssetManager.Interfaces;
-using AssetManager.Model;
-using AssetManager.ViewModel;
+using AssetManager.Application.DTO.User;
+using AssetManager.Application.Interfaces;
+using AssetManager.Application.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 
 namespace AssetManager.Controllers;
 
@@ -10,85 +11,89 @@ namespace AssetManager.Controllers;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
-  private IUserService _userService;
-  private ITokenService _tokenService;
 
-  public UserController(IUserService userService, ITokenService tokenService)
+  private IUserService _userService;
+
+  public UserController(IUserService userService)
   {
     _userService = userService;
-    _tokenService = tokenService;
   }
 
   [HttpPost("Create")]
   [AllowAnonymous]
-  public IActionResult CadastrarUsuario(CreateUserViewModel dadosUsuario)
+  public IActionResult CadastrarUsuario(CreateUserDTO dadosUsuario)
   {
-    dadosUsuario.Email = dadosUsuario.Email.ToLower().Trim();
-    var resultado = _userService.Create(dadosUsuario);
-    if (string.IsNullOrEmpty(resultado))
-      return BadRequest("Este email encontra-se cadastrado em nosos banco!");
+        try
+        {
+            dadosUsuario.Email = dadosUsuario.Email.ToLower().Trim();
+            var resultado = _userService.Create(dadosUsuario);
 
-    return Ok(resultado);
+            return Ok("Usuario cadastrado com sucesso!");
+        }
+        catch(Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+
   }
 
   [HttpPost("Login")]
   [AllowAnonymous]
-  public Task<ActionResult> Authenticate([FromBody] AuthenticationModel model)
+  public IActionResult Authenticate([FromBody] AuthenticationDTO model)
   {
-    model.Email = model.Email.ToLower().Trim();
-    if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
-    {
-      return Task.FromResult<ActionResult>(NotFound(new { message = "Email ou senha não informados" }));
-    }
-    var resultadoLogin = _userService.Login(model.Email, model.Password);
+        try
+        {
+            model.Email = model.Email.ToLower().Trim();
+            if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
+            {
+              return NotFound(new { message = "Email ou senha não informados" });
+            }
 
-    if (resultadoLogin.Status)
-    {
-      var usuarioModel = _userService.BuscarPorEmail(model.Email);
-      usuarioModel!.Password = "";
-      var tokenJWT = _tokenService.GenerateToken(usuarioModel);
-      return Task.FromResult<ActionResult>(Ok(new { token = tokenJWT }));
-    }
-    else
-    {
-      return Task.FromResult<ActionResult>(BadRequest(new { message = resultadoLogin.Mensagem }));
-    }
-
+            var tokenJWT = _userService.Login(model.Email, model.Password);
+            return Ok(new { token = tokenJWT });
+        }
+        catch
+        {
+            return BadRequest(new { message = "Não foi possivel realizar o login" });
+        }
   }
 
   [HttpPut("Update")]
   [Authorize(Roles = "Administrador,Suporte,Funcionario")]
-  public IActionResult UpdateUser(UpdateUserViewModel dadosUsuario)
+  public IActionResult UpdateUser(UpdateUserDTO dadosUsuario)
   {
-    UserModel? usuario = _userService.BuscarPorEmail(dadosUsuario.email);
+        throw new NotImplementedException();
+    //UserModel? usuario = _userService.BuscarPorEmail(dadosUsuario.Email);
 
-    if (usuario == null || !AtualizarDadosUsuario(usuario, dadosUsuario))
-      return BadRequest("Não foi possivel atualizar o usuario");
+    //if (usuario == null || !AtualizarDadosUsuario(usuario, dadosUsuario))
+    //  return BadRequest("Não foi possivel atualizar o usuario");
 
-    return Ok("Usuario atualizado com sucesso");
+    //return Ok("Usuario atualizado com sucesso");
   }
 
   [HttpPut("RevogarAcesso")]
   [Authorize(Roles = "Administrador,Suporte")]
   public IActionResult RevogarAcesso(string email)
   {
-    UserModel? usuario = _userService.BuscarPorEmail(email);
-    if (usuario == null)
-      return BadRequest("Não conseguimos localizar este usuario!");
+        throw new NotImplementedException();
+    //    UserModel? usuario = _userService.BuscarPorEmail(email);
+    //if (usuario == null)
+    //  return BadRequest("Não conseguimos localizar este usuario!");
 
-    usuario.isActive = false;
+    //usuario.isActive = false;
 
-    if (!_userService.UpdateUser(usuario))
-      return BadRequest("Não foi possivel revogar o acesso");
+    //if (!_userService.UpdateUser(usuario))
+    //  return BadRequest("Não foi possivel revogar o acesso");
 
-    return Ok("Acesso revogado com sucesso");
+    //return Ok("Acesso revogado com sucesso");
   }
 
-  private bool AtualizarDadosUsuario(UserModel usuario, UpdateUserViewModel dadosUsuario)
+  private bool AtualizarDadosUsuario(UserDTO usuario, UpdateUserDTO dadosUsuario)
   {
-    usuario.Name = dadosUsuario.name ?? usuario.Name;
-    usuario.Password = dadosUsuario.password ?? usuario.Password;
-    usuario.Role = dadosUsuario.role ?? usuario.Role;
-    return _userService.UpdateUser(usuario);
+        throw new NotImplementedException();
+    //    usuario.Name = dadosUsuario.name ?? usuario.Name;
+    //usuario.Password = dadosUsuario.password ?? usuario.Password;
+    //usuario.Role = dadosUsuario.role ?? usuario.Role;
+    //return _userService.UpdateUser(usuario);
   }
 }

@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AssetManager.Application\AssetManager.Application.csproj" />
     <ProjectReference Include="..\AssetManager.Domain\AssetManager.Domain.csproj" />
     <ProjectReference Include="..\AssetManager.Infra.Data\AssetManager.Infra.Data.csproj" />

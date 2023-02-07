@@ -1,93 +1,76 @@
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using AssetManager.Domain.Interfaces.Repositorys;
-using AssetManager.Domain.Utils;
-using AssetManager.Domain.DTO;
-using AssetManager.Domain.Interfaces.Application;
+using AssetManager.Application.Interfaces;
+using AssetManager.Application.DTO.User;
+using AutoMapper;
+using AssetManager.Domain.Entities;
+using AssetManager.Domain.Validations;
+using AssetManager.Application.Helpers;
 
 namespace AssetManager.Application.Service;
 
 public class UserService : IUserService
 {
-    private IUserRepository _userRepository;
-    private const KeyDerivationPrf HashType = KeyDerivationPrf.HMACSHA1;
-    private const int ITER_COUNT = 1000;
-    private const int SUBKEY_LENGTH = 256 / 8;
-    private const int SALT_SIZE = 128 / 8;
+    private readonly IUserRepository _userRepository;
+    private readonly ITokenService _tokenService;
+    private readonly IMapper _mapper;
 
-    public UserService(IUserRepository repository)
+
+    public UserService(IUserRepository repository, IMapper mapper, ITokenService tokenService)
     {
         _userRepository = repository;
+        _mapper = mapper;
+        _tokenService = tokenService;
     }
 
-    public ResultRequest Login(string email, string password)
+    public async Task Create(CreateUserDTO newUser)
     {
-        var usuario = _userRepository.GetUserByEmail(email);
-
-        if (usuario == null)
-            return new ResultRequest(false, "Email não identificado em nossa base.");
-        if (!usuario.isActive)
-            return new ResultRequest(false, "Voce não tem permissão para acessar o sistema.");
-        if (verificandoSenha(Convert.FromBase64String(usuario.Password), password))
-            return new ResultRequest(true, "");
-        else
-            return new ResultRequest(false, "Usuario ou senha incorretos");
-
-    }
-
-    public string Create(CreateUserDTO dadosUsuario)
-    {
-        var dados = _userRepository.GetUserByEmail(dadosUsuario.Email);
-
-        if (dados != null)
-            return "";
-        
-        dadosUsuario.Password = criandoHashDaSenha(dadosUsuario.Password);
-        return _userRepository.Create(dadosUsuario);
-    }
-
-    private string criandoHashDaSenha(string senha)
-    {
-        byte[] salt = new byte[SALT_SIZE];
-        using (var rng = RandomNumberGenerator.Create())
+        try
         {
-            rng.GetBytes(salt);
+            var dadosUsuario = await _userRepository.GetUserByEmail(newUser.Email);
+            if (dadosUsuario != null)
+                ObjectAlreadyException.When("Email ja cadastrado no sistema");
+
+            dadosUsuario = _mapper.Map<UserEntity>(newUser);
+            dadosUsuario.IdUser = Guid.NewGuid().ToString();
+            await _userRepository.Create(dadosUsuario);
         }
-        byte[] subkey = KeyDerivation.Pbkdf2(
-            password: senha,
-            salt: salt,
-            prf: HashType,
-            iterationCount: ITER_COUNT,
-            numBytesRequested: SUBKEY_LENGTH);
+        catch(Exception e)
+        {
+            throw e;
+        }
+     }
 
-        var outputBytes = new byte[1 + SALT_SIZE + SUBKEY_LENGTH];
-        outputBytes[0] = 0x00;
-        Buffer.BlockCopy(salt, 0, outputBytes, 1, SALT_SIZE);
-        Buffer.BlockCopy(subkey, 0, outputBytes, 1 + SALT_SIZE, SUBKEY_LENGTH);
-
-        return Convert.ToBase64String(outputBytes);
-    }
-
-    public UserDTO? BuscarPorEmail(string email)
+    Task<string> IUserService.Login(string email, string password)
     {
-        return _userRepository.GetUserByEmail(email);
+        var user = _userRepository.GetUserByEmail(email).Result;
+
+        if (user == null || PasswordHelper.VerificandoSenha(user.Password, password))
+            throw new Exception();
+
+        string token = _tokenService.GenerateToken(_mapper.Map<UserDTO>(user));
+
+        return Task.FromResult(token);
     }
-    private bool verificandoSenha(byte[] hashPassword, string password)
+
+    Task<UserDTO?> IUserService.BuscarPorEmail(string email)
     {
-        if (hashPassword.Length != 1 + SALT_SIZE + SUBKEY_LENGTH)
-            return false;
+        UserEntity? user = _userRepository.GetUserByEmail(email).Result;
 
-        byte[] salt = new byte[SALT_SIZE];
-        Buffer.BlockCopy(hashPassword, 1, salt, 0, salt.Length);
-
-        byte[] expectedSubkey = new byte[SUBKEY_LENGTH];
-        Buffer.BlockCopy(hashPassword, 1 + salt.Length, expectedSubkey, 0, expectedSubkey.Length);
-
-        byte[] actualSubkey = KeyDerivation.Pbkdf2(password, salt, HashType, ITER_COUNT, SUBKEY_LENGTH);
-
-        return CryptographicOperations.FixedTimeEquals(actualSubkey, expectedSubkey);
+        return Task.FromResult(_mapper.Map<UserDTO?>(user));
     }
 
-    public bool UpdateUser(UpdateUserDTO dadosDoUsuario) => _userRepository.Update(dadosDoUsuario);
-
+    public Task UpdateUser(UpdateUserDTO dadosDoUsuario)
+    {
+        try
+        {
+            _userRepository.Update(_mapper.Map<UserEntity>(dadosDoUsuario));
+            return Task.CompletedTask;
+        }
+        catch(Exception e)
+        {
+            return Task.FromException(e);
+        }
+    }
 }

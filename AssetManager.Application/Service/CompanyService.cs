@@ -1,8 +1,7 @@
-﻿using AssetManager.Application.Interfaces;
+﻿using AssetManager.Application.DTO.Company;
+using AssetManager.Application.Interfaces;
 using AssetManager.Domain.Entities;
 using AssetManager.Domain.Interfaces.Repositorys;
-using AssetManager.Infra.Data.DTO;
-using AssetManager.Infra.Data.DTO.Company;
 using AutoMapper;
 
 namespace AssetManager.Application.Service
@@ -17,31 +16,52 @@ namespace AssetManager.Application.Service
             _companyRepository = companyRepository;
             _mapper = mapper; 
         }
-        public Task<ResultOperation> CreateCompany(CreateCompanyDTO company)
+        public Task CreateCompany(CreateCompanyDTO company)
         {
-            CompanyEntity? companyEntity = _mapper.Map<CompanyEntity>(company);
+            try
+            {
+                CompanyEntity? companyEntity = _mapper.Map<CompanyEntity>(company);
 
-            if (companyEntity == null)
-                return Task.FromResult(new ResultOperation("Houve um erro no cadasro da Companhia"));
+                if (companyEntity == null)
+                    throw new NullReferenceException(nameof(companyEntity));
 
-            var result = _companyRepository.Create(companyEntity);
-            if (result.IsCompletedSuccessfully)
-                return Task.FromResult(new ResultOperation("Houve um erro no cadasro da Companhia"));
+                var result = _companyRepository.Create(companyEntity);
+                return Task.CompletedTask;
 
-            return Task.FromResult(new ResultOperation("Companhia Cadastrada com sucesso", true));
-            
+            }
+            catch(Exception ex)
+            {
+                return Task.FromException(ex);
+            }
+
         }
 
-        public Task<CompanyDTO> GetCompany(int id)
+        public Task<CompanyDTO?> GetCompany(int id)
         {
-            CompanyEntity? company = _companyRepository.GetById(id).Result;
-            CompanyDTO companyDTO = _mapper.Map<CompanyDTO>(company);
-            return Task.FromResult(companyDTO);
+            try
+            {
+                CompanyEntity? company = _companyRepository.GetById(id).Result;
+
+                return Task.FromResult(_mapper.Map<CompanyDTO?>(company));
+            }
+            catch(Exception ex)
+            {
+                return Task.FromException<CompanyDTO?>(ex);
+            }
+
         }
 
-        public Task<ResultOperation> UpdateCompany(CompanyDTO companyDTO)
+        public Task UpdateCompany(CompanyDTO companyDTO)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _companyRepository.Update(_mapper.Map<CompanyEntity>(companyDTO));
+                return Task.CompletedTask;
+            }
+            catch(Exception ex)
+            {
+                return Task.FromException(ex);
+            }
         }
     }
 }
