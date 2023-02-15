@@ -14,7 +14,7 @@ namespace AssetManager.Application.Profiles
         public CompanyProfile()
         {
             CreateMap<CompanyDTO, CompanyEntity>().ReverseMap();
-            CreateMap<CompanyDTO, CreateCompanyDTO>().ReverseMap();
+            CreateMap<CreateCompanyDTO, CompanyEntity>().ReverseMap();
 
         }
     }

@@ -46,18 +46,15 @@ namespace AssetManager.Controllers
             }
         }
 
-        [HttpPut("Update/{id}")]
+        [HttpPut("Update")]
         [Authorize(Roles = "Administrador,Suporte")]
-        public IActionResult Update(int id, CompanyDTO companyModel)
+        public IActionResult Update(CompanyDTO companyModel)
         {
             try
-            {
-                if (id != companyModel.IdCompany)
-                    throw new Exception();
-                
+            {               
                 _companyService.Update(companyModel);
 
-                return Ok("Usuario atualizado com sucesso!s");
+                return Ok("Atualizado com sucesso!");
             }
             catch(Exception ex)
             {
@@ -89,7 +86,7 @@ namespace AssetManager.Controllers
             try
             {
                 var company = _companyService.GetByID(id);
-                return Ok(company);
+                return Ok(company.Result);
             }
             catch(Exception e)
             {
