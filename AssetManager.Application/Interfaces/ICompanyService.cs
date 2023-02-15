@@ -3,7 +3,9 @@
 namespace AssetManager.Application.Interfaces;
 public interface ICompanyService
 {
-    Task CreateCompany(CreateCompanyDTO company);
-    Task UpdateCompany(CompanyDTO companyDTO);
-    Task<CompanyDTO?> GetCompany(int id);
+    Task Create(CreateCompanyDTO company);
+    Task Update(CompanyDTO companyDTO);
+    Task<CompanyDTO?> GetByID(int id);
+    Task Delete(int idCompany);
+    Task<List<CompanyDTO>> GetAll();
 }

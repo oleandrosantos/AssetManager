@@ -6,6 +6,8 @@ using AssetManager.Domain.Interfaces.Repositorys;
 using Microsoft.Extensions.Configuration;
 using AssetManager.Application.Profiles;
 using MediatR;
+using AssetManager.Application.Interfaces;
+using AssetManager.Application.Service;
 
 namespace AssetManager.Infra.IoC
 {
@@ -30,10 +32,18 @@ namespace AssetManager.Infra.IoC
             var myhandlers = AppDomain.CurrentDomain.Load("AssetManager.Application");
             services.AddMediatR(myhandlers);
 
+            services.AddTransient<IAssetEventsService, AssetEventsService>();
+            services.AddTransient<IAssetService, AssetService>();
+            services.AddTransient<ICompanyService, CompanyService>();
+            services.AddTransient<ILoanAssetService, LoanAssetService>();
+            services.AddTransient<ITokenService, TokenService>();
+            services.AddTransient<IUserService, UserService>();
+
             services.AddTransient<IAssetRepository, AssetRepository>();
             services.AddTransient<IAssetEventsRepository, AssetEventsRepository>();
             services.AddTransient<ILoanAssetRepository, LoanAssetRepository>();
             services.AddTransient<ICompanyRepository, CompanyRepository>();
+            services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IUserRepository, UserRepository>();
         }
     }

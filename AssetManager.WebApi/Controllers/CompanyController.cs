@@ -21,39 +21,48 @@ namespace AssetManager.Controllers
 
         [HttpPost("Create")]
         [AllowAnonymous]
-        public IActionResult CreateCompany(CreateCompanyDTO companyModel)
+        public IActionResult Create(CreateCompanyDTO companyModel)
         {
-            var companyResult = _companyService.CreateCompany(companyModel);
+            var companyResult = _companyService.Create(companyModel);
 
-            if (companyResult != null)
-                return Ok(companyResult);
+            if (companyResult.IsCompletedSuccessfully)
+                return Ok("Companhia cadastrada com sucesso!");
 
             return BadRequest($"Não conseguimos cadastrar, verifique os dados!");
         }
 
         [HttpDelete("Delete/{id}")]
         [Authorize(Roles = "Suporte")]
-        public async Task<IActionResult> DeleteCompany(int id)
+        public IActionResult Delete(int id)
         {
-            throw new NotImplementedException();
-            //bool deletado = await _companyService.DeleteCompany(id);
-            //if (deletado)
-            //    return Ok("Efetuada a exclusão da company");
-
-            //return BadRequest("A Companhia ja esta desativada");
+            try
+            {
+                _companyService.Delete(id);
+                return Ok("Companhia Excluida com sucesso!");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest("Não foi possivel Excluir a companhia");
+            }
         }
 
         [HttpPut("Update/{id}")]
         [Authorize(Roles = "Administrador,Suporte")]
-        public IActionResult UpdateCompany(int id, CompanyDTO companyModel)
+        public IActionResult Update(int id, CompanyDTO companyModel)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (id != companyModel.IdCompany)
+                    throw new Exception();
+                
+                _companyService.Update(companyModel);
 
-            //companyModel.IdCompany = id;
-            //if (_companyService.UpdateCompany(companyModel))
-            //    return Ok("Atualizado com sucesso");
-
-            //return BadRequest("Não conseguimos Atualizar o companyModel");
+                return Ok("Usuario atualizado com sucesso!s");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest("Houve um erro e não foi possivel atualizar a companhia");
+            }
         }
 
 
@@ -61,32 +70,31 @@ namespace AssetManager.Controllers
         [Authorize(Roles = "Suporte")]
         public IActionResult CompanyList()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var company = _companyService.GetAll().Result;
+                return Ok(company);
+            }
+            catch (Exception e)
+            {
+                return NoContent();
+            }
 
-            //List<CompanyModel> companyList = _companyService.CompanyList().Result;
-
-            //if (companyList.Any() || companyList != null)
-            //    return Ok(companyList);
-            //else if (companyList.Any())
-            //    return NoContent();
-
-            //return BadRequest();            
         }
 
         [HttpGet("ObterCompany/{id}")]
         [Authorize(Roles = "Administrador,Suporte,Funcionario")]
-        public IActionResult GetCompanyByID(int id)
+        public IActionResult GetByID(int id)
         {
-            throw new NotImplementedException();
-
-            //var companyModel = _companyService.GetCompanyByID(id);
-
-            //if (companyModel == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return Ok(companyModel);
+            try
+            {
+                var company = _companyService.GetByID(id);
+                return Ok(company);
+            }
+            catch(Exception e)
+            {
+                return NoContent();
+            }
         }
     }
 }

@@ -19,7 +19,7 @@ public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where T
         return await dbSet.FindAsync(id);
     }
 
-    public virtual async Task<IEnumerable<TEntity>> GetAll()
+    public virtual async Task<IList<TEntity>> GetAll()
     {
         return await dbSet.ToListAsync();
     }

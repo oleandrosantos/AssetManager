@@ -4,6 +4,7 @@ using System.Text;
 using AssetManager.Application.DTO.User;
 using AssetManager.Application.Interfaces;
 using AssetManager.Domain.Utils;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -11,15 +12,15 @@ namespace AssetManager.Application.Service;
 
 public class TokenService: ITokenService
 {
-    private readonly AppSettings _appSettings;
-    public TokenService(IOptions<AppSettings> appSettings)
+    private readonly IConfiguration _configuration;
+    public TokenService(IConfiguration configuration)
     {
-        _appSettings = appSettings.Value;
+        _configuration = configuration;
     }
     public string GenerateToken(UserDTO user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+        var key = Encoding.ASCII.GetBytes(_configuration.GetSection("AppSettings").GetSection("Secret").Value);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new Claim[]

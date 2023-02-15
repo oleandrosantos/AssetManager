@@ -9,7 +9,7 @@ public interface IRepositoryBase<TEntity> where TEntity : class
 {
     Task Create(TEntity obj);
     Task<TEntity?> GetById(int id);
-    Task<IEnumerable<TEntity>> GetAll();
+    Task<IList<TEntity>> GetAll();
     Task Delete(int id);
     Task Update(TEntity obj);
 }

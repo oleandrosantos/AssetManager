@@ -1,10 +1,4 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using AssetManager.Infra.IoC;
-using AssetManager.Application.Interfaces;
-using AssetManager.Application.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,31 +11,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
 
-builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddSingleton<ITokenService, TokenService>();
-
 DependecyInjection.AddInfrastructure(builder.Services, config);
-
-var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Secret"]);
-
-builder.Services.AddAuthentication(x =>
-    {
-        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(x =>
-    {
-        x.RequireHttpsMetadata = false;
-        x.SaveToken = true;
-        x.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-    });
-
+DependecyInjectionJWT.AddInfrastructure(builder.Services, config);
 
 var app = builder.Build();
 
@@ -56,8 +27,8 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-app.UseAuthentication();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseCors(x => x

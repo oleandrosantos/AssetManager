@@ -49,12 +49,12 @@ public class UserController : ControllerBase
               return NotFound(new { message = "Email ou senha não informados" });
             }
 
-            var tokenJWT = _userService.Login(model.Email, model.Password);
+            var tokenJWT = _userService.Login(model.Email, model.Password).Result;
             return Ok(new { token = tokenJWT });
         }
         catch
         {
-            return BadRequest(new { message = "Não foi possivel realizar o login" });
+            return BadRequest(new { message = "Não foi possivel realizar o login, tente novamente" });
         }
   }
 

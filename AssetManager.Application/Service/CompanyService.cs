@@ -2,6 +2,7 @@
 using AssetManager.Application.Interfaces;
 using AssetManager.Domain.Entities;
 using AssetManager.Domain.Interfaces.Repositorys;
+using AssetManager.Domain.Validations;
 using AutoMapper;
 
 namespace AssetManager.Application.Service
@@ -16,7 +17,7 @@ namespace AssetManager.Application.Service
             _companyRepository = companyRepository;
             _mapper = mapper; 
         }
-        public Task CreateCompany(CreateCompanyDTO company)
+        public Task Create(CreateCompanyDTO company)
         {
             try
             {
@@ -27,7 +28,6 @@ namespace AssetManager.Application.Service
 
                 var result = _companyRepository.Create(companyEntity);
                 return Task.CompletedTask;
-
             }
             catch(Exception ex)
             {
@@ -36,22 +36,24 @@ namespace AssetManager.Application.Service
 
         }
 
-        public Task<CompanyDTO?> GetCompany(int id)
+        public Task<CompanyDTO> GetByID(int id)
         {
             try
             {
                 CompanyEntity? company = _companyRepository.GetById(id).Result;
+                if (company == null)
+                    throw new EmptyReturnException("Companhia não localizada!");
 
-                return Task.FromResult(_mapper.Map<CompanyDTO?>(company));
+                return Task.FromResult(_mapper.Map<CompanyDTO>(company));
             }
             catch(Exception ex)
             {
-                return Task.FromException<CompanyDTO?>(ex);
+                throw;
             }
 
         }
 
-        public Task UpdateCompany(CompanyDTO companyDTO)
+        public Task Update(CompanyDTO companyDTO)
         {
             try
             {
@@ -61,6 +63,34 @@ namespace AssetManager.Application.Service
             catch(Exception ex)
             {
                 return Task.FromException(ex);
+            }
+        }
+
+        public Task Delete(int idCompany)
+        {
+            try
+            {
+                _companyRepository.Delete(idCompany);
+                return Task.CompletedTask;
+            }
+            catch(Exception e)
+            {
+                return Task.FromException(e);
+            }
+        }
+
+        public Task<List<CompanyDTO>> GetAll()
+        {
+            try
+            {
+                var companyList = _companyRepository.GetAll().Result;
+                var company = _mapper.Map<List<CompanyDTO>>(companyList);
+                
+                return Task.FromResult(company);
+            }
+            catch(Exception ex)
+            {
+                throw;
             }
         }
     }

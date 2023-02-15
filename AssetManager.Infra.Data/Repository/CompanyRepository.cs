@@ -1,11 +1,7 @@
 ﻿using AssetManager.Domain.Entities;
 using AssetManager.Domain.Interfaces.Repositorys;
 using AssetManager.Infra.Data.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Maoli;
 
 namespace AssetManager.Infra.Data.Repository
 {
@@ -13,6 +9,18 @@ namespace AssetManager.Infra.Data.Repository
     {
         public CompanyRepository(DataContext dbContext) : base(dbContext) { }
 
+        public override Task Delete(int id)
+        {
+            var company = GetById(id).Result;
 
+            if(company == null)
+                throw new NullReferenceException(nameof(company));
+
+            company.IsAtiva = false;
+            company.ExclusionDate= DateTime.Now;
+            Context.SaveChanges();
+
+            return Task.CompletedTask;
+        }
     }
 }
