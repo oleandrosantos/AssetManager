@@ -6,6 +6,6 @@ public interface IAssetService
     Task CreateAsset(AssetDTO asset);
     Task<IList<AssetDTO>> GetAssetsByCompany(int idCompany);
     Task<AssetDTO?> GetByID(int idAsset);
-    Task<string> UpdateAsset(UpdateAssetDTO asset);
-    Task<string> DeleteAsset(int idAsset, string exclusionInfo);
+    Task UpdateAsset(UpdateAssetDTO asset);
+    Task DeleteAsset(int idAsset, string exclusionInfo);
 }

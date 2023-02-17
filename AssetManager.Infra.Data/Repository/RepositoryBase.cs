@@ -26,11 +26,11 @@ public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where T
 
     public virtual async Task Delete(int id)
     {
-        TEntity entity = GetById(id).Result;
+        TEntity? entity = GetById(id).Result;
         if (entity != null)
         {
             dbSet.Remove(entity);
-            Context.SaveChanges();
+            await Context.SaveChangesAsync();
         }
     }
 

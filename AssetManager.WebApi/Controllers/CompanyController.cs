@@ -10,13 +10,11 @@ namespace AssetManager.Controllers
     [ApiController]
     public class CompanyController : ControllerBase
     {
-        private ICompanyService _companyService;
-        private IMapper _mapper;
+        private readonly ICompanyService _companyService;
 
-        public CompanyController(ICompanyService companyService, IMapper mapper)
+        public CompanyController(ICompanyService companyService)
         {
             _companyService = companyService;
-            _mapper = mapper;
         }
 
         [HttpPost("Create")]
@@ -40,7 +38,7 @@ namespace AssetManager.Controllers
                 _companyService.Delete(id);
                 return Ok("Companhia Excluida com sucesso!");
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 return BadRequest("Não foi possivel Excluir a companhia");
             }
@@ -56,7 +54,7 @@ namespace AssetManager.Controllers
 
                 return Ok("Atualizado com sucesso!");
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 return BadRequest("Houve um erro e não foi possivel atualizar a companhia");
             }
@@ -72,7 +70,7 @@ namespace AssetManager.Controllers
                 var company = _companyService.GetAll().Result;
                 return Ok(company);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return NoContent();
             }
@@ -88,7 +86,7 @@ namespace AssetManager.Controllers
                 var company = _companyService.GetByID(id);
                 return Ok(company.Result);
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 return NoContent();
             }

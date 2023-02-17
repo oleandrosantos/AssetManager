@@ -3,6 +3,7 @@ using System;
 using AssetManager.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AssetManager.Infra.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230216152808_adicionando_assets_infos")]
+    partial class adicionando_assets_infos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,7 +41,7 @@ namespace AssetManager.Infra.Data.Migrations
                     b.Property<int>("DepreciationTaxInCents")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("ExclusionDate")
+                    b.Property<DateTime>("ExclusionDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("ExclusionInfos")

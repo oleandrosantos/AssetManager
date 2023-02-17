@@ -4,7 +4,7 @@ namespace AssetManager.Domain.Entities;
 
 public class LoanAssetEntity
 {
-    public string? IdLoanAsset { get; set; }
+    public string IdLoanAsset { get; set; } = Guid.NewGuid().ToString();
     public DateTime LoanDate { get; set; }
     public DateTime? DevolutionDate { get; set; }
     public string? Description { get; set; }    
@@ -14,4 +14,5 @@ public class LoanAssetEntity
     public UserEntity User { get; set; }
     public AssetEntity Asset { get; set; }
     public CompanyEntity Company { get; set; }
+
 }

@@ -11,7 +11,10 @@ public class AssetEntity
     public string AssetName { get; set; }
     public int DepreciationTaxInCents { get; set; }
     public ulong AssetPriceInCents { get; set; }
-    public string Status { get; set; }
+    public string Status { get; set; } = string.Empty;
+    public DateTime AcquisitionDate { get; set; }
+    public DateTime? ExclusionDate { get; set; }
+    public string? ExclusionInfos { get; set; }
     public int IdCompany { get; set; }
     public CompanyEntity Company { get; set; }
     public LoanAssetEntity LoanAsset { get; set; }

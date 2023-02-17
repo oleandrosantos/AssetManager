@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace AssetManager.Application.DTO.LoanAsset;
-public class CreateLoanAssetDTO
+public class LoanAssetDTO
 {
     [Required]
     public DateTime LoanDate { get; set; }

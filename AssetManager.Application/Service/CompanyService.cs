@@ -10,7 +10,7 @@ namespace AssetManager.Application.Service
     public class CompanyService : ICompanyService
     {
         private readonly ICompanyRepository _companyRepository;
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
 
         public CompanyService(ICompanyRepository companyRepository, IMapper mapper)
         {
@@ -36,7 +36,7 @@ namespace AssetManager.Application.Service
 
         }
 
-        public Task<CompanyDTO> GetByID(int id)
+        public Task<CompanyDTO?> GetByID(int id)
         {
             try
             {
@@ -44,9 +44,9 @@ namespace AssetManager.Application.Service
                 if (company == null)
                     throw new EmptyReturnException("Companhia não localizada!");
 
-                return Task.FromResult(_mapper.Map<CompanyDTO>(company));
+                return Task.FromResult(_mapper.Map<CompanyDTO?>(company));
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
@@ -88,7 +88,7 @@ namespace AssetManager.Application.Service
                 
                 return Task.FromResult(company);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }

@@ -13,8 +13,8 @@ namespace AssetManager.Application.Profiles
     {
         public LoanAssetProfile()
         {
-            CreateMap<CreateLoanAssetDTO, LoanAssetEntity>();
-            CreateMap<TerminationLoanAssetViewModel, LoanAssetEntity>();
+            CreateMap<LoanAssetDTO, LoanAssetEntity>();
+            CreateMap<TerminationLoanAssetModel, LoanAssetEntity>();
         }
     }
 }

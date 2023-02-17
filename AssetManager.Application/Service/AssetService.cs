@@ -23,10 +23,11 @@ namespace AssetManager.Application.Service
         {
             try
             {
-                AssetEntity? assetEntity = _mapper.Map<AssetEntity>(asset);
+                AssetEntity assetEntity = _mapper.Map<AssetEntity>(asset);
                 var company = _companyRepository.GetById(asset.IdCompany).Result;
-                if (company != null)
-                    assetEntity.Company = company;
+
+                if (company == null)
+                    throw new NullReferenceException($"A Companhia de id {asset.IdCompany} não existe!");
 
                 var result = _assetRepository.Create(assetEntity);
 
@@ -38,15 +39,18 @@ namespace AssetManager.Application.Service
             }
         }
 
-        public Task<string> UpdateAsset(UpdateAssetDTO asset)
+        public Task UpdateAsset(UpdateAssetDTO asset)
         {
-            AssetEntity? assetEntity = _mapper.Map<AssetEntity>(asset);
-            var result = _assetRepository.Update(assetEntity);
-
-            if (result.IsCompleted)
-                return Task.FromResult($"{asset.AssetName} Atualizar com sucesso");
-
-            throw new Exception($"Houve um erro e não foi possivel atualizar");
+            try
+            {
+                AssetEntity? assetEntity = _mapper.Map<AssetEntity>(asset);
+                var result = _assetRepository.Update(assetEntity);
+                return Task.CompletedTask;
+            }
+            catch (Exception e)
+            {
+                return Task.FromException(e);
+            }
         }
     
         public Task<IList<AssetDTO>> GetAssetsByCompany(int idCompany)
@@ -63,7 +67,7 @@ namespace AssetManager.Application.Service
            return Task.FromResult(_mapper.Map<AssetDTO?>(asset));
         }               
 
-        public Task<string> DeleteAsset(int idAsset, string exclusionInfo)
+        public Task DeleteAsset(int idAsset, string exclusionInfo)
         {
             var result = _assetRepository.Delete(idAsset);
 
