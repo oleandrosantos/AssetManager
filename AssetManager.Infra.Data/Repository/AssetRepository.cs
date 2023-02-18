@@ -15,16 +15,25 @@ public class AssetRepository : RepositoryBase<AssetEntity>, IAssetRepository
 
     public async Task<IList<AssetEntity>> GetAssetsByCompany(int idCompany)
     {
-        return context.asset.Where(a => a.IdCompany == idCompany).ToList();
+        return dbSet.Where(a => a.IdCompany == idCompany).ToList();
     }
 
     public Task<AssetEntity?> GetBySKU(string SKU)
     {
-       return context.asset.Where(a => a.Sku == SKU).FirstOrDefaultAsync();
+       return dbSet.Where(a => a.Sku == SKU).FirstOrDefaultAsync();
     }
 
-    public override Task Delete(int id)
+    public Task Delete(int id, string? ExclusionInfo)
     {
-        throw new Exception("Não implementada");
+        var asset = GetById(id).Result;
+        asset.ExclusionDate = DateTime.Now;
+        asset.ExclusionInfos = ExclusionInfo;
+        context.SaveChangesAsync();
+        return Task.CompletedTask;
+    }
+
+    public async Task<AssetEntity?> GetById(int id)
+    {
+        return await dbSet.FindAsync(id);
     }
 }

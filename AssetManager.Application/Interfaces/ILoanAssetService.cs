@@ -1,4 +1,5 @@
 ﻿using AssetManager.Application.DTO.LoanAsset;
+using AssetManager.Domain.Entities;
 
 namespace AssetManager.Application.Interfaces;
 public interface ILoanAssetService
@@ -6,10 +7,7 @@ public interface ILoanAssetService
     Task<LoanAssetDTO> GetLoanByID(string idLoanAsset);
     Task LoanAsset(LoanAssetDTO loanAsset);
     Task DevolutionAsset(TerminationLoanAssetModel terminate);
-    Task<List<LoanAssetDTO>> GetLoanAssetsByCompany(int idCompany);
-    Task<List<LoanAssetDTO>> GetLoanAssetsByAssets(int idAsset);
-    Task<List<LoanAssetDTO>> GetActiveLoansByAssets(int idAsset);
-    Task<List<LoanAssetDTO>> GetActiveLoansByCompany(int idCompany);
-    Task<List<LoanAssetDTO>> UserAssetLoanList(string idUser);
-
+    Task<IList<LoanAssetDTO>?> GetLoanAssetsByAsset(int idAsset);
+    Task<IList<LoanAssetDTO>?> GetLoanAssetsByCompany(int idCompany);
+    Task<IList<LoanAssetDTO>?> GetLoanAssetsByUser(string idUser);
 }

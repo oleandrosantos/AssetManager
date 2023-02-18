@@ -20,16 +20,6 @@ public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where T
         return await dbSet.ToListAsync();
     }
 
-    public virtual async Task Delete(int id)
-    {
-        TEntity? entity = GetById(id).Result;
-        if (entity != null)
-        {
-            dbSet.Remove(entity);
-            await context.SaveChangesAsync();
-        }
-    }
-
     public virtual async Task Create(TEntity entity)
     {
         dbSet.Add(entity);

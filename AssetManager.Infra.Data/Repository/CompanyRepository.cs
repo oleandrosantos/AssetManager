@@ -9,7 +9,7 @@ namespace AssetManager.Infra.Data.Repository
     {
         public CompanyRepository(DataContext dbContext) : base(dbContext) { }
 
-        public override Task Delete(int id)
+        public Task Delete(int id)
         {
             var company = GetById(id).Result;
 
@@ -21,6 +21,11 @@ namespace AssetManager.Infra.Data.Repository
             context.SaveChanges();
 
             return Task.CompletedTask;
+        }
+
+        public async Task<CompanyEntity?> GetById(int id)
+        {
+            return await dbSet.FindAsync(id);
         }
     }
 }

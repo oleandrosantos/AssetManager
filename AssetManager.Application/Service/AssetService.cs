@@ -64,11 +64,12 @@ namespace AssetManager.Application.Service
            return Task.FromResult(_mapper.Map<AssetDTO?>(asset));
         }               
 
-        public Task DeleteAsset(int idAsset, string exclusionInfo)
+
+        public Task DeleteAsset(int idAsset, string? exclusionInfo)
         {
             try
             {
-                return _assetRepository.Delete(idAsset);
+                return _assetRepository.Delete(idAsset, exclusionInfo);
             }
             catch(Exception e)
             {

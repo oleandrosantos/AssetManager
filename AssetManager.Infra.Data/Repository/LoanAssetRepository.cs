@@ -12,5 +12,28 @@ namespace AssetManager.Infra.Data.Repository
     public class LoanAssetRepository : RepositoryBase<LoanAssetEntity>, ILoanAssetRepository
     {
         public LoanAssetRepository(DataContext dbContext) : base(dbContext) { }
+
+        public async Task<LoanAssetEntity?> GetById(string id)
+        {
+            return await dbSet.FindAsync(id);
+        }
+
+        public async Task<IList<LoanAssetEntity>?> GetByAssetId(int idAsset)
+        {
+            var AssetList = dbSet.Where(a => a.Asset.IdAsset == idAsset).ToList();
+            return AssetList;
+        }
+
+        public async Task<IList<LoanAssetEntity>?> GetByCompanyId(int idCompany)
+        {
+            var AssetList = dbSet.Where(a => a.Company.IdCompany == idCompany).ToList();
+            return AssetList;
+        }
+
+        public async Task<IList<LoanAssetEntity>?> GetByUserId(string idUser)
+        {
+            var AssetList = dbSet.Where(a => a.User.IdUser == idUser).ToList();
+            return AssetList;
+        }
     }
 }

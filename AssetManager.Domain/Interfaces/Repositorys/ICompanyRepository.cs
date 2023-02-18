@@ -3,4 +3,5 @@
 namespace AssetManager.Domain.Interfaces.Repositorys;
 public interface ICompanyRepository : IRepositoryBase<CompanyEntity>
 {
+    Task<CompanyEntity?> GetById(int id);
 }

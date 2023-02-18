@@ -17,35 +17,17 @@ namespace AssetManager.Application.Service
             _mapper = mapper;
         }
 
-        public Task DevolutionAsset(TerminationLoanAssetModel terminate)
+        public Task<LoanAssetDTO?> GetLoanByID(string id)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<LoanAssetDTO>> GetActiveLoansByAssets(int idAsset)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<LoanAssetDTO>> GetActiveLoansByCompany(int idCompany)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<LoanAssetDTO>> GetLoanAssetsByAssets(int idAsset)
-        {
-            _loanAssetRepository.GetById(ObjectDisposedException )
-            throw new NotImplementedException();
-        }
-
-        public Task<List<LoanAssetDTO>> GetLoanAssetsByCompany(int idCompany)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<LoanAssetDTO> GetLoanByID(string idLoanAsset)
-        {
-            throw new NotImplementedException();
+            try
+            {
+                var loanAssets = _loanAssetRepository.GetById(id).Result;
+                return Task.FromResult(_mapper.Map<LoanAssetDTO?>(loanAssets));
+            }
+            catch (Exception e)
+            {
+                return Task.FromException<LoanAssetDTO?>(e);
+            }
         }
 
         public Task LoanAsset(LoanAssetDTO loanAsset)
@@ -62,14 +44,55 @@ namespace AssetManager.Application.Service
 
         }
 
-        public Task<List<LoanAssetDTO>> UserAssetLoanList(string idUser)
+        public Task<IList<LoanAssetDTO>?> GetLoanAssetsByCompany(int idCompany)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return Task.FromResult(_mapper.Map<IList<LoanAssetDTO>?>(_loanAssetRepository.GetByCompanyId(idCompany)));
+            }
+            catch (Exception e)
+            {
+                return Task.FromException<IList<LoanAssetDTO>?>(e);
+            }
+        }
+        public Task<IList<LoanAssetDTO>?> GetLoanAssetsByUser(string idUsuario)
+        {
+            try
+            {
+                return Task.FromResult(_mapper.Map<IList<LoanAssetDTO>?>(_loanAssetRepository.GetByUserId(idUsuario)));
+            }
+            catch (Exception e)
+            {
+                return Task.FromException<IList<LoanAssetDTO>?>(e);
+            }
         }
 
-        Task ILoanAssetService.LoanAsset(LoanAssetDTO loanAsset)
+        public Task<IList<LoanAssetDTO>?> GetLoanAssetsByAsset(int idAsset)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return Task.FromResult(_mapper.Map<IList<LoanAssetDTO>?>(_loanAssetRepository.GetByAssetId(idAsset)));
+            }
+            catch (Exception e)
+            {
+                return Task.FromException<IList<LoanAssetDTO>?>(e);
+            }
+        }
+
+        public Task DevolutionAsset(TerminationLoanAssetModel terminate)
+        {
+            try
+            {
+                var loanAsset = GetLoanByID(terminate.LoanAssetId).Result;
+                loanAsset.DevolutionDate = terminate.Date;
+                loanAsset.Description = terminate.Description;
+                _loanAssetRepository.Update(_mapper.Map<LoanAssetEntity>(loanAsset));
+                return Task.CompletedTask;
+            }
+            catch(Exception e)
+            {
+                return Task.FromException(e);
+            }
         }
     }
 }

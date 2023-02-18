@@ -78,7 +78,7 @@ namespace AssetManager.Controllers
         [Authorize(Roles = "Administrador, Suporte, Funcionario")]
         public IActionResult UserAssetLoanList(string idUsuario)
         {
-            var loanList = _loanAssetService.UserAssetLoanList(idUsuario);
+            var loanList = _loanAssetService.GetLoanAssetsByUser(idUsuario);
 
             if (loanList.Result.Any())
                 return Ok(loanList);
