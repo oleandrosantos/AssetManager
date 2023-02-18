@@ -35,5 +35,10 @@ namespace AssetManager.Infra.Data.Repository
             var AssetList = dbSet.Where(a => a.User.IdUser == idUser).ToList();
             return AssetList;
         }
+
+        public Task CloseLoan(string id, string Description, DateTime Fi)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
