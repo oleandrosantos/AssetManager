@@ -6,17 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 namespace AssetManager.Infra.Data.Repository;
 public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where TEntity : class
 {
-    protected readonly DataContext Context;
+    protected readonly DataContext context;
     protected readonly DbSet<TEntity> dbSet;
 
     public RepositoryBase(DataContext dbContext)
     {
-        Context = dbContext;
+        context = dbContext;
         dbSet = dbContext.Set<TEntity>();
-    }
-    public virtual async Task<TEntity?> GetById(int id)
-    {
-        return await dbSet.FindAsync(id);
     }
 
     public virtual async Task<IList<TEntity>> GetAll()
@@ -30,20 +26,20 @@ public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where T
         if (entity != null)
         {
             dbSet.Remove(entity);
-            await Context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
     }
 
     public virtual async Task Create(TEntity entity)
     {
         dbSet.Add(entity);
-        Context.SaveChanges();
+        context.SaveChanges();
     }
 
     public virtual async Task Update(TEntity entity)
     {
         dbSet.Attach(entity);
-        Context.Entry(entity).State = EntityState.Modified;
-        Context.SaveChanges();
+        context.Entry(entity).State = EntityState.Modified;
+        context.SaveChanges();
     }
 }

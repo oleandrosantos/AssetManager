@@ -23,7 +23,7 @@ namespace AssetManager.Controllers
         {
             var companyResult = _companyService.Create(companyModel);
 
-            if (companyResult.IsCompletedSuccessfully)
+            if(companyResult.IsCompletedSuccessfully)
                 return Ok("Companhia cadastrada com sucesso!");
 
             return BadRequest($"Não conseguimos cadastrar, verifique os dados!");

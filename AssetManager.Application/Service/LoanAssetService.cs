@@ -34,6 +34,7 @@ namespace AssetManager.Application.Service
 
         public Task<List<LoanAssetDTO>> GetLoanAssetsByAssets(int idAsset)
         {
+            _loanAssetRepository.GetById(ObjectDisposedException )
             throw new NotImplementedException();
         }
 
@@ -52,8 +53,7 @@ namespace AssetManager.Application.Service
             try
             {
                 LoanAssetEntity entity = _mapper.Map<LoanAssetEntity>(loanAsset);
-                _loanAssetRepository.Create(entity);
-                return Task.FromResult(entity.IdLoanAsset);
+                return _loanAssetRepository.Create(entity);
             }
             catch(Exception e)
             {

@@ -90,9 +90,10 @@ namespace AssetManager.Controllers
         [Authorize(Roles = "Administrador, Suporte")]
         public IActionResult TerminationLoanAsset(TerminationLoanAssetModel terminationLoanAsset)
         {
+            throw new NotImplementedException();
             try
             {
-                throw new NotImplementedException();
+
             }
             catch (Exception ex)
             {

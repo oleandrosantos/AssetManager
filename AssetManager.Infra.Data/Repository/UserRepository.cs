@@ -11,7 +11,7 @@ namespace AssetManager.Infra.Data.Repository
 
         public async Task<UserEntity?> GetUserByEmail(string email)
         {
-            var user = Context.usuario.FirstOrDefault(u => u.Email == email);
+            var user = context.usuario.FirstOrDefault(u => u.Email == email);
                         
             return user;
         }

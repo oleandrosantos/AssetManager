@@ -15,12 +15,12 @@ public class AssetRepository : RepositoryBase<AssetEntity>, IAssetRepository
 
     public async Task<IList<AssetEntity>> GetAssetsByCompany(int idCompany)
     {
-        return Context.asset.Where(a => a.IdCompany == idCompany).ToList();
+        return context.asset.Where(a => a.IdCompany == idCompany).ToList();
     }
 
     public Task<AssetEntity?> GetBySKU(string SKU)
     {
-       return Context.asset.Where(a => a.Sku == SKU).FirstOrDefaultAsync();
+       return context.asset.Where(a => a.Sku == SKU).FirstOrDefaultAsync();
     }
 
     public override Task Delete(int id)

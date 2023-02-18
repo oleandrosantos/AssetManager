@@ -18,7 +18,7 @@ namespace AssetManager.Infra.Data.Repository
 
             company.IsAtiva = false;
             company.ExclusionDate= DateTime.Now;
-            Context.SaveChanges();
+            context.SaveChanges();
 
             return Task.CompletedTask;
         }

@@ -29,9 +29,7 @@ namespace AssetManager.Application.Service
                 if (company == null)
                     throw new NullReferenceException($"A Companhia de id {asset.IdCompany} não existe!");
 
-                var result = _assetRepository.Create(assetEntity);
-
-                return Task.CompletedTask;
+                return _assetRepository.Create(assetEntity);
             }
             catch(Exception e)
             {
@@ -44,8 +42,7 @@ namespace AssetManager.Application.Service
             try
             {
                 AssetEntity? assetEntity = _mapper.Map<AssetEntity>(asset);
-                var result = _assetRepository.Update(assetEntity);
-                return Task.CompletedTask;
+                return _assetRepository.Update(assetEntity);
             }
             catch (Exception e)
             {
@@ -69,12 +66,14 @@ namespace AssetManager.Application.Service
 
         public Task DeleteAsset(int idAsset, string exclusionInfo)
         {
-            var result = _assetRepository.Delete(idAsset);
-
-            if (result.IsCompletedSuccessfully)
-                return Task.FromResult($"Asset removido com sucesso");
-
-            return Task.FromResult("Erro, não foi possivel removido o Asset");
+            try
+            {
+                return _assetRepository.Delete(idAsset);
+            }
+            catch(Exception e)
+            {
+                return Task.FromException(e);
+            }
         }
 
     }

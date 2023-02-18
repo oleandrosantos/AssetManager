@@ -26,14 +26,12 @@ namespace AssetManager.Application.Service
                 if (companyEntity == null)
                     throw new NullReferenceException(nameof(companyEntity));
 
-                var result = _companyRepository.Create(companyEntity);
-                return Task.CompletedTask;
+                return _companyRepository.Create(companyEntity);
             }
-            catch(Exception ex)
+            catch (Exception e)
             {
-                return Task.FromException(ex);
+                return Task.FromException(e);
             }
-
         }
 
         public Task<CompanyDTO?> GetByID(int id)
