@@ -21,5 +21,14 @@ public class AssetEventsConfiguration : IEntityTypeConfiguration<AssetEventsEnti
             .WithMany(a => a.AssetEvents)
             .HasForeignKey(a => a.IdAsset);
 
+        builder.HasOne(a => a.User)
+            .WithMany(a => a.AssetEvents)
+            .HasForeignKey(a => a.IdUser);
+
+        builder.HasOne(a => a.UserRegister)
+            .WithMany()
+            .HasForeignKey(a => a.IdUserRegister);
+
+
     }
 }

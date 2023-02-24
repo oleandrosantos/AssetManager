@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace AssetManager.Infra.Data.Repository;
 public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where TEntity : class
-{
+{'
     protected readonly DataContext context;
     protected readonly DbSet<TEntity> dbSet;
 
