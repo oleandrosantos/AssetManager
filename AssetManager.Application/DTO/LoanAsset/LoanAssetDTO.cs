@@ -12,9 +12,10 @@ public class LoanAssetDTO : AssetEventsDTO
 
 public class AssetEventsDTO
 {
+    public int IdEvent { get; set; }
+
     [Required]
-    public DateTime LoanDate { get; set; }
-    public DateTime? DevolutionDate { get; set; }
+    public DateTime EventDate { get; set; }
     public string? Description { get; set; }
     [Required]
     public string IdUser { get; set; }

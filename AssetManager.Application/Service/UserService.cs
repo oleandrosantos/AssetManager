@@ -42,7 +42,7 @@ public class UserService : IUserService
         }
      }
 
-    Task<string> IUserService.Login(string email, string password)
+    public Task<string> Login(string email, string password)
     {
         var user = _userRepository.GetUserByEmail(email).Result;
 
@@ -54,11 +54,18 @@ public class UserService : IUserService
         return Task.FromResult(token);
     }
 
-    Task<UserDTO?> IUserService.BuscarPorEmail(string email)
+    public Task<UserDTO?> BuscarPorEmail(string email)
     {
         UserEntity? user = _userRepository.GetUserByEmail(email).Result;
 
         return Task.FromResult(_mapper.Map<UserDTO?>(user));
+    }
+
+    public Task<List<UserDTO?>> GetUsersByIdCompany(int idCompany)
+    {
+        List<UserEntity?> user = _userRepository.GetUsersByIdCompany(idCompany).Result;
+
+        return Task.FromResult(_mapper.Map<List<UserDTO?>>(user));
     }
 
     public Task UpdateUser(UpdateUserDTO dadosDoUsuario)

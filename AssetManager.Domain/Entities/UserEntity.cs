@@ -15,5 +15,4 @@ public class UserEntity
     public bool isActive { get; set; }
     public CompanyEntity Company { get; set; }
     public ICollection<AssetEventsEntity> AssetEvents { get; set; }
-    public ICollection<LoanAssetEntity> Loans { get; set; }
 }

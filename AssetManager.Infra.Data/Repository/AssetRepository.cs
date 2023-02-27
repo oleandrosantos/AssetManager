@@ -34,6 +34,10 @@ public class AssetRepository : RepositoryBase<AssetEntity>, IAssetRepository
 
     public async Task<AssetEntity?> GetById(int id)
     {
-        return await dbSet.FindAsync(id);
+        var asset = dbSet.Where(a => a.IdAsset == id)
+                         .Include(a => a.AssetEvents)                   
+                         .FirstOrDefault();
+
+        return asset;
     }
 }

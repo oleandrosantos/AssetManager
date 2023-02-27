@@ -15,5 +15,12 @@ namespace AssetManager.Infra.Data.Repository
                         
             return user;
         }
+
+        public Task<List<UserEntity?>> GetUsersByIdCompany(int idCompany)
+        {
+            var userList = dbSet.Where(u => u.IdCompany == idCompany).ToList();
+            return Task.FromResult(userList);
+        }
+
     }
 }

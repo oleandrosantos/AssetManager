@@ -86,7 +86,7 @@ namespace AssetManager.Application.Service
                 
                 return Task.FromResult(company);
             }
-            catch(Exception)
+            catch(Exception e)
             {
                 throw;
             }

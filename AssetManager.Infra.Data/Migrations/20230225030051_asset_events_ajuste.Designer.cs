@@ -3,6 +3,7 @@ using System;
 using AssetManager.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AssetManager.Infra.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230225030051_asset_events_ajuste")]
+    partial class asset_events_ajuste
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,13 +88,12 @@ namespace AssetManager.Infra.Data.Migrations
 
                     b.Property<string>("IdUser")
                         .IsRequired()
-                        .HasMaxLength(36)
                         .HasColumnType("varchar(36)");
 
                     b.Property<string>("IdUserRegister")
                         .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar(36)");
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
 
                     b.HasKey("IdEvent");
 
@@ -132,6 +133,43 @@ namespace AssetManager.Infra.Data.Migrations
                     b.HasKey("IdCompany");
 
                     b.ToTable("tb_company", (string)null);
+                });
+
+            modelBuilder.Entity("AssetManager.Domain.Entities.LoanAssetEntity", b =>
+                {
+                    b.Property<string>("IdLoanAsset")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<DateTime?>("DevolutionDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("IdAsset")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdCompany")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IdUser")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.Property<DateTime>("LoanDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("IdLoanAsset");
+
+                    b.HasIndex("IdAsset")
+                        .IsUnique();
+
+                    b.HasIndex("IdCompany");
+
+                    b.ToTable("tb_loan_asset", (string)null);
                 });
 
             modelBuilder.Entity("AssetManager.Domain.Entities.UserEntity", b =>
@@ -217,6 +255,33 @@ namespace AssetManager.Infra.Data.Migrations
                     b.Navigation("UserRegister");
                 });
 
+            modelBuilder.Entity("AssetManager.Domain.Entities.LoanAssetEntity", b =>
+                {
+                    b.HasOne("AssetManager.Domain.Entities.AssetEntity", "Asset")
+                        .WithOne("LoanAsset")
+                        .HasForeignKey("AssetManager.Domain.Entities.LoanAssetEntity", "IdAsset")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AssetManager.Domain.Entities.CompanyEntity", "Company")
+                        .WithMany("Loans")
+                        .HasForeignKey("IdCompany")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AssetManager.Domain.Entities.UserEntity", "User")
+                        .WithMany("Loans")
+                        .HasForeignKey("IdLoanAsset")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Asset");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("AssetManager.Domain.Entities.UserEntity", b =>
                 {
                     b.HasOne("AssetManager.Domain.Entities.CompanyEntity", "Company")
@@ -231,11 +296,16 @@ namespace AssetManager.Infra.Data.Migrations
             modelBuilder.Entity("AssetManager.Domain.Entities.AssetEntity", b =>
                 {
                     b.Navigation("AssetEvents");
+
+                    b.Navigation("LoanAsset")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("AssetManager.Domain.Entities.CompanyEntity", b =>
                 {
                     b.Navigation("Asset");
+
+                    b.Navigation("Loans");
 
                     b.Navigation("Users");
                 });
@@ -243,6 +313,8 @@ namespace AssetManager.Infra.Data.Migrations
             modelBuilder.Entity("AssetManager.Domain.Entities.UserEntity", b =>
                 {
                     b.Navigation("AssetEvents");
+
+                    b.Navigation("Loans");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace AssetManager.Infra.Data.Repository;
 public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where TEntity : class
-{'
+{
     protected readonly DataContext context;
     protected readonly DbSet<TEntity> dbSet;
 
@@ -13,11 +13,6 @@ public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where T
     {
         context = dbContext;
         dbSet = dbContext.Set<TEntity>();
-    }
-
-    public virtual async Task<IList<TEntity>> GetAll()
-    {
-        return await dbSet.ToListAsync();
     }
 
     public virtual async Task Create(TEntity entity)

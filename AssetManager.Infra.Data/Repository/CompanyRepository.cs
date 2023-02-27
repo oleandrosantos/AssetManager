@@ -27,5 +27,10 @@ namespace AssetManager.Infra.Data.Repository
         {
             return await dbSet.FindAsync(id);
         }
+
+        public async Task<IList<CompanyEntity>> GetAll()
+        {
+            return dbSet.Where(a => a.IsAtiva).ToList();
+        }
     }
 }

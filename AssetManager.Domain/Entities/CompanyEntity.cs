@@ -39,6 +39,4 @@ public class CompanyEntity
     }
     public ICollection<UserEntity> Users { get; set; }
     public ICollection<AssetEntity> Asset { get; set; }
-    public ICollection<LoanAssetEntity> Loans { get; set; }
-
 }

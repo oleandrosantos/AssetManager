@@ -4,4 +4,5 @@ namespace AssetManager.Domain.Interfaces.Repositorys;
 public interface IUserRepository : IRepositoryBase<UserEntity>
 {
     Task<UserEntity?> GetUserByEmail(string email);
+    Task<List<UserEntity?>> GetUsersByIdCompany(int idCompany);
 }

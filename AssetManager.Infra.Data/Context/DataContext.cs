@@ -9,7 +9,6 @@ namespace AssetManager.Infra.Data.Context
         public DataContext(DbContextOptions options) : base(options) { }
 
         public DbSet<AssetEntity> asset => Set<AssetEntity>();
-        public DbSet<LoanAssetEntity> loanAsset => Set<LoanAssetEntity>();
         public DbSet<UserEntity> usuario => Set<UserEntity>();
         public DbSet<AssetEventsEntity> company => Set<AssetEventsEntity>();
         public DbSet<AssetEventsEntity> assetEvents => Set<AssetEventsEntity>();
@@ -20,7 +19,6 @@ namespace AssetManager.Infra.Data.Context
             base.OnModelCreating(builder);
             builder.ApplyConfiguration(new UserConfiguration());
             builder.ApplyConfiguration(new AssetConfiguration());
-            builder.ApplyConfiguration(new LoanAssetConfiguration());
             builder.ApplyConfiguration(new CompanyConfiguration());
             builder.ApplyConfiguration(new AssetEventsConfiguration());
         }

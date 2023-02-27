@@ -59,9 +59,16 @@ namespace AssetManager.Application.Service
 
         public Task<AssetDTO?> GetByID(int idAsset)
         {
-            var asset = _assetRepository.GetById(idAsset).Result;
+            try
+            {
+               var asset = _assetRepository.GetById(idAsset).Result;
 
-           return Task.FromResult(_mapper.Map<AssetDTO?>(asset));
+               return Task.FromResult(_mapper.Map<AssetDTO?>(asset));
+            }
+            catch(Exception e)
+            {
+                return Task.FromException<AssetDTO?>(e);
+            }
         }               
 
 

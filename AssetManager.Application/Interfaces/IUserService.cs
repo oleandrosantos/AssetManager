@@ -7,4 +7,5 @@ public interface IUserService
   public Task<string> Login(string email, string password);
   public Task<UserDTO?> BuscarPorEmail(string email);
   public Task UpdateUser(UpdateUserDTO dadosDoUsuario);
+  public Task<List<UserDTO?>> GetUsersByIdCompany(int idCompany);
 }

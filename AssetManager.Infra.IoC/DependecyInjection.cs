@@ -8,6 +8,8 @@ using AssetManager.Application.Profiles;
 using MediatR;
 using AssetManager.Application.Interfaces;
 using AssetManager.Application.Service;
+using AutoMapper;
+using System.Reflection;
 
 namespace AssetManager.Infra.IoC
 {
@@ -24,10 +26,7 @@ namespace AssetManager.Infra.IoC
                     .EnableDetailedErrors()
             );
 
-            services.AddAutoMapper(typeof(AssetProfile));
-            services.AddAutoMapper(typeof(CompanyProfile));
-            services.AddAutoMapper(typeof(LoanAssetProfile));
-            services.AddAutoMapper(typeof(UserProfile));
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             var myhandlers = AppDomain.CurrentDomain.Load("AssetManager.Application");
             services.AddMediatR(myhandlers);
@@ -35,13 +34,11 @@ namespace AssetManager.Infra.IoC
             services.AddTransient<IAssetEventsService, AssetEventsService>();
             services.AddTransient<IAssetService, AssetService>();
             services.AddTransient<ICompanyService, CompanyService>();
-            services.AddTransient<ILoanAssetService, LoanAssetService>();
             services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IUserService, UserService>();
 
             services.AddTransient<IAssetRepository, AssetRepository>();
             services.AddTransient<IAssetEventsRepository, AssetEventsRepository>();
-            services.AddTransient<ILoanAssetRepository, LoanAssetRepository>();
             services.AddTransient<ICompanyRepository, CompanyRepository>();
             services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IUserRepository, UserRepository>();

@@ -1,11 +1,6 @@
 ﻿using AssetManager.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AssetManager.Infra.Data.EntityConfiguration;
 public class AssetEventsConfiguration : IEntityTypeConfiguration<AssetEventsEntity>
@@ -15,7 +10,8 @@ public class AssetEventsConfiguration : IEntityTypeConfiguration<AssetEventsEnti
         builder.ToTable("tb_asset_events");
         builder.HasKey(a => a.IdEvent);
         builder.Property(a => a.Description).HasMaxLength(120);
-        builder.Property(a => a.IdUserRegister).HasMaxLength(32).IsRequired();
+        builder.Property(a => a.IdUserRegister).HasMaxLength(36).IsRequired();
+        builder.Property(a => a.IdUser).HasMaxLength(36);
 
         builder.HasOne(a => a.Asset)
             .WithMany(a => a.AssetEvents)
@@ -28,7 +24,5 @@ public class AssetEventsConfiguration : IEntityTypeConfiguration<AssetEventsEnti
         builder.HasOne(a => a.UserRegister)
             .WithMany()
             .HasForeignKey(a => a.IdUserRegister);
-
-
     }
 }
