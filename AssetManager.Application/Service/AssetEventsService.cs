@@ -1,4 +1,5 @@
-﻿using AssetManager.Application.DTO.LoanAsset;
+﻿using AssetManager.Application.DTO.Asset;
+using AssetManager.Application.DTO.AssetEvents;
 using AssetManager.Application.Interfaces;
 using AssetManager.Domain.Entities;
 using AssetManager.Domain.Interfaces.Repositorys;
@@ -14,9 +15,9 @@ namespace AssetManager.Application.Service
     public class AssetEventsService:IAssetEventsService
     {
         private readonly IAssetEventsRepository _assetEventsRepository;
-        private readonly IAssetService _assetRepository;
+        private readonly IAssetRepository _assetRepository;
         private readonly IMapper _mapper;
-        public AssetEventsService(IAssetEventsRepository assetEventsRepository, IMapper mapper, IAssetService assetRepository)
+        public AssetEventsService(IAssetEventsRepository assetEventsRepository, IMapper mapper, IAssetRepository assetRepository)
         {
             _assetEventsRepository = assetEventsRepository;
             _mapper = mapper;
@@ -26,8 +27,8 @@ namespace AssetManager.Application.Service
         {
             try
             {
-                var asset = _assetRepository.GetByID(loanAsset.IdAsset).Result;
-                if (asset.IsLoanable())
+                var asset = _mapper.Map<AssetDTO>(_assetRepository.GetById(loanAsset.IdAsset).Result);
+                if (!asset.IsLoanable())
                     return Task.FromException(new Exception("O asset já esta locado!"));
                 
                 _assetEventsRepository.LoanAsset(_mapper.Map<AssetEventsEntity>(loanAsset));

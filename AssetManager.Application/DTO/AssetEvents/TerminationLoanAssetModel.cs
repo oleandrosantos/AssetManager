@@ -1,4 +1,4 @@
-﻿namespace AssetManager.Application.DTO.LoanAsset;
+﻿namespace AssetManager.Application.DTO.AssetEvents;
 
 public class TerminationLoanAssetModel
 {

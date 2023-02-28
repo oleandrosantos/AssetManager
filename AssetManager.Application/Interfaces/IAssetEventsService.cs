@@ -1,4 +1,4 @@
-﻿using AssetManager.Application.DTO.LoanAsset;
+﻿using AssetManager.Application.DTO.AssetEvents;
 using AssetManager.Domain.Entities;
 
 namespace AssetManager.Application.Interfaces;

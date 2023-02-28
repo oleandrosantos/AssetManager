@@ -24,7 +24,6 @@ public class AssetDTO
     public bool IsLoanable()
     {
         var lastLoanContract = AssetEvents.Where(a => a.EventType == (int)Enums.EventsType.Loan).OrderBy(a => a.EventDate).LastOrDefault();
-        var t1 = AssetEvents.Where(a => a.EventDate < lastLoanContract.EventDate && a.EventType == (int)Enums.EventsType.Terminate).ToList();
-        return AssetEvents.Where(a => a.EventDate < lastLoanContract.EventDate && a.EventType == (int)Enums.EventsType.Terminate).Any();
+        return AssetEvents.Where(a => a.EventDate > lastLoanContract.EventDate && a.EventType == (int)Enums.EventsType.Terminate).Any();
     }
 }

@@ -1,5 +1,5 @@
 using AssetManager.Application.DTO.Asset;
-using AssetManager.Application.DTO.LoanAsset;
+using AssetManager.Application.DTO.AssetEvents;
 using AssetManager.Application.Interfaces;
 using AssetManager.Domain.Entities;
 using AssetManager.Domain.Interfaces.Repositorys;
