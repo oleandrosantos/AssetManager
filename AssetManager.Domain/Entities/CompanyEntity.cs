@@ -2,11 +2,11 @@ using AssetManager.Domain.Validations;
 
 namespace AssetManager.Domain.Entities;
 
-public class CompanyEntity
+public class CompanhiaEntity
 {
     private string _cnpj { get; set; }
-    public int IdCompany { get; set; }
-    public string? CompanyName { get; set; }
+    public int IdCompanhia { get; set; }
+    public string? NomeCompanhia { get; set; }
     public string Cnpj
     { 
         get => _cnpj; 
@@ -15,28 +15,28 @@ public class CompanyEntity
             if(Maoli.Cnpj.Validate(value))
                 _cnpj = value;
             else
-                DomainExceptionValidation.When(true, "CNPJ Invalido!");
+                DominioInvalidoException.When(true, "CNPJ Invalido!");
         }
     }
-    public bool IsAtiva { get; set; }
+    public bool Ativa { get; set; }
 
-    public CompanyEntity() { }
+    public DateTime? ExclusionDate { get; set; }
 
-    public CompanyEntity(int id, string name, string cnpj, bool isAtiva)
+    public CompanhiaEntity() { }
+
+    public CompanhiaEntity(int id, string Nome, string cnpj, bool Ativa)
     {
-        IdCompany = id;
-        CompanyName = name;
+        IdCompanhia = id;
+        NomeCompanhia = Nome;
         Cnpj = cnpj;
-        IsAtiva = isAtiva;
+        Ativa = Ativa;
     }
-    public CompanyEntity(string name, string cnpj, bool isAtiva)
+    public CompanhiaEntity(string Nome, string cnpj, bool Ativa)
     {
-        CompanyName = name;
+        NomeCompanhia = Nome;
         Cnpj = cnpj;
-        IsAtiva = isAtiva;
+        Ativa = Ativa;
     }
-    public ICollection<UserEntity> Users { get; set; }
-    public ICollection<AssetEntity> Asset { get; set; }
-    public ICollection<LoanAssetEntity> Loans { get; set; }
-
+    public ICollection<UsuarioEntity> Users { get; set; }
+    public ICollection<AtivoEntity> Asset { get; set; }
 }

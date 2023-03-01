@@ -1,10 +1,5 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using AssetManager.Infra.IoC;
-using AssetManager.Application.Interfaces;
-using AssetManager.Application.Service;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,34 +9,37 @@ var config = new ConfigurationBuilder()
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "AssetManager API", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 builder.Services.AddCors();
 
-builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddSingleton<ITokenService, TokenService>();
-
 DependecyInjection.AddInfrastructure(builder.Services, config);
-
-var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Secret"]);
-
-builder.Services.AddAuthentication(x =>
-    {
-        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(x =>
-    {
-        x.RequireHttpsMetadata = false;
-        x.SaveToken = true;
-        x.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-    });
-
+DependecyInjectionJWT.AddInfrastructure(builder.Services, config);
 
 var app = builder.Build();
 
@@ -56,8 +54,8 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-app.UseAuthentication();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseCors(x => x

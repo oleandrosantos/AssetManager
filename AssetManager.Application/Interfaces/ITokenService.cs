@@ -1,7 +1,7 @@
-﻿using AssetManager.Application.DTO.User;
+﻿using AssetManager.Application.DTO.Usuario;
 
 namespace AssetManager.Application.Interfaces;
 public interface ITokenService
 {
-    public string GenerateToken(UserDTO user);
+    public string GerarToken(UsuarioDTO usuario);
 }

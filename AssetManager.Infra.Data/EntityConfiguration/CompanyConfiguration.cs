@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AssetManager.Infra.Data.EntityConfiguration;
-public class CompanyConfiguration : IEntityTypeConfiguration<CompanyEntity>
+public class CompanyConfiguration : IEntityTypeConfiguration<CompanhiaEntity>
 {
-    public void Configure(EntityTypeBuilder<CompanyEntity> builder)
+    public void Configure(EntityTypeBuilder<CompanhiaEntity> builder)
     {
-        builder.ToTable("tb_company");
-        builder.HasKey(c => c.IdCompany);
-        builder.Property(c => c.CompanyName).IsRequired().HasMaxLength(60);
+        builder.ToTable("tb_companhia");
+        builder.HasKey(c => c.IdCompanhia);
+        builder.Property(c => c.NomeCompanhia).IsRequired().HasMaxLength(60);
         builder.Property(c => c.Cnpj).HasMaxLength(14).IsRequired();
-        builder.Property(c => c.IsAtiva).HasDefaultValue(true);
+        builder.Property(c => c.Ativa).HasDefaultValue(true);
     }
 }

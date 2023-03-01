@@ -6,44 +6,25 @@ using Microsoft.EntityFrameworkCore.Metadata;
 namespace AssetManager.Infra.Data.Repository;
 public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where TEntity : class
 {
-    protected readonly DataContext Context;
+    protected readonly DataContext context;
     protected readonly DbSet<TEntity> dbSet;
 
     public RepositoryBase(DataContext dbContext)
     {
-        Context = dbContext;
+        context = dbContext;
         dbSet = dbContext.Set<TEntity>();
     }
-    public virtual async Task<TEntity?> GetById(int id)
-    {
-        return await dbSet.FindAsync(id);
-    }
 
-    public virtual async Task<IEnumerable<TEntity>> GetAll()
-    {
-        return await dbSet.ToListAsync();
-    }
-
-    public virtual async Task Delete(int id)
-    {
-        TEntity entity = GetById(id).Result;
-        if (entity != null)
-        {
-            dbSet.Remove(entity);
-            Context.SaveChanges();
-        }
-    }
-
-    public virtual async Task Create(TEntity entity)
+    public virtual async Task Cadastrar(TEntity entity)
     {
         dbSet.Add(entity);
-        Context.SaveChanges();
+        context.SaveChanges();
     }
 
-    public virtual async Task Update(TEntity entity)
+    public virtual async Task Atualizar(TEntity entity)
     {
         dbSet.Attach(entity);
-        Context.Entry(entity).State = EntityState.Modified;
-        Context.SaveChanges();
+        context.Entry(entity).State = EntityState.Modified;
+        context.SaveChanges();
     }
 }

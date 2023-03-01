@@ -3,24 +3,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AssetManager.Infra.Data.EntityConfiguration;
-public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
+public class UserConfiguration : IEntityTypeConfiguration<UsuarioEntity>
 {
-    public void Configure(EntityTypeBuilder<UserEntity> builder)
+    public void Configure(EntityTypeBuilder<UsuarioEntity> builder)
     {
-        builder.ToTable("tb_user");
-        builder.HasKey(u => u.IdUser);
+        builder.ToTable("tb_usuario");
+        builder.HasKey(u => u.IdUsuario);
         builder.HasAlternateKey(u => u.Email);
-        builder.Property(u => u.IdUser).HasMaxLength(36);
-        builder.Property(u => u.Name).HasMaxLength(50).IsRequired();
+        builder.Property(u => u.IdUsuario).HasMaxLength(36);
+        builder.Property(u => u.Nome).HasMaxLength(50).IsRequired();
         builder.Property(u => u.Email).HasMaxLength(256).IsRequired();
         builder.Property(u => u.Password).HasMaxLength(256).IsRequired();
         builder.Property(u => u.Role).HasDefaultValue("Funcionario").HasMaxLength(32);
-        builder.HasOne(u => u.Company)
+        builder.HasOne(u => u.Companhia)
             .WithMany(c => c.Users)
-            .HasForeignKey(u => u.IdCompany);
-        builder.HasMany(a => a.Loans)
-            .WithOne(u => u.User)
-            .HasForeignKey(a => a.IdUser);
-        builder.Property(u => u.isActive).HasDefaultValue(true);
+            .HasForeignKey(u => u.IdCompanhia);
+        builder.Property(u => u.Ativo).HasDefaultValue(true);
     }
 }
