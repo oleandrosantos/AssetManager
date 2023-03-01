@@ -4,22 +4,22 @@ using AssetManager.Domain.Entities;
 
 namespace AssetManager.Tests;
 
-public class CompanyUnitTest
+public class CompanhiaUnitTest
 {
-    [Fact(DisplayName = "Create Company With Valids Paraments")]
-    public void CreateCompany_WithValidParameters_ResultObjectValidState()
+    [Fact(DisplayName = "Criar Companhia com parametros validos")]
+    public void CriarCompanhia_CriarCompanhiaComParametrosValidos_ResultadoSucesso()
     {
-        Action action = () => new CompanyEntity(1,"Brasil Co", "51192264000125", true);
+        Action action = () => new CompanhiaEntity(1,"Brasil Co", "51192264000125", true);
         action.Should()
-            .NotThrow<Domain.Validations.DomainExceptionValidation>();
+            .NotThrow<Domain.Validations.DominioInvalidoException>();
     }
 
-    [Fact(DisplayName = "Create Company With Invalid Cnpj")]
-    public void CreateCompany_WithInvalidCnpj_ResultException()
+    [Fact(DisplayName = "Criar Companhia com Cnpj invalido")]
+    public void CriarCompanhia_CriarCompanhiaComCnpjInvalid_ResultadoDominioInvalidoException()
     {
-        Action action = () => new CompanyEntity(1, "Brasil Co", "51192264000101", true);
+        Action action = () => new CompanhiaEntity(1, "Brasil Co", "51192264000101", true);
         action.Should()
-            .Throw<Domain.Validations.DomainExceptionValidation>()
+            .Throw<Domain.Validations.DominioInvalidoException>()
             .WithMessage("CNPJ Invalido!");
     }
 }

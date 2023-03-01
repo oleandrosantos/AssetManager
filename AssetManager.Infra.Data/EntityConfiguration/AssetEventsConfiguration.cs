@@ -1,25 +1,28 @@
 ﻿using AssetManager.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AssetManager.Infra.Data.EntityConfiguration;
-public class AssetEventsConfiguration : IEntityTypeConfiguration<AssetEventsEntity>
+public class AssetEventsConfiguration : IEntityTypeConfiguration<EventosAtivoEntity>
 {
-    public void Configure(EntityTypeBuilder<AssetEventsEntity> builder)
+    public void Configure(EntityTypeBuilder<EventosAtivoEntity> builder)
     {
-        builder.ToTable("tb_asset_events");
-        builder.HasKey(a => a.IdEvent);
-        builder.Property(a => a.Description).HasMaxLength(120);
-        builder.Property(a => a.IdUserRegister).HasMaxLength(32).IsRequired();
+        builder.ToTable("tb_eventos_ativo");
+        builder.HasKey(a => a.IdEventosAtivo);
+        builder.Property(a => a.Descricao).HasMaxLength(120);
+        builder.Property(a => a.IdUsuarioRegistro).HasMaxLength(36).IsRequired();
+        builder.Property(a => a.IdUsuario).HasMaxLength(36);
 
-        builder.HasOne(a => a.Asset)
-            .WithMany(a => a.AssetEvents)
-            .HasForeignKey(a => a.IdAsset);
+        builder.HasOne(a => a.Ativo)
+            .WithMany(a => a.EventosAtivo)
+            .HasForeignKey(a => a.IdAtivo);
 
+        builder.HasOne(a => a.Usuario)
+            .WithMany(a => a.EventosAtivo)
+            .HasForeignKey(a => a.IdUsuario);
+
+        builder.HasOne(a => a.UsuarioRegistro)
+            .WithMany()
+            .HasForeignKey(a => a.IdUsuarioRegistro);
     }
 }
