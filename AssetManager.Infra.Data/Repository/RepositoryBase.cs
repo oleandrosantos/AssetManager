@@ -15,13 +15,13 @@ public abstract class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where T
         dbSet = dbContext.Set<TEntity>();
     }
 
-    public virtual async Task Create(TEntity entity)
+    public virtual async Task Cadastrar(TEntity entity)
     {
         dbSet.Add(entity);
         context.SaveChanges();
     }
 
-    public virtual async Task Update(TEntity entity)
+    public virtual async Task Atualizar(TEntity entity)
     {
         dbSet.Attach(entity);
         context.Entry(entity).State = EntityState.Modified;

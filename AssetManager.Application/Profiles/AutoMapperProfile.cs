@@ -1,7 +1,7 @@
-﻿using AssetManager.Application.DTO.Asset;
+﻿using AssetManager.Application.DTO.Ativo;
 using AssetManager.Application.DTO.AssetEvents;
-using AssetManager.Application.DTO.Company;
-using AssetManager.Application.DTO.User;
+using AssetManager.Application.DTO.Companhia;
+using AssetManager.Application.DTO.Usuario;
 using AssetManager.Domain.Entities;
 using AutoMapper;
 
@@ -11,19 +11,19 @@ namespace AssetManager.Application.Profiles
     {
         public AutoMapperProfile()
         {
-            CreateMap<AssetEntity, AssetDTO>();
+            CreateMap<AtivoEntity, AtivoDTO>();
 
-            CreateMap<AssetDTO, AssetEntity>();
-            CreateMap<UpdateAssetDTO, AssetEntity>();
+            CreateMap<AtivoDTO, AtivoEntity>();
+            CreateMap<AtualizarAtivoDTO, AtivoEntity>();
 
-            CreateMap<AssetEventsDTO, AssetEventsEntity>().ReverseMap();
+            CreateMap<EventosAtivoDTO, EventosAtivoEntity>().ReverseMap();
 
-            CreateMap<UserDTO, UserEntity>().ReverseMap();
-            CreateMap<CreateUserDTO, UserEntity>().ReverseMap();
-            CreateMap<UpdateUserDTO, UserEntity>().ReverseMap(); 
+            CreateMap<UsuarioDTO, UsuarioEntity>().ReverseMap();
+            CreateMap<CriarUsuarioDTO, UsuarioEntity>().ReverseMap();
+            CreateMap<AtualizarUsuarioDTO, UsuarioEntity>().ReverseMap(); 
             
-            CreateMap<CompanyDTO, CompanyEntity>().ReverseMap();
-            CreateMap<CreateCompanyDTO, CompanyEntity>().ReverseMap();
+            CreateMap<CompanhiaDTO, CompanhiaEntity>().ReverseMap();
+            CreateMap<CriarCompanhiaDTO, CompanhiaEntity>().ReverseMap();
         }
     }
 }

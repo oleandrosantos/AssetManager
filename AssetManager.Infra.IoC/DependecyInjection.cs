@@ -31,17 +31,17 @@ namespace AssetManager.Infra.IoC
             var myhandlers = AppDomain.CurrentDomain.Load("AssetManager.Application");
             services.AddMediatR(myhandlers);
 
-            services.AddTransient<IAssetEventsService, AssetEventsService>();
-            services.AddTransient<IAssetService, AssetService>();
-            services.AddTransient<ICompanyService, CompanyService>();
+            services.AddTransient<IEventosAtivosService, EventosAtivoService>();
+            services.AddTransient<IAtivosService, AtivosService>();
+            services.AddTransient<ICompanhiaService, CompanhiaService>();
             services.AddTransient<ITokenService, TokenService>();
-            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IUsuarioService, UsuarioService>();
 
-            services.AddTransient<IAssetRepository, AssetRepository>();
-            services.AddTransient<IAssetEventsRepository, AssetEventsRepository>();
-            services.AddTransient<ICompanyRepository, CompanyRepository>();
+            services.AddTransient<IAtivosRepository, AtivosRepository>();
+            services.AddTransient<IEventosAtivosRepository, EventosAtivoRepository>();
+            services.AddTransient<ICompanhiaRepository, CompanhiaRepository>();
             services.AddTransient<ITokenService, TokenService>();
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IUsuarioRepository, UsuarioRepository>();
         }
     }
 }

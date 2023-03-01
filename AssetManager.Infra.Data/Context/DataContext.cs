@@ -8,10 +8,10 @@ namespace AssetManager.Infra.Data.Context
     {
         public DataContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<AssetEntity> asset => Set<AssetEntity>();
-        public DbSet<UserEntity> usuario => Set<UserEntity>();
-        public DbSet<AssetEventsEntity> company => Set<AssetEventsEntity>();
-        public DbSet<AssetEventsEntity> assetEvents => Set<AssetEventsEntity>();
+        public DbSet<AtivoEntity> asset => Set<AtivoEntity>();
+        public DbSet<UsuarioEntity> usuario => Set<UsuarioEntity>();
+        public DbSet<EventosAtivoEntity> company => Set<EventosAtivoEntity>();
+        public DbSet<EventosAtivoEntity> assetEvents => Set<EventosAtivoEntity>();
 
 
         protected override void OnModelCreating(ModelBuilder builder)

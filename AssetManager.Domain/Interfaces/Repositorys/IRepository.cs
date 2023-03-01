@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 namespace AssetManager.Domain.Interfaces.Repositorys;
 public interface IRepositoryBase<TEntity> where TEntity : class
 {
-    Task Create(TEntity obj);
-    Task Update(TEntity obj);
+    Task Cadastrar(TEntity obj);
+    Task Atualizar(TEntity obj);
 }

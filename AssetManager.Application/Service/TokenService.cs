@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using AssetManager.Application.DTO.User;
+using AssetManager.Application.DTO.Usuario;
 using AssetManager.Application.Interfaces;
 using AssetManager.Domain.Utils;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +17,7 @@ public class TokenService: ITokenService
     {
         _configuration = configuration;
     }
-    public string GenerateToken(UserDTO user)
+    public string GerarToken(UsuarioDTO usuario)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration.GetSection("AppSettings").GetSection("Secret").Value);
@@ -25,9 +25,9 @@ public class TokenService: ITokenService
         {
             Subject = new ClaimsIdentity(new Claim[]
             {
-                new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.Name, usuario.Nome),
+                new Claim(ClaimTypes.Email, usuario.Email),
+                new Claim(ClaimTypes.Role, usuario.Role),
             }),
             Expires = DateTime.UtcNow.AddHours(24),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

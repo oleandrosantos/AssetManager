@@ -3,21 +3,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AssetManager.Infra.Data.EntityConfiguration;
-public class AssetConfiguration : IEntityTypeConfiguration<AssetEntity>
+public class AssetConfiguration : IEntityTypeConfiguration<AtivoEntity>
 {
-    public void Configure(EntityTypeBuilder<AssetEntity> builder)
+    public void Configure(EntityTypeBuilder<AtivoEntity> builder)
     {
-        builder.ToTable("tb_asset");
-        builder.HasKey(a => a.IdAsset);
+        builder.ToTable("tb_ativos");
+        builder.HasKey(a => a.IdAtivo);
         builder.Property(a => a.Sku).HasMaxLength(128);
-        builder.Property(a => a.AssetName)
+        builder.Property(a => a.NomeAtivo)
             .HasMaxLength(120);
-        builder.HasOne(a => a.Company)
+        builder.HasOne(a => a.Companhia)
             .WithMany(a => a.Asset)
-            .HasForeignKey(a => a.IdCompany);
+            .HasForeignKey(a => a.IdCompanhia);
 
-        builder.HasMany(a => a.AssetEvents)
-            .WithOne(a => a.Asset)
-            .HasForeignKey(a => a.IdAsset);
+        builder.HasMany(a => a.EventosAtivo)
+            .WithOne(a => a.Ativo)
+            .HasForeignKey(a => a.IdEventosAtivo);
     }
 }
