@@ -20,7 +20,7 @@ public class UsuarioController : Controller
     _usuarioService = usuarioService;
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Cadastrar")]
     [AllowAnonymous]
     public IActionResult CadastrarUsuario(CriarUsuarioDTO dadosUsuario)
     {
@@ -70,7 +70,11 @@ public class UsuarioController : Controller
     [Authorize(Roles = "Administrador,Suporte")]
     public IActionResult RevogarAcesso(string email)
     {
-        throw new NotImplementedException();
+        var resultado = _usuarioService.RevogarAcessoUsuario(email);
+        if(resultado.IsCompletedSuccessfully)
+            return Ok("Acesso do usuario revogado com sucesso!");
+
+        return BadRequest("Não foi possivel revogar o acesso do usuario");
     }
 
     [HttpGet("ObterUsuariosPorIdCompanhia/{IdCompanhia}")]

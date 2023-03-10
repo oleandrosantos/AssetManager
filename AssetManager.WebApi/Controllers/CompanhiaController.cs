@@ -29,9 +29,9 @@ namespace AssetManager.Controllers
             return BadRequest($"Não conseguimos cadastrar, verifique os dados!");
         }
 
-        [HttpDelete("Delete/{id}")]
+        [HttpDelete("DeletarCompanhia/{id}")]
         [Authorize(Roles = "Suporte")]
-        public IActionResult Delete(int id)
+        public IActionResult DeletarCompanhia(int id)
         {
             try
             {

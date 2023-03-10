@@ -80,4 +80,9 @@ public class UsuarioService : IUsuarioService
             return Task.FromException(e);
         }
     }
+
+    public Task RevogarAcessoUsuario(string email)
+    {
+        return _usuarioRepository.RevogarAcessoUsuario(email);
+    }
 }
