@@ -16,7 +16,7 @@ namespace AssetManager.Tests
     public class AtivosUniTest
     {
         [Fact(DisplayName = "Emprestar ativo com emprestimo vigente")]
-        public void EmprestrarAtivo_EmprestrarAtivoComUmEmprestimoVigente_ResultadoEsperadoTaskFalha()
+        public void EmprestrarAtivo_AtivoComUmEmprestimoVigente_ResultadoEsperadoTaskFalha()
         {
             int idAtivo = 1;
             var mockAssetRepository = new Mock<IAtivosRepository>();
@@ -48,7 +48,7 @@ namespace AssetManager.Tests
         }
 
         [Fact(DisplayName = "Emprestar ativo sem emprestimo vigente")]
-        public void EmprestrarAtivo_EmprestrarAtivoSemEmprestimoEmAberto_ResultadoEsperadoSucesso()
+        public void EmprestrarAtivo_SemEmprestimoEmAberto_ResultadoEsperadoSucesso()
         {
             int idAtivo = 1;
             var mockAssetRepository = new Mock<IAtivosRepository>();
@@ -94,7 +94,7 @@ namespace AssetManager.Tests
 
 
         [Fact(DisplayName = "Verificar se Ativo com emprestimo em aberto pode ser emprestado novamente")]
-        public void ValidarAtivoValido_VerificarSeAssetEEmprestavel_DeveRetornarFalse()
+        public void VerificarSeAtivoEEmprestavel_AtivoComUmEmprestimoEmAberto_DeveRetornarFalse()
         {
             AtivoDTO? ativo = ObterAssetDTO();
 
@@ -131,7 +131,7 @@ namespace AssetManager.Tests
         }
 
         [Fact(DisplayName = "Verificar se Ativo com emprestimo varios emprestimos em aberto, porem o ultimo encerrado pode ser emprestado novamente")]
-        public void VerificarSeAssetEEmprestavel_AssetComVariosContratosDeEmprestimoAbertoPoremUltimoEmprestimoFoiEncerrado_DeveRetornarTrue()
+        public void VerificarSeAssetEEmprestavel_VariosContratosDeEmprestimoAbertoPoremUltimoEncerrado_DeveRetornarTrue()
         {
             AtivoDTO? ativo = ObterAssetDTO();
             ativo.EventosAtivo.Add(new EventosAtivoDTO()
