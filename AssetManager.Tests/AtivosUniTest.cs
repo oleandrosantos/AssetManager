@@ -16,7 +16,7 @@ namespace AssetManager.Tests
     public class AtivosUniTest
     {
         [Fact(DisplayName = "Emprestar ativo com emprestimo vigente")]
-        public void EmprestrarAtivo_EmprestrarAtivoComUmEmprestimoVigente_ResultadoEsperadoTaskFalha()
+        public void EmprestrarAtivo_AtivoComUmEmprestimoVigente_ResultadoEsperadoTaskFalha()
         {
             int idAtivo = 1;
             var mockAssetRepository = new Mock<IAtivosRepository>();
@@ -33,7 +33,7 @@ namespace AssetManager.Tests
 
 
             IEventosAtivosService assetEventsService = new EventosAtivoService(mockAssetEventsRepository.Object, mapper, mockAssetRepository.Object);
-            var result = assetEventsService.EmprestarAtivo(new EmpretimoAtivoDTO()
+            var resultado = assetEventsService.EmprestarAtivo(new EmpretimoAtivoDTO()
             {
                 Descricao= "Test",
                 DataEvento= new DateTime(),
@@ -44,11 +44,11 @@ namespace AssetManager.Tests
             });
 
             Assert.True(assetEventsService != null);
-            Assert.True(result.IsFaulted);
+            Assert.True(resultado.IsFaulted);
         }
 
         [Fact(DisplayName = "Emprestar ativo sem emprestimo vigente")]
-        public void EmprestrarAtivo_EmprestrarAtivoSemEmprestimoEmAberto_ResultadoEsperadoSucesso()
+        public void EmprestrarAtivo_SemEmprestimoEmAberto_ResultadoEsperadoSucesso()
         {
             int idAtivo = 1;
             var mockAssetRepository = new Mock<IAtivosRepository>();
@@ -79,7 +79,7 @@ namespace AssetManager.Tests
 
 
             IEventosAtivosService assetEventsService = new EventosAtivoService(mockAssetEventsRepository.Object, mapper, mockAssetRepository.Object);
-            var result = assetEventsService.EmprestarAtivo(new EmpretimoAtivoDTO()
+            var resultado = assetEventsService.EmprestarAtivo(new EmpretimoAtivoDTO()
             {
                 Descricao = "Test",
                 DataEvento = new DateTime(),
@@ -89,23 +89,23 @@ namespace AssetManager.Tests
                 TipoEvento = (int)Application.Enums.TiposEventos.Emprestimo,
             });
 
-            Assert.True(result.IsCompletedSuccessfully);
+            Assert.True(resultado.IsCompletedSuccessfully);
         }
 
 
         [Fact(DisplayName = "Verificar se Ativo com emprestimo em aberto pode ser emprestado novamente")]
-        public void ValidarAtivoValido_VerificarSeAssetEEmprestavel_DeveRetornarFalse()
+        public void VerificarSeAtivoEEmprestavel_AtivoComUmEmprestimoEmAberto_DeveRetornarFalse()
         {
-            AtivoDTO? asset = ObterAssetDTO();
+            AtivoDTO? ativo = ObterAssetDTO();
 
-            Assert.False(asset.IsLoanable());
+            Assert.False(ativo.ELocavel());
         }
 
         [Fact(DisplayName = "Verificar se Ativo com emprestimo encerrado pode ser emprestado novamente")]
         public void VerificarSeAtivoEEmprestavel_AtivoComVariosContratosDeEmprestimoAberto_DeveRetornarFalse()
         {
-            AtivoDTO? asset = ObterAssetDTO();
-            asset.EventosAtivo.Add(new EventosAtivoDTO()
+            AtivoDTO? ativo = ObterAssetDTO();
+            ativo.EventosAtivo.Add(new EventosAtivoDTO()
             {
                 IdAtivo = 1,
                 Descricao = "Terminate Contract",
@@ -115,7 +115,7 @@ namespace AssetManager.Tests
                 IdUsuario = "2d69c663-c484-402a-85d4-002b680eb6f2",
                 IdUsuarioRegistro = "2d69c663-c484-402a-85d4-002b680eb6f2",
             });
-            asset.EventosAtivo.Add(new EventosAtivoDTO()
+            ativo.EventosAtivo.Add(new EventosAtivoDTO()
             {
                 IdAtivo = 1,
                 Descricao = "Emprestimo Contract",
@@ -127,14 +127,14 @@ namespace AssetManager.Tests
             });
 
 
-            Assert.False(asset.IsLoanable());
+            Assert.False(ativo.ELocavel());
         }
 
         [Fact(DisplayName = "Verificar se Ativo com emprestimo varios emprestimos em aberto, porem o ultimo encerrado pode ser emprestado novamente")]
-        public void VerificarSeAssetEEmprestavel_AssetComVariosContratosDeEmprestimoAbertoPoremUltimoEmprestimoFoiEncerrado_DeveRetornarTrue()
+        public void VerificarSeAssetEEmprestavel_VariosContratosDeEmprestimoAbertoPoremUltimoEncerrado_DeveRetornarTrue()
         {
-            AtivoDTO? asset = ObterAssetDTO();
-            asset.EventosAtivo.Add(new EventosAtivoDTO()
+            AtivoDTO? ativo = ObterAssetDTO();
+            ativo.EventosAtivo.Add(new EventosAtivoDTO()
             {
                 IdAtivo = 1,
                 Descricao = "Terminate Contract",
@@ -144,7 +144,7 @@ namespace AssetManager.Tests
                 IdUsuario = "2d69c663-c484-402a-85d4-002b680eb6f2",
                 IdUsuarioRegistro = "2d69c663-c484-402a-85d4-002b680eb6f2",
             });
-            asset.EventosAtivo.Add(new EventosAtivoDTO()
+            ativo.EventosAtivo.Add(new EventosAtivoDTO()
             {
                 IdAtivo = 1,
                 Descricao = "Emprestimo Contract",
@@ -154,7 +154,7 @@ namespace AssetManager.Tests
                 IdUsuario = "2d69c663-c484-402a-85d4-002b680eb6f2",
                 IdUsuarioRegistro = "2d69c663-c484-402a-85d4-002b680eb6f2",
             });
-            asset.EventosAtivo.Add(new EventosAtivoDTO()
+            ativo.EventosAtivo.Add(new EventosAtivoDTO()
             {
                 IdAtivo = 1,
                 Descricao = "Terminate Contract",
@@ -166,14 +166,14 @@ namespace AssetManager.Tests
             });
 
 
-            Assert.True(asset.IsLoanable());
+            Assert.True(ativo.ELocavel());
         }
 
         [Fact(DisplayName = "Verificar se Ativo com somente 1 emprestimo aberto e encerradop ode ser emprestado novamente")]
         public void VerificarSeAssetEEmprestavel_AssetComApenas1ContratoEEncerrado_DeveRetornarTrue()
         {
-            AtivoDTO? asset = ObterAssetDTO();
-            asset.EventosAtivo.Add(new EventosAtivoDTO()
+            AtivoDTO? ativo = ObterAssetDTO();
+            ativo.EventosAtivo.Add(new EventosAtivoDTO()
             {
                 IdAtivo = 1,
                 Descricao = "Terminate Contract",
@@ -184,7 +184,7 @@ namespace AssetManager.Tests
                 IdUsuarioRegistro = "2d69c663-c484-402a-85d4-002b680eb6f2",
             });
 
-            Assert.True(asset.IsLoanable());
+            Assert.True(ativo.ELocavel());
         }
 
         private AtivoDTO? ObterAssetDTO()

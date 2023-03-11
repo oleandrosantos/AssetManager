@@ -23,15 +23,15 @@ public class AtivosController : Controller
         _eventosAtivoService = assetEventsService;
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Cadastrar")]
     [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult Create(AtivoDTO asset)
+    public IActionResult Cadastrar(AtivoDTO ativo)
     {
         try
         {
-            var result = _ativosService.CriarAtivo(asset);
+            var resultado = _ativosService.CriarAtivo(ativo);
 
-            if (result.IsCompleted)
+            if (resultado.IsCompleted)
                 return Ok("Cadastrado com Sucesso");
             else
                 throw new Exception();
@@ -43,13 +43,13 @@ public class AtivosController : Controller
         }
     }
 
-    [HttpPatch("Update")]
+    [HttpPatch("Atualizar")]
     [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult Update(AtualizarAtivoDTO asset)
+    public IActionResult Atualizar(AtualizarAtivoDTO ativo)
     {
         try
         {
-            var result = _ativosService.AtualizarAtivo(asset);
+            var resultado = _ativosService.AtualizarAtivo(ativo);
 
             return Ok("Atualizado com sucesso!");
         }
@@ -59,49 +59,49 @@ public class AtivosController : Controller
         }
     }
 
-    [HttpGet("AssetCompanyList/{IdCompanhia}")]
+    [HttpGet("ListarAtivosDaCompanhia/{IdCompanhia}")]
     [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult AssetCompanyList(int IdCompanhia)
+    public IActionResult ListarAtivosDaCompanhia(int idCompanhia)
     {
-        var assetList = _ativosService.ObterTodosAtivosDaCompanhia(IdCompanhia).Result;
+        var listaAtivos = _ativosService.ObterTodosAtivosDaCompanhia(idCompanhia).Result;
 
-        if (assetList.Count == 0)
+        if (listaAtivos.Count == 0)
             return NoContent();
 
-        return Ok(assetList);
+        return Ok(listaAtivos);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("ObterAtivoPorID/{id}")]
     [Authorize(Roles = "Administrador,Suporte,Funcionario")]
-    public IActionResult GetAssetByID(int id)
+    public IActionResult ObterAtivoPorID(int idAtivo)
     {
-        AtivoDTO? asset = _ativosService.ObterAtivoPorID(id).Result;
-        bool loanable = asset.IsLoanable();
-        if (asset == null)
+        AtivoDTO? ativo = _ativosService.ObterAtivoPorID(idAtivo).Result;
+        bool eLocavel = ativo.ELocavel();
+        if (ativo == null)
             return NoContent();
 
-        return Ok(asset);
+        return Ok(ativo);
     }
 
 
-    [HttpGet("GetAssetEvents/{id}")]
+    [HttpGet("ObterEventosPorID/{idEvento}")]
     [Authorize(Roles = "Administrador,Suporte,Funcionario")]
-    public IActionResult GetAssetEvents(int id)
+    public IActionResult ObterEventosPorID(int idEvento)
     {
-        EventosAtivoDTO? asset = _eventosAtivoService.ObterEventosPorId(id).Result;
-        if (asset == null)
+        EventosAtivoDTO? ativo = _eventosAtivoService.ObterEventosPorId(idEvento).Result;
+        if (ativo == null)
             return NoContent();
 
-        return Ok(asset);
+        return Ok(ativo);
     }
 
-    [HttpDelete("DeleteAsset/{idAtivo}")]
+    [HttpDelete("DeletarAtivo/{idAtivo}")]
     [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult DeleteAsset(int idAtivo, [FromBody] string exclusionInfo)
+    public IActionResult DeletarAtivo(int idAtivo, [FromBody] string dadosExclusaoAtivo)
     {
         try
         {
-            if (_ativosService.DeletarAtivo(idAtivo, exclusionInfo).IsCompletedSuccessfully)
+            if (_ativosService.DeletarAtivo(idAtivo, dadosExclusaoAtivo).IsCompletedSuccessfully)
                 return Ok("O ativo foi excluido");
 
             throw new Exception();
@@ -113,13 +113,13 @@ public class AtivosController : Controller
 
     }
 
-    [HttpPost("LoanAsset")]
+    [HttpPost("EmprestarAtivo")]
     [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult LoanAsset(EmpretimoAtivoDTO loanAsset)
+    public IActionResult EmprestarAtivo(EmpretimoAtivoDTO dadosEmprestimoAtivo)
     {
         try
         {
-            var resultado = _eventosAtivoService.EmprestarAtivo(loanAsset);
+            var resultado = _eventosAtivoService.EmprestarAtivo(dadosEmprestimoAtivo);
 
             if (resultado.IsFaulted)
                 throw resultado.Exception;
@@ -133,13 +133,13 @@ public class AtivosController : Controller
     }
 
 
-    [HttpPut("EncerrandoContrato")]
+    [HttpPut("EncerrarEmprestimoDoAtivo")]
     [Authorize(Roles = "Administrador, Suporte")]
-    public IActionResult TerminationLoanAsset(FimEmprestimoAtivoDTO terminationLoanAsset)
+    public IActionResult EncerrarEmprestimoDoAtivo(FimEmprestimoAtivoDTO dadosFimEmprestimoAtivo)
     {
         try
         {
-            var result = _eventosAtivoService.EncerrarEmprestimoAtivo(terminationLoanAsset);
+            var resultado = _eventosAtivoService.EncerrarEmprestimoDoAtivo(dadosFimEmprestimoAtivo);
                
             return Ok("Contrato encerrado com sucesso!");
 
@@ -150,13 +150,13 @@ public class AtivosController : Controller
         }
     }
 
-    [HttpGet("ListarPorCompanhia/{IdCompanhia}")]
+    [HttpGet("ListarAtivosPorCompanhia/{idCompanhia}")]
     [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult CompanyLoanAssetsList(int IdCompanhia)
+    public IActionResult ListarAtivosPorCompanhia(int idCompanhia)
     {
         try
         {
-            var loanList = _eventosAtivoService.ObterTodosOsEventosDosAtivosDaCompanhia(IdCompanhia);
+            var loanList = _eventosAtivoService.ObterTodosOsEventosDosAtivosDaCompanhia(idCompanhia);
 
             if (loanList.IsCompleted && loanList.Result.Any())
                 return Ok(loanList.Result);
@@ -169,9 +169,9 @@ public class AtivosController : Controller
         }
     }
 
-    [HttpGet("ListarPorUsuario/{idUsuario}")]
+    [HttpGet("ObterAtivosPorUsuario/{idUsuario}")]
     [Authorize(Roles = "Administrador, Suporte, Funcionario")]
-    public IActionResult UserAssetLoanList(string idUsuario)
+    public IActionResult ObterAtivosPorUsuario(string idUsuario)
     {
         var loanList = _eventosAtivoService.ObterTodosOsEventosDosAtivosDoUsuario(idUsuario);
 

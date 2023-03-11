@@ -21,9 +21,9 @@ public class AtivoDTO
 
 
 
-    public bool IsLoanable()
+    public bool ELocavel()
     {
-        var lastLoanContract = EventosAtivo.Where(a => a.TipoEvento == (int)Enums.TiposEventos.Emprestimo).OrderBy(a => a.DataEvento).LastOrDefault();
-        return EventosAtivo.Where(a => a.DataEvento > lastLoanContract.DataEvento && a.TipoEvento == (int)Enums.TiposEventos.FimEmprestimo).Any();
+        var ultimoContratoAtivo = EventosAtivo.Where(a => a.TipoEvento == (int)Enums.TiposEventos.Emprestimo).OrderBy(a => a.DataEvento).LastOrDefault();
+        return EventosAtivo.Where(a => a.DataEvento > ultimoContratoAtivo.DataEvento && a.TipoEvento == (int)Enums.TiposEventos.FimEmprestimo).Any();
     }
 }

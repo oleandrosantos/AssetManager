@@ -19,15 +19,15 @@ namespace AssetManager.Application.Service
             _companhiaRepository = companhiaRepository;
         }
 
-        public Task CriarAtivo(AtivoDTO asset)
+        public Task CriarAtivo(AtivoDTO ativo)
         {
             try
             {
-                AtivoEntity assetEntity = _mapper.Map<AtivoEntity>(asset);
-                var company = _companhiaRepository.ObterCompanhiaPorId(asset.IdCompanhia).Result;
+                AtivoEntity assetEntity = _mapper.Map<AtivoEntity>(ativo);
+                var company = _companhiaRepository.ObterCompanhiaPorId(ativo.IdCompanhia).Result;
 
                 if (company == null)
-                    throw new NullReferenceException($"A Companhia de id {asset.IdCompanhia} não existe!");
+                    throw new NullReferenceException($"A Companhia de id {ativo.IdCompanhia} não existe!");
 
                 return _ativosRepository.Cadastrar(assetEntity);
             }
@@ -37,11 +37,11 @@ namespace AssetManager.Application.Service
             }
         }
 
-        public Task AtualizarAtivo(AtualizarAtivoDTO asset)
+        public Task AtualizarAtivo(AtualizarAtivoDTO ativo)
         {
             try
             {
-                AtivoEntity? assetEntity = _mapper.Map<AtivoEntity>(asset);
+                AtivoEntity? assetEntity = _mapper.Map<AtivoEntity>(ativo);
                 return _ativosRepository.Atualizar(assetEntity);
             }
             catch (Exception e)
@@ -61,9 +61,9 @@ namespace AssetManager.Application.Service
         {
             try
             {
-               var asset = _ativosRepository.ObterAtivoPorId(idAtivo).Result;
+               var ativo = _ativosRepository.ObterAtivoPorId(idAtivo).Result;
 
-               return Task.FromResult(_mapper.Map<AtivoDTO?>(asset));
+               return Task.FromResult(_mapper.Map<AtivoDTO?>(ativo));
             }
             catch(Exception e)
             {

@@ -8,7 +8,7 @@ namespace AssetManager.Infra.Data.Context
     {
         public DataContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<AtivoEntity> asset => Set<AtivoEntity>();
+        public DbSet<AtivoEntity> ativo => Set<AtivoEntity>();
         public DbSet<UsuarioEntity> usuario => Set<UsuarioEntity>();
         public DbSet<EventosAtivoEntity> company => Set<EventosAtivoEntity>();
         public DbSet<EventosAtivoEntity> assetEvents => Set<EventosAtivoEntity>();

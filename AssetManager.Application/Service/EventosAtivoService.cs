@@ -27,9 +27,9 @@ namespace AssetManager.Application.Service
         {
             try
             {
-                var asset = _mapper.Map<AtivoDTO>(_ativosRepository.ObterAtivoPorId(loanAsset.IdAtivo).Result);
-                if (!asset.IsLoanable())
-                    return Task.FromException(new Exception("O asset já esta locado!"));
+                var ativo = _mapper.Map<AtivoDTO>(_ativosRepository.ObterAtivoPorId(loanAsset.IdAtivo).Result);
+                if (!ativo.ELocavel())
+                    return Task.FromException(new Exception("O ativo já esta locado!"));
                 
                 _eventosAtivosRepository.EmprestarAtivo(_mapper.Map<EventosAtivoEntity>(loanAsset));
                 return Task.CompletedTask;
@@ -87,7 +87,7 @@ namespace AssetManager.Application.Service
             }
         }
 
-        public Task EncerrarEmprestimoAtivo(FimEmprestimoAtivoDTO terminate)
+        public Task EncerrarEmprestimoDoAtivo(FimEmprestimoAtivoDTO terminate)
         {
             try
             {

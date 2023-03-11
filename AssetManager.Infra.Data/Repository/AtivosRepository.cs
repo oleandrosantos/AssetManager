@@ -25,19 +25,19 @@ public class AtivosRepository : RepositoryBase<AtivoEntity>, IAtivosRepository
 
     public Task Delete(int id, string? ExclusionInfo)
     {
-        var asset = ObterAtivoPorId(id).Result;
-        asset.DataExclusao = DateTime.Now;
-        asset.InformacoesExclusao = ExclusionInfo;
+        var ativo = ObterAtivoPorId(id).Result;
+        ativo.DataExclusao = DateTime.Now;
+        ativo.InformacoesExclusao = ExclusionInfo;
         context.SaveChangesAsync();
         return Task.CompletedTask;
     }
 
     public async Task<AtivoEntity?> ObterAtivoPorId(int id)
     {
-        var asset = dbSet.Where(a => a.IdAtivo == id)
+        var ativo = dbSet.Where(a => a.IdAtivo == id)
                          .Include(a => a.EventosAtivo)                   
                          .FirstOrDefault();
 
-        return asset;
+        return ativo;
     }
 }
