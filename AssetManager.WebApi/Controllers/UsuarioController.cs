@@ -50,8 +50,8 @@ public class UsuarioController : Controller
                 return NotFound(new { message = "Email ou senha não informados" });
             }
 
-            var tokenJWT = _usuarioService.Login(model.Email, model.Password).Result;
-            return Ok(new { token = tokenJWT });
+            var tokenModel = _usuarioService.Login(model.Email, model.Password).Result;
+            return Ok(new { tokenModel });
         }
         catch
         {
@@ -91,5 +91,16 @@ public class UsuarioController : Controller
     private bool AtualizarDadosUsuario(UsuarioDTO usuario, AtualizarUsuarioDTO dadosUsuario)
     {
         throw new NotImplementedException();
+    }
+
+    [HttpGet("RenovarToken/{token}")]
+    [AllowAnonymous]
+    public IActionResult RenovarToken(string token)
+    {
+        var users = _usuarioService.RenovarTokens(token).Result;
+        if (!users.Any())
+            return NoContent();
+
+        return Ok(users);
     }
 }

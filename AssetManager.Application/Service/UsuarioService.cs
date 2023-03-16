@@ -7,6 +7,8 @@ using AutoMapper;
 using AssetManager.Domain.Entities;
 using AssetManager.Domain.Validations;
 using AssetManager.Application.Helpers;
+using AssetManager.Application.DTO.Token;
+using System.Security.Claims;
 
 namespace AssetManager.Application.Service;
 
@@ -42,15 +44,16 @@ public class UsuarioService : IUsuarioService
         }
      }
 
-    public Task<string> Login(string email, string password)
+    public Task<TokenModel> Login(string email, string password)
     {
+        var token = new TokenModel();
         var user = _usuarioRepository.ObterUsuarioPorEmail(email).Result;
 
         if (user == null || PasswordHelper.VerificandoSenha(user.Password, password))
             throw new Exception();
 
-        string token = _tokenService.GerarToken(_mapper.Map<UsuarioDTO>(user));
-
+        token.AcessToken = _tokenService.GerarToken(_mapper.Map<UsuarioDTO>(user));
+        token.RefreshToken = ObterRefreshToken(email);
         return Task.FromResult(token);
     }
 
@@ -84,5 +87,23 @@ public class UsuarioService : IUsuarioService
     public Task RevogarAcessoUsuario(string email)
     {
         return _usuarioRepository.RevogarAcessoUsuario(email);
+    }
+
+    public Task<string> RenovarTokens(string token)
+    {
+        var claimsToken = _tokenService.ObterClaimsDeTokenExpirado(token);
+        var sasa = claimsToken.Claims.Where(a => a.Type == ClaimTypes.Email).FirstOrDefault().Value;
+        var sasas = claimsToken.Claims.ToList();
+        return Task.FromResult<string>("");
+    }
+
+    private string ObterRefreshToken(string email)
+    {
+        var refreshToken = _tokenService.GerarRefreshToken();
+        var usuario = _usuarioRepository.ObterUsuarioPorEmail(email).Result;
+        usuario.RefreshToken = refreshToken;
+        usuario.DataExpiracaoRefreshToken = _tokenService.ObterDataExpiracaoRefreshToken();
+        _usuarioRepository.Atualizar(usuario);
+        return refreshToken;
     }
 }

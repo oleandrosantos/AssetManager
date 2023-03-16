@@ -13,6 +13,8 @@ public class UsuarioEntity
     public string Role { get; set; }
     public int IdCompanhia { get; set; }
     public bool Ativo { get; set; }
+    public string? RefreshToken { get; set; }
+    public DateTime DataExpiracaoRefreshToken { get; set; }
     public CompanhiaEntity Companhia { get; set; }
     public ICollection<EventosAtivoEntity> EventosAtivo { get; set; }
 }
