@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using AssetManager.Application.DTO.Token;
 using AssetManager.Application.DTO.Usuario;
 using AssetManager.Application.Interfaces;
 using AssetManager.Domain.Utils;
@@ -21,7 +22,7 @@ public class TokenService: ITokenService
     public string GerarToken2(UsuarioDTO usuario)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_configuration.GetSection("AppSettings").GetSection("Secret").Value);
+        var key = Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new Claim[]
@@ -40,17 +41,13 @@ public class TokenService: ITokenService
     }
     public string GerarToken(UsuarioDTO usuario)
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
         var claims = ObterClaimsDoUsuario(usuario);
-        var tokenCreated = CreateToken(claims.ToArray());
-        var token = tokenHandler.CreateToken(tokenCreated);
-        return tokenHandler.WriteToken(token);
+        return CreateToken(claims);
     }
 
-    public string GerarToken(Claim[] claims)
+    public string GerarToken(IEnumerable<Claim> claims)
     {
-        var token = new JwtSecurityTokenHandler().CreateToken(CreateToken(claims));
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return CreateToken(claims);
     }
 
     public string GerarRefreshToken()
@@ -63,8 +60,22 @@ public class TokenService: ITokenService
 
     public DateTime ObterDataExpiracaoRefreshToken() => DateTime.UtcNow.AddMilliseconds(int.Parse(_configuration["JWT:ValidadeRefreshTokenEmMinutos"]));
 
-    public ClaimsPrincipal? ObterClaimsDeTokenExpirado(string? token)
+
+    public TokenModel AuthenticarAtravesDoRefreshToken(TokenModel token)
     {
+        var claims = ObterClaimsDeTokenExpirado(token.AcessToken);
+        var novoAcessToken = CreateToken(claims);
+        return new TokenModel()
+        {
+            AcessToken = novoAcessToken,
+            RefreshToken = GerarRefreshToken()
+        };
+    }
+
+    public IEnumerable<Claim> ObterClaimsDeTokenExpirado(string? token)
+    {
+        try
+        {
         var tokenValidationParameters = new TokenValidationParameters
         {
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Secret"])),
@@ -80,32 +91,39 @@ public class TokenService: ITokenService
         var principal = tokenHandler.ValidateToken(token, tokenValidationParameters,
                         out SecurityToken securityToken);
 
-        if (securityToken is not JwtSecurityToken jwtSecurityToken ||
-                  !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256Signature,
-                                 StringComparison.InvariantCultureIgnoreCase))
-            throw new SecurityTokenException("Invalid token");
+            if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+                      !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                                     StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Invalid token");
 
-        return principal;
+        return principal.Claims;
+        }
+        catch (Exception ex)
+        {
+            var exemptio = ex;
+            return Enumerable.Empty<Claim>();
+        }
     }
 
-    private SecurityTokenDescriptor? CreateToken(Claim[] authClaims)
+    private string CreateToken(IEnumerable<Claim> authClaims)
     {
-        var key = Encoding.ASCII.GetBytes(_configuration.GetSection("AppSettings").GetSection("Secret").Value);
-        _ = int.TryParse(_configuration["JWT:ValidadeAcessTokenEmMinutos"], out
-            int tokenValidityInMinutes);
-
-        var token = new SecurityTokenDescriptor{
-            Expires = DateTime.Now.AddMinutes(tokenValidityInMinutes),
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
             Subject = new ClaimsIdentity(authClaims),
+            Expires = DateTime.UtcNow.AddHours(24),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
 
-        return token;
+        };
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
+
     }
 
-    private List<Claim> ObterClaimsDoUsuario(UsuarioDTO usuario)
+    private IEnumerable<Claim> ObterClaimsDoUsuario(UsuarioDTO usuario)
     {
-        return new List<Claim>
+        return new Claim[]
             {
                 new Claim(ClaimTypes.Name, usuario.Nome),
                 new Claim(ClaimTypes.Email, usuario.Email),

@@ -1,3 +1,4 @@
+using AssetManager.Application.DTO.Token;
 using AssetManager.Application.DTO.Usuario;
 using AssetManager.Application.Interfaces;
 using AssetManager.Application.Service;
@@ -93,12 +94,12 @@ public class UsuarioController : Controller
         throw new NotImplementedException();
     }
 
-    [HttpGet("RenovarToken/{token}")]
+    [HttpPost("RenovarToken/")]
     [AllowAnonymous]
-    public IActionResult RenovarToken(string token)
+    public IActionResult RenovarToken(TokenModel token)
     {
         var users = _usuarioService.RenovarTokens(token).Result;
-        if (!users.Any())
+        if (users == null)
             return NoContent();
 
         return Ok(users);

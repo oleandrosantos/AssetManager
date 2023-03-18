@@ -10,5 +10,5 @@ public interface IUsuarioService
   public Task AtualizarUsuario(AtualizarUsuarioDTO dadosDoUsuario);
   public Task<List<UsuarioDTO?>> ObterTodosOsUsuarioDaCompanhia(int idCompanhia);
   public Task RevogarAcessoUsuario(string email);
-  public Task<string> RenovarTokens(string token);
+  public Task<TokenModel> RenovarTokens(TokenModel token);
 }

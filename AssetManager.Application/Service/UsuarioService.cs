@@ -46,15 +46,22 @@ public class UsuarioService : IUsuarioService
 
     public Task<TokenModel> Login(string email, string password)
     {
-        var token = new TokenModel();
-        var user = _usuarioRepository.ObterUsuarioPorEmail(email).Result;
+        try
+        {
+            var token = new TokenModel();
+            var user = _usuarioRepository.ObterUsuarioPorEmail(email).Result;
 
-        if (user == null || PasswordHelper.VerificandoSenha(user.Password, password))
-            throw new Exception();
+            if (user == null || PasswordHelper.VerificandoSenha(user.Password, password))
+                throw new Exception();
 
-        token.AcessToken = _tokenService.GerarToken(_mapper.Map<UsuarioDTO>(user));
-        token.RefreshToken = ObterRefreshToken(email);
-        return Task.FromResult(token);
+            token.AcessToken = _tokenService.GerarToken(_mapper.Map<UsuarioDTO>(user));
+            token.RefreshToken = ObterRefreshToken(email);
+            return Task.FromResult(token);
+        }
+        catch (Exception e)
+        { 
+            throw e; 
+        }
     }
 
     public Task<UsuarioDTO?> BuscarPorEmail(string email)
@@ -89,12 +96,13 @@ public class UsuarioService : IUsuarioService
         return _usuarioRepository.RevogarAcessoUsuario(email);
     }
 
-    public Task<string> RenovarTokens(string token)
+    public Task<TokenModel> RenovarTokens(TokenModel token)
     {
-        var claimsToken = _tokenService.ObterClaimsDeTokenExpirado(token);
-        var sasa = claimsToken.Claims.Where(a => a.Type == ClaimTypes.Email).FirstOrDefault().Value;
-        var sasas = claimsToken.Claims.ToList();
-        return Task.FromResult<string>("");
+        var claimsToken = _tokenService.ObterClaimsDeTokenExpirado(token.AcessToken);
+        var sasa = claimsToken.FirstOrDefault(a => a.Type == ClaimTypes.Email).Value;
+        //Todo Verificar se usuario ainda esta ativo
+        var tokenModel = _tokenService.AuthenticarAtravesDoRefreshToken(token);
+        return Task.FromResult(tokenModel);
     }
 
     private string ObterRefreshToken(string email)
