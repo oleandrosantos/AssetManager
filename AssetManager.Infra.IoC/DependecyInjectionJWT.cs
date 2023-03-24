@@ -14,7 +14,7 @@ namespace AssetManager.Infra.IoC
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            var key = Encoding.ASCII.GetBytes(configuration["AppSettings:Secret"]);
+            var key = Encoding.ASCII.GetBytes(configuration["JWT:Secret"]);
 
             services.AddAuthentication(x =>
             {

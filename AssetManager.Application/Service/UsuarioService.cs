@@ -7,6 +7,8 @@ using AutoMapper;
 using AssetManager.Domain.Entities;
 using AssetManager.Domain.Validations;
 using AssetManager.Application.Helpers;
+using AssetManager.Application.DTO.Token;
+using System.Security.Claims;
 
 namespace AssetManager.Application.Service;
 
@@ -42,16 +44,24 @@ public class UsuarioService : IUsuarioService
         }
      }
 
-    public Task<string> Login(string email, string password)
+    public Task<TokenModel> Login(string email, string password)
     {
-        var user = _usuarioRepository.ObterUsuarioPorEmail(email).Result;
+        try
+        {
+            var token = new TokenModel();
+            var user = _usuarioRepository.ObterUsuarioPorEmail(email).Result;
 
-        if (user == null || PasswordHelper.VerificandoSenha(user.Password, password))
-            throw new Exception();
+            if (user == null || PasswordHelper.VerificandoSenha(user.Password, password))
+                throw new Exception();
 
-        string token = _tokenService.GerarToken(_mapper.Map<UsuarioDTO>(user));
-
-        return Task.FromResult(token);
+            token.AcessToken = _tokenService.GerarToken(_mapper.Map<UsuarioDTO>(user));
+            token.RefreshToken = ObterRefreshToken(email);
+            return Task.FromResult(token);
+        }
+        catch (Exception e)
+        { 
+            throw e; 
+        }
     }
 
     public Task<UsuarioDTO?> BuscarPorEmail(string email)
@@ -84,5 +94,35 @@ public class UsuarioService : IUsuarioService
     public Task RevogarAcessoUsuario(string email)
     {
         return _usuarioRepository.RevogarAcessoUsuario(email);
+    }
+
+    public Task<TokenModel> RenovarTokens(TokenModel token)
+    {
+        var claimsToken = _tokenService.ObterClaimsDeTokenExpirado(token.AcessToken);
+        var emailUsuario = claimsToken.FirstOrDefault(a => a.Type == ClaimTypes.Email).Value;
+        var usuario = _usuarioRepository.ObterUsuarioPorEmail(emailUsuario).Result;
+        if (usuario.RefreshToken != token.RefreshToken || usuario.TokenExpirado())
+            return Task.FromException<TokenModel>(new Exception("Token invalido ou expirado!"));
+
+        var tokenModel = _tokenService.AuthenticarAtravesDoRefreshToken(token);
+        AtualizarRefreshTokenUsuario(emailUsuario, token.RefreshToken);
+        return Task.FromResult(tokenModel);
+    }
+
+    private string ObterRefreshToken(string email)
+    {
+        var refreshToken = _tokenService.GerarRefreshToken();
+        AtualizarRefreshTokenUsuario(email, refreshToken);
+        return refreshToken;
+    }
+
+    private void AtualizarRefreshTokenUsuario(string email, string refreshToken)
+    {
+        var usuario = _usuarioRepository.ObterUsuarioPorEmail(email).Result;
+        usuario.RefreshToken = refreshToken;
+        usuario.DataExpiracaoRefreshToken = _tokenService.ObterDataExpiracaoRefreshToken();
+        _usuarioRepository.Atualizar(usuario);
+
+
     }
 }

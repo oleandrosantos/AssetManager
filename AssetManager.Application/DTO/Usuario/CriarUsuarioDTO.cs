@@ -20,7 +20,6 @@ public class CriarUsuarioDTO
     [Required(ErrorMessage = "Email não informado")]
     [MaxLength(256)]
     public string Email { get; set; }
-    public string? Role { get; set; }
     public int IdCompanhia { get; set; }
 
 

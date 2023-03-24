@@ -4,6 +4,7 @@ using AssetManager.Application.DTO.Companhia;
 using AssetManager.Application.DTO.Usuario;
 using AssetManager.Domain.Entities;
 using AutoMapper;
+using AssetManager.Application.Enums;
 
 namespace AssetManager.Application.Profiles
 {
@@ -19,7 +20,9 @@ namespace AssetManager.Application.Profiles
             CreateMap<EventosAtivoDTO, EventosAtivoEntity>().ReverseMap();
 
             CreateMap<UsuarioDTO, UsuarioEntity>().ReverseMap();
-            CreateMap<CriarUsuarioDTO, UsuarioEntity>().ReverseMap();
+            CreateMap<CriarUsuarioDTO, UsuarioEntity>()
+                .ForMember(dst => dst.Role, src => src.MapFrom(src => RolesUsuarios.Funcionario.Description()));
+
             CreateMap<AtualizarUsuarioDTO, UsuarioEntity>().ReverseMap(); 
             
             CreateMap<CompanhiaDTO, CompanhiaEntity>().ReverseMap();

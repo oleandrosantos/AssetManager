@@ -1,4 +1,6 @@
+using AssetManager.Application.DTO.Token;
 using AssetManager.Application.DTO.Usuario;
+using AssetManager.Application.Enums;
 using AssetManager.Application.Interfaces;
 using AssetManager.Application.Service;
 using Microsoft.AspNetCore.Authorization;
@@ -50,8 +52,8 @@ public class UsuarioController : Controller
                 return NotFound(new { message = "Email ou senha não informados" });
             }
 
-            var tokenJWT = _usuarioService.Login(model.Email, model.Password).Result;
-            return Ok(new { token = tokenJWT });
+            var tokenModel = _usuarioService.Login(model.Email, model.Password).Result;
+            return Ok(new { tokenModel });
         }
         catch
         {
@@ -91,5 +93,16 @@ public class UsuarioController : Controller
     private bool AtualizarDadosUsuario(UsuarioDTO usuario, AtualizarUsuarioDTO dadosUsuario)
     {
         throw new NotImplementedException();
+    }
+
+    [HttpPost("RenovarToken/")]
+    [AllowAnonymous]
+    public IActionResult RenovarToken(TokenModel token)
+    {
+        var users = _usuarioService.RenovarTokens(token).Result;
+        if (users == null)
+            return NoContent();
+
+        return Ok(users);
     }
 }
