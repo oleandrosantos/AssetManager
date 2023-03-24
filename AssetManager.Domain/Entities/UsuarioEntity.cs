@@ -14,7 +14,16 @@ public class UsuarioEntity
     public int IdCompanhia { get; set; }
     public bool Ativo { get; set; }
     public string? RefreshToken { get; set; }
-    public DateTime DataExpiracaoRefreshToken { get; set; }
+    public DateTime? DataExpiracaoRefreshToken { get; set; }
     public CompanhiaEntity Companhia { get; set; }
     public ICollection<EventosAtivoEntity> EventosAtivo { get; set; }
+
+
+    public bool TokenExpirado()
+    {
+        if (DataExpiracaoRefreshToken == null)
+            return false;
+
+        return DataExpiracaoRefreshToken <= DateTime.Now;
+    }
 }

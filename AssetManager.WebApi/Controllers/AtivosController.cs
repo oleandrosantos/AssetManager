@@ -61,9 +61,9 @@ public class AtivosController : Controller
 
     [HttpGet("ListarAtivosDaCompanhia/{IdCompanhia}")]
     [Authorize(Roles = "Administrador,Suporte")]
-    public IActionResult ListarAtivosDaCompanhia(int idCompanhia)
+    public IActionResult ListarAtivosDaCompanhia(int IdCompanhia)
     {
-        var listaAtivos = _ativosService.ObterTodosAtivosDaCompanhia(idCompanhia).Result;
+        var listaAtivos = _ativosService.ObterTodosAtivosDaCompanhia(IdCompanhia).Result;
 
         if (listaAtivos.Count == 0)
             return NoContent();

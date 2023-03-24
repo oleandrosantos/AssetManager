@@ -1,5 +1,6 @@
 using AssetManager.Application.DTO.Token;
 using AssetManager.Application.DTO.Usuario;
+using AssetManager.Application.Enums;
 using AssetManager.Application.Interfaces;
 using AssetManager.Application.Service;
 using Microsoft.AspNetCore.Authorization;

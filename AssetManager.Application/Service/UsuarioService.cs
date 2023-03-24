@@ -99,19 +99,30 @@ public class UsuarioService : IUsuarioService
     public Task<TokenModel> RenovarTokens(TokenModel token)
     {
         var claimsToken = _tokenService.ObterClaimsDeTokenExpirado(token.AcessToken);
-        var sasa = claimsToken.FirstOrDefault(a => a.Type == ClaimTypes.Email).Value;
-        //Todo Verificar se usuario ainda esta ativo
+        var emailUsuario = claimsToken.FirstOrDefault(a => a.Type == ClaimTypes.Email).Value;
+        var usuario = _usuarioRepository.ObterUsuarioPorEmail(emailUsuario).Result;
+        if (usuario.RefreshToken != token.RefreshToken || usuario.TokenExpirado())
+            return Task.FromException<TokenModel>(new Exception("Token invalido ou expirado!"));
+
         var tokenModel = _tokenService.AuthenticarAtravesDoRefreshToken(token);
+        AtualizarRefreshTokenUsuario(emailUsuario, token.RefreshToken);
         return Task.FromResult(tokenModel);
     }
 
     private string ObterRefreshToken(string email)
     {
         var refreshToken = _tokenService.GerarRefreshToken();
+        AtualizarRefreshTokenUsuario(email, refreshToken);
+        return refreshToken;
+    }
+
+    private void AtualizarRefreshTokenUsuario(string email, string refreshToken)
+    {
         var usuario = _usuarioRepository.ObterUsuarioPorEmail(email).Result;
         usuario.RefreshToken = refreshToken;
         usuario.DataExpiracaoRefreshToken = _tokenService.ObterDataExpiracaoRefreshToken();
         _usuarioRepository.Atualizar(usuario);
-        return refreshToken;
+
+
     }
 }
